@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/tou"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tou">
+        <!--沉浸式activity，这个view是用来占位的   -->
+        <View
+            android:id="@+id/position_view"
+            android:layout_width="5px"
+            android:layout_height="5px" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/position_view"
+        android:background="@color/tou">
+
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:src="@mipmap/ic_fanghui" />
+
+
+        <TextView
+            android:id="@+id/members_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_centerInParent="true"
+            android:text="添加商品"
+            android:textSize="18sp"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/search_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_15"
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_xinzenggoods" />
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:gravity="center_vertical"
+        android:text="商品名称："
+        android:textColor="@color/grey_600"
+        android:textSize="@dimen/text_size_16" />
+
+    <EditText
+        android:id="@+id/add_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:text="零售价格："
+        android:textColor="@color/grey_600"
+        android:textSize="@dimen/text_size_16" />
+
+    <EditText
+        android:id="@+id/add_price"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:text="会员价格："
+        android:textColor="@color/grey_600"
+        android:textSize="@dimen/text_size_16" />
+
+    <EditText
+        android:id="@+id/add_vip_price"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:text="商品分类"
+        android:textColor="@color/grey_600"
+        android:textSize="@dimen/text_size_16" />
+
+    <Spinner
+        android:id="@+id/g_fenlei"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonstyle"
+            android:text="添加 " />
+
+    </LinearLayout>
+
+</LinearLayout>

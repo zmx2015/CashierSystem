@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tou"
+        >
+        <!--沉浸式activity，这个view是用来占位的   -->
+        <View
+            android:id="@+id/position_view"
+            android:layout_width="30px"
+            android:layout_height="30px" />
+
+        <TextView
+            android:layout_below="@+id/position_view"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/tou"
+            android:gravity="center"
+            android:text="店铺列表"
+            android:textColor="@color/background"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <com.chanven.lib.cptr.PtrClassicFrameLayout
+        android:id="@+id/rotate_header_list_view_frame"
+        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#e1e1e1"
+        cube_ptr:ptr_duration_to_close="200"
+        cube_ptr:ptr_duration_to_close_header="1000"
+        cube_ptr:ptr_keep_header_when_refresh="true"
+        cube_ptr:ptr_pull_to_fresh="false"
+        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+        cube_ptr:ptr_resistance="1.7">
+        <android.support.v7.widget.RecyclerView
+            android:background="#ffffff"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rv_list"
+            />
+    </com.chanven.lib.cptr.PtrClassicFrameLayout>
+</LinearLayout>

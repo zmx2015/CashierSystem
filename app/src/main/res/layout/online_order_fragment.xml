@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        >
+
+        <RelativeLayout
+            android:id="@+id/s_o_all_layout1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:id="@+id/s_o_all_text1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textColor="@color/tou"
+                android:gravity="center"
+                android:text="全部订单"
+                />
+
+            <View
+                android:id="@+id/s_o_all_view_1"
+                android:layout_below="@+id/s_o_all_text1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/tou"
+                ></View>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/s_o_all_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:id="@+id/s_o_all_text2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:textColor="@color/tv_gray_deep"
+                android:text="待接单"
+                />
+            <View
+                android:id="@+id/s_o_all_view_2"
+                android:layout_below="@+id/s_o_all_text2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                ></View>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/s_o_all_layout3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:id="@+id/s_o_all_text3"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textColor="@color/tv_gray_deep"
+                android:gravity="center"
+                android:text="已接单"
+                />
+            <View
+                android:id="@+id/s_o_all_view_3"
+                android:layout_below="@+id/s_o_all_text3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                ></View>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/s_o_all_layout4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:id="@+id/s_o_all_text4"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textColor="@color/tv_gray_deep"
+                android:gravity="center"
+                android:text="团购单"
+                />
+            <View
+                android:id="@+id/s_o_all_view_4"
+                android:layout_below="@+id/s_o_all_text4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                ></View>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <com.chanven.lib.cptr.PtrClassicFrameLayout
+        android:id="@+id/order_rotate_header_list_view_frame"
+        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#e1e1e1"
+        cube_ptr:ptr_duration_to_close="200"
+        cube_ptr:ptr_duration_to_close_header="1000"
+        cube_ptr:ptr_keep_header_when_refresh="true"
+        cube_ptr:ptr_pull_to_fresh="false"
+        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+        cube_ptr:ptr_resistance="1.7">
+        <android.support.v7.widget.RecyclerView
+            android:background="#ffffff"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/moder_list"
+            />
+    </com.chanven.lib.cptr.PtrClassicFrameLayout>
+
+
+    </LinearLayout>
+
+
+
+    <ImageView
+        android:id="@+id/no_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/ic_no_data"
+        />
+
+
+</RelativeLayout>

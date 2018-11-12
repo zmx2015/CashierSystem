@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:id="@+id/cv_item"
+    android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardElevation="4dp"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@color/order_bag"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/order_number"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:text="订单编号：062546568962"
+        android:textSize="18sp"
+        android:textColor="@color/drop_down_unselected"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/order_zj"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="@color/transparent_half"
+            android:text="总价格：25元"
+            />
+        <TextView
+            android:id="@+id/order_zhj"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="@color/transparent_half"
+            android:text="折后价：25元"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/order_yh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="@color/transparent_half"
+            android:text="优     惠：25元"
+            />
+        <TextView
+            android:id="@+id/order_ss"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="@color/transparent_half"
+            android:text="实    收：25元"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/order_zffs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="@color/transparent_half"
+            android:text="支付方式：25元"
+            />
+        <TextView
+            android:id="@+id/order_zt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="@color/transparent_half"
+            android:text="状    态：25元"
+            />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/order_time"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:text="购买时间：2018-06-28"
+        android:textColor="@color/transparent_half"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:text="订单详情"
+            android:textSize="18sp"
+            android:textColor="@color/drop_down_unselected"
+            />
+
+        <LinearLayout
+            android:id="@+id/title_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/order_bag_item"
+            android:layout_below="@+id/sna_head"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:textColor="@color/drop_down_unselected"
+                android:text="商品" />
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/drop_down_unselected"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="重量/kg" />
+
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/drop_down_unselected"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="单价/元" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/drop_down_unselected"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="总价/元" />
+
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice"
+            android:divider="#00000000"
+            android:dividerHeight="0dp"
+            android:fadingEdge="none"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+</android.support.v7.widget.CardView>

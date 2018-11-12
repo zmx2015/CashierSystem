@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/tou"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tou"
+        >
+        <!--沉浸式activity，这个view是用来占位的   -->
+        <View
+            android:id="@+id/position_view"
+            android:layout_width="30px"
+            android:layout_height="30px" />
+        >
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/relayout"
+        android:layout_below="@+id/position_view"
+        android:layout_width="match_parent"
+        android:background="@color/tou"
+        android:layout_height="60dp">
+
+        <TextView
+            android:id="@+id/members_size"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_marginLeft="10dp"
+            android:text="意见反馈"
+            />
+
+
+    </RelativeLayout>
+
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:choiceMode="singleChoice"
+        android:divider="#00000000"
+        android:dividerHeight="0dp"
+        android:fadingEdge="none"
+        />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        >
+
+        <EditText
+            android:id="@+id/feedback_edit"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/feedback_btn"
+            android:background="@drawable/transparent_edittext_bg"
+            android:hint="请输入搜索内容"
+            android:paddingLeft="@dimen/space_8"
+            android:maxLength="60"
+            android:textColor="@color/black_text_color"
+            android:textColorHint="@color/gray_text_color"
+            android:textSize="@dimen/text_mid_size" />
+
+        <Button
+            android:id="@+id/feedback_btn"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="发送"
+            />
+    </RelativeLayout>
+
+
+</RelativeLayout>

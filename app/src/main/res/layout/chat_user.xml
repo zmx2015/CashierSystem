@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="left"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/u_head"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_marginLeft="10px"
+            android:src="@mipmap/i"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10px"
+            android:layout_marginRight="10px"
+            android:background="@drawable/balloon_incoming_normal"
+            >
+
+            <TextView
+                android:id="@+id/u_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="25px"
+                android:text="大家好我是证复读机啊开发了了放假啊锻炼腹肌了放假啊联赛积分发了手机发放假了就"
+                android:textSize="55px"
+                android:gravity="center" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="20px"
+        />
+
+</LinearLayout>

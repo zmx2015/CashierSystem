@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <!--沉浸式activity，这个view是用来占位的   -->
+    <View
+        android:id="@+id/position_view"
+        android:background="@color/tou"
+        android:layout_width="match_parent"
+        android:layout_height="30px" />
+    <RelativeLayout
+        android:id="@+id/sna_head"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/tou"
+        >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/tou"
+            android:layout_centerInParent="true"
+            android:text="进货详情"
+            android:textColor="@color/background"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_5"
+            android:text="同步"
+            android:background="@drawable/border_line_while"
+            android:textColor="@color/white"
+            />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#00ffffff"
+        android:padding="5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/speed_model"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp_5"
+            android:background="@drawable/buttonstyle"
+            android:layout_weight="1"
+            android:text="极速模式"
+            />
+        <Button
+            android:id="@+id/up_model"
+            android:layout_marginRight="@dimen/dp_5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/buttonstyle"
+            android:layout_weight="1"
+            android:text="上传模式"
+            />
+        <Button
+            android:id="@+id/add_model"
+            android:layout_width="match_parent"
+            android:background="@drawable/buttonstyle"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="添加商品"
+            />
+    </LinearLayout>
+
+    <ListView
+        android:layout_below="@+id/sna_head"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/listview"
+        android:dividerHeight="12dp"
+        android:divider="#00000000"
+        ></ListView>
+
+</LinearLayout>

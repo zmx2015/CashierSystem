@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+
+    <RelativeLayout
+        android:id="@+id/tou"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tou"
+        >
+        <!--沉浸式activity，这个view是用来占位的   -->
+        <View
+            android:id="@+id/position_view"
+            android:layout_width="30px"
+            android:layout_height="30px" />
+        >
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tou"
+        android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@color/tou"
+        android:baselineAligned="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="15dp"
+        android:paddingTop="8dp" >
+
+        <RelativeLayout
+            android:id="@+id/search_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+
+            <EditText
+                android:id="@+id/member_search_edit"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/member_search_btn"
+                android:background="@drawable/transparent_edittext_bg"
+                android:hint="请输入搜索内容"
+                android:paddingLeft="@dimen/space_8"
+                android:maxLength="50"
+                android:singleLine="true"
+                android:textColor="@color/black_text_color"
+                android:textColorHint="@color/gray_text_color"
+                android:textSize="@dimen/text_mid_size" />
+
+            <ImageView
+                android:id="@+id/member_search_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@null"
+                android:src="@drawable/search_btn_bg" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/search_tol"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_70"
+        android:background="#ffffff"
+        android:gravity="center_vertical"
+        >
+
+        <ImageView
+
+            android:id="@+id/member_search_head"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:src="@drawable/icon_login_account"
+            />
+
+        <TextView
+            android:id="@+id/member_search_name"
+            android:layout_toRightOf="@+id/member_search_head"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:text="水果大户"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/member_search_number"
+            android:layout_toRightOf="@+id/member_search_head"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_below="@+id/member_search_name"
+            android:text="会员号：0629          积分：190"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/search_load"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+
+        <include
+            layout="@layout/load_view" ></include>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/no_members"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="该会员不存在！"
+            />
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+
+    <RelativeLayout
+        android:id="@+id/relayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/position_view"
+        android:background="@color/tou">
+
+        <TextView
+            android:id="@+id/members_size"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="商户中心"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/tou"
+        android:gravity="center"
+        >
+
+
+            <TextView
+                android:id="@+id/mine_name"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="当前登录账号：admin5"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/mine_name">
+
+            <TextView
+                android:layout_width="10dp"
+                android:layout_height="15dp"
+                android:background="@mipmap/right"
+                />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/TxtTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/setting_item_selector"
+        android:drawableLeft="@mipmap/me_feedback"
+        android:drawablePadding="10dp"
+        android:drawableRight="@mipmap/right"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="门店管理"
+        android:textSize="16sp" />
+
+    <TextView
+        style="@style/TxtTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/setting_item_selector"
+        android:drawableLeft="@mipmap/me_feedback"
+        android:drawablePadding="10dp"
+        android:drawableRight="@mipmap/right"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="店员管理"
+        android:textSize="16sp" />
+    <TextView
+        style="@style/TxtTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/setting_item_selector"
+        android:drawableLeft="@mipmap/me_feedback"
+        android:drawablePadding="10dp"
+        android:drawableRight="@mipmap/right"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="需求反馈"
+        android:textSize="16sp" />
+
+    <TextView
+        style="@style/TxtTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/setting_item_selector"
+        android:drawableLeft="@mipmap/me_feedback"
+        android:drawablePadding="10dp"
+        android:drawableRight="@mipmap/right"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="账号管理"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/about_text"
+        style="@style/TxtTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/setting_item_selector"
+        android:drawableLeft="@mipmap/me_feedback"
+        android:drawablePadding="10dp"
+        android:drawableRight="@mipmap/right"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="关于我们"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/log_ut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
+        android:background="@drawable/buttonstyle"
+        android:text="退出登录"
+        />
+
+</LinearLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/l_head"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_marginRight="10px"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/abc"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/l_head"
+            android:layout_marginLeft="10px"
+            android:layout_marginTop="20px"
+            android:layout_marginRight="10px"
+            android:background="@drawable/balloon_outgoing_normal"
+            >
+
+            <TextView
+                android:id="@+id/l_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20px"
+                android:layout_marginBottom="20px"
+                android:paddingLeft="20px"
+                android:paddingRight="40px"
+                android:textSize="55px"
+                android:gravity="center" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="20px" />
+
+</LinearLayout>
