@@ -95,8 +95,6 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
 
     private int load_tag = 0;//上拉或者下拉标示
 
-    private StockManagementDao smDao;
-
     private ImageView no_data;
 
 
@@ -105,17 +103,15 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_procurement, container, false);
 
-        smDao = new StockManagementDao();
-
         //获取前月的第一天
-        Calendar cal_1=Calendar.getInstance();//获取当前日期
+        Calendar cal_1 = Calendar.getInstance();//获取当前日期
         cal_1.add(Calendar.MONTH, 0);
-        cal_1.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
-        int y=cal_1.get(Calendar.YEAR);
-        int m=cal_1.get(Calendar.MONTH);
+        cal_1.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
+        int y = cal_1.get(Calendar.YEAR);
+        int m = cal_1.get(Calendar.MONTH);
 
         startDate = Tools.DateConversion(cal_1.getTime());
-        endDate = new Tools().getDateLastDay(y+"",m+"");
+        endDate = new Tools().getDateLastDay(y + "", m + "");
 
         lists = new ArrayList<>();
         ImageButton ib = view.findViewById(R.id.add_button);
@@ -218,23 +214,6 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
                     try {
 
                         lists.clear();
-                        //先查本地没有上传服务器的
-                        List<StockManagementBean> ss = smDao.queryAll();
-                        List<StockManagementBean> sss = new ArrayList<>();
-                        for (StockManagementBean s : ss) {
-
-                            Log.e("本地数据","数据"+s.getNumber()+"状态："+s.getSm_state());
-
-                            if (!s.getSm_state().equals("1")) {
-
-                                    lists.add(s);
-                                    sss.add(s);
-
-
-                            }
-
-                        }
-
                         JSONArray jsonArray = new JSONArray(msg.obj.toString());
 
                         for (int i = 0; i < jsonArray.length(); i++) {
@@ -248,21 +227,8 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
                             sb.setId(Long.parseLong(object.getString("id")));
                             sb.setTotal(object.getString("total"));
 
-                            //再判断是否有本地未上传的，有就只显示本地的
-                            int i_num = 0;
-                            for (StockManagementBean s : sss) {
+                            lists.add(sb);
 
-                                if (object.getString("p_order").equals(s.getNumber())) {
-                                    i_num++;
-
-                                }
-
-                            }
-
-                            if (i_num == 0) {
-
-                                lists.add(sb);
-                            }
 
                         }
 
@@ -300,7 +266,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
         mPtrFrame.refreshComplete();
         if (load_tag == 0) {
 
-            if(lists.size()>0){
+            if (lists.size() > 0) {
                 mPtrFrame.setLoadMoreEnable(true);
             }
 
@@ -484,8 +450,6 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
         smb.setSm_time(s_time);
         smb.setRh_time(date);
         smb.setNumber(OrderNumber);
-
-        smDao.AddStock(smb);//保存到本地数据库
 
         // 通过Intent传递对象给Service
         Intent intent = new Intent();

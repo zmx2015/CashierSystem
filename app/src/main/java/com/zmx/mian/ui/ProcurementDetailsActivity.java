@@ -74,15 +74,14 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
     //RecyclerView自定义Adapter
     private ProcurementDetailsAdapter adapter;
 
-    private Button speed_model, up_model, add_model,submit;
+    private Button speed_model, up_model, add_model;
     private TextView title_time;
 
     private String number,ru_time;
 
-    private int S_UPLOAD = 0;
+    private int S_UPLOAD = 0;//判断是否是新建的采购单还是已经保存过的采购单
 
     private goodsDao gdao;
-    private StockManagementDetailsDao smDao;
     private StockManagementBean smb;
     private StockManagementDao smd;
 
@@ -102,15 +101,14 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
         setTitleColor(R.id.position_view);
         gdao = new goodsDao();
         smd = new StockManagementDao();
-        smDao = new StockManagementDetailsDao();
 
         smb = (StockManagementBean) getIntent().getSerializableExtra("sb");
         Log.e("pid","pid"+smb.getId());
         number = smb.getNumber();
         ru_time = smb.getRh_time();
+        S_UPLOAD = Integer.parseInt(smb.getSm_state());
 
         lists = new ArrayList<>();
-//        getListData(number);
 
         BackButton(R.id.back_button);
         title_time = findViewById(R.id.title);
@@ -123,28 +121,6 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
         up_model.setOnClickListener(this);
         add_model = findViewById(R.id.add_model);
         add_model.setOnClickListener(this);
-        submit = findViewById(R.id.submit);
-        submit.setOnClickListener(this);
-
-        if(smb.getSm_state().equals("1")){
-
-            S_UPLOAD = 1;
-            submit.setText("已上传");
-            submit.setEnabled(false);
-
-        }else if(smb.getSm_state().equals("2")){
-
-            S_UPLOAD = 2;
-            submit.setEnabled(true);
-            submit.setText("编辑");
-
-        }else{
-
-            S_UPLOAD = 0;
-            submit.setEnabled(true);
-            submit.setText("上传");
-
-        }
 
         adapter = new ProcurementDetailsAdapter(this, lists,smb);
         adapter.setOnClickUpload(this);
@@ -160,37 +136,15 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
             }
         });
 
-        //先判断点击进来的是否是有没有同步了
+        //先判断点击进来的是否是新建采购单还是已经有数据的采购单，有就查询这个订单
         if(smb.getSm_state().equals("1")){
 
             loadingData();
 
-        }else{
-
-            //查询本地的
-            getListData(number);
-
         }
 
     }
 
-    /**
-     * 初始化详情
-     *
-     */
-    public void getListData(String number) {
-
-        lists.clear();
-        List<StockManagementDetailsBean> l = smDao.queryWhere(number);
-
-        for (StockManagementDetailsBean sb : l) {
-
-            lists.add(sb);
-
-        }
-        handler.sendEmptyMessage(2);
-
-    }
 
     @Override
     public void onClick(View v) {
@@ -217,82 +171,80 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 adapter.notifyDataSetChanged();
                 break;
 
-            case R.id.submit:
+        }
 
-                if(lists.size()<=0){
-                    Toast.makeText(mActivity,"没有商品，无需上传",Toast.LENGTH_LONG).show();
-                    return;
-                }
+    }
 
-                List<SMDBean> smds = new ArrayList<>();
+    /**
+     * 提交或者更新订单
+     */
+    public void Submit(){
 
-                float total = 0;
+        List<SMDBean> smds = new ArrayList<>();
 
-                for (int i=0;i<lists.size();i++){
+        float total = 0;
 
-                    if(lists.get(i).getUnita().equals("1")){
+        for (int i=0;i<lists.size();i++){
 
-                        total = Float.parseFloat(lists.get(i).getG_price())*Float.parseFloat(lists.get(i).getG_nb())+total;
+            if(lists.get(i).getUnita().equals("1")){
 
-                    }else{
+                total = Float.parseFloat(lists.get(i).getG_price())*Float.parseFloat(lists.get(i).getG_nb())+total;
 
-                        total = Float.parseFloat(lists.get(i).getG_price())*Float.parseFloat(lists.get(i).getG_weight())+total;
+            }else{
 
-                    }
-                    SMDBean smd = new SMDBean();
+                total = Float.parseFloat(lists.get(i).getG_price())*Float.parseFloat(lists.get(i).getG_weight())+total;
 
-                    smd.setColor(lists.get(i).getG_color());
-                    smd.setGid(lists.get(i).getG_id());
-                    smd.setMemo(lists.get(i).getG_note());
-                    smd.setNums(lists.get(i).getG_nb());
-                    smd.setWeight(lists.get(i).getG_weight());
-                    smd.setPrice(lists.get(i).getG_price());
-                    smd.setFreight(lists.get(i).getG_the_fare());
-                    smd.setDeposit(lists.get(i).getG_the_deposit());
-                    smd.setSupplier(lists.get(i).getSupplier());
-                    smd.setUnita(lists.get(i).getUnita());
-                    smd.setSubtotal(lists.get(i).getG_total());
-                    smd.setPayment(lists.get(i).getG_payment_mode());
+            }
+            SMDBean smd = new SMDBean();
+
+            smd.setColor(lists.get(i).getG_color());
+            smd.setGid(lists.get(i).getG_id());
+            smd.setMemo(lists.get(i).getG_note());
+            smd.setNums(lists.get(i).getG_nb());
+            smd.setWeight(lists.get(i).getG_weight());
+            smd.setPrice(lists.get(i).getG_price());
+            smd.setFreight(lists.get(i).getG_the_fare());
+            smd.setDeposit(lists.get(i).getG_the_deposit());
+            smd.setSupplier(lists.get(i).getSupplier());
+            smd.setUnita(lists.get(i).getUnita());
+            smd.setSubtotal(lists.get(i).getG_total());
+            smd.setPayment(lists.get(i).getG_payment_mode());
 //                    smd.setTotal(lists.get(i).getG_total());
 
-                    smds.add(smd);
-
-                }
-
-                Gson g = new Gson();
-                String jsonString = g.toJson(smds);
-
-
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
-                params.put("mid", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, ""));
-                params.put("pckey", new Tools().getKey(mActivity));
-                params.put("account", "0");
-                params.put("purtime", smb.getRh_time());
-                params.put("content",  "");
-                params.put("p_order",  smb.getNumber());
-                params.put("list",  jsonString);
-
-                Log.e("现在的状态",""+S_UPLOAD);
-
-                if(S_UPLOAD == 0){
-
-                    params.put("type",  "insert");
-                    params.put("pid",  "");
-
-                }else{
-
-                    params.put("type",  "update");
-                    params.put("pid",  smb.getId()+"");
-
-                }
-
-                params.put("total",  total+"");
-                OkHttp3ClientManager.getInstance().postStringExecute("http://www.yiyuangy.com/admin/api.Purchase/insert", params, handler, 3,404);
-
-                break;
+            smds.add(smd);
 
         }
+
+        Gson g = new Gson();
+        String jsonString = g.toJson(smds);
+
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
+        params.put("mid", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, ""));
+        params.put("pckey", new Tools().getKey(mActivity));
+        params.put("account", "0");
+        params.put("purtime", smb.getRh_time());
+        params.put("content",  "");
+        params.put("p_order",  smb.getNumber());
+        params.put("list",  jsonString);
+
+        Log.e("现在的状态",""+S_UPLOAD);
+
+        if(S_UPLOAD == 0){
+
+            params.put("type",  "insert");
+            params.put("pid",  "");
+
+        }else{
+
+            params.put("type",  "update");
+            params.put("pid",  smb.getId()+"");
+
+        }
+
+        params.put("total",  total+"");
+        OkHttp3ClientManager.getInstance().postStringExecute("http://www.yiyuangy.com/admin/api.Purchase/insert", params, handler, 3,404);
 
     }
 
@@ -362,11 +314,6 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                         if(status.equals("1")){
 
                             //提交成功
-                            smb.setSm_state("1");
-                            smd.UpdateStockManagemen(smb);
-                            S_UPLOAD = 1;
-                            submit.setText("已上传");
-                            submit.setEnabled(false);
                             Toast.makeText(mActivity,jsonObject.getString("content"),Toast.LENGTH_LONG).show();
 
                         }else{
@@ -400,9 +347,7 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
     }
 
     @Override
-    public void setUploadState(int upLoad) {
-
-        this.S_UPLOAD = upLoad;
+    public void setUploadState() {
 
         float f_total=0;
 
@@ -413,20 +358,8 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
         }
 
         smb.setTotal(f_total+"");//更改列表的总价
-        smd.UpdateStockManagemen(smb);
-
-        if(S_UPLOAD == 0){
-
-            submit.setText("上传");
-
-        }else{
-
-            submit.setText("编辑");
-            S_UPLOAD = 2;
-        }
-
-        submit.setEnabled(true);
         handler.sendEmptyMessage(2);
+        Submit();//提交修改数据
 
     }
 
@@ -456,25 +389,6 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
             @Override
             public void onItemClick(RecyclerAdapterWithHF adapter, RecyclerView.ViewHolder vh, int position) {
 
-                //先判断当前的上传状态，如果是已经上传了就先保存
-                //判断是否是已经上传修改的订单还是没有上传修改
-                if(smb.getSm_state().equals("1")){
-
-                    S_UPLOAD = 2;
-                    smb.setSm_state("2");
-                    smd.UpdateSM(smb);
-                    //循环存入单条记录
-                    for(StockManagementDetailsBean s : lists){
-
-                        smDao.insertSmdd(s);
-
-                    }
-
-                    submit.setText("编辑");
-                    submit.setEnabled(true);
-
-                }
-
                 //新添加商品
                 StockManagementDetailsBean sb = new StockManagementDetailsBean();
                 sb.setNumber(number);
@@ -491,9 +405,9 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 sb.setG_id(g.get(position).getG_id());
                 sb.setG_total("0");
                 sb.setUnita("1");
-                smDao.insertSmdd(sb);
                 lists.add(sb);
                 handler.sendEmptyMessage(2);
+                Submit();//提交修改数据
                 search_dialog.dismiss();
 
             }
@@ -628,7 +542,8 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("1");
                 lists.set(pos,sdb);
-                addSystem(sdb);
+                handler.sendEmptyMessage(2);
+                Submit();//提交修改数据
                 popWindow.dismiss();
 
             }
@@ -645,7 +560,8 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("2");
                 lists.set(pos,sdb);
-                addSystem(sdb);
+                handler.sendEmptyMessage(2);
+                Submit();//提交修改数据
                 popWindow.dismiss();
 
             }
@@ -661,7 +577,8 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("3");
                 lists.set(pos,sdb);
-                addSystem(sdb);
+                handler.sendEmptyMessage(2);
+                Submit();//提交修改数据
                 popWindow.dismiss();
 
             }
@@ -677,7 +594,8 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("4");
                 lists.set(pos,sdb);
-                addSystem(sdb);
+                handler.sendEmptyMessage(2);
+                Submit();//提交修改数据
                 popWindow.dismiss();
 
             }
@@ -693,7 +611,8 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("5");
                 lists.set(pos,sdb);
-                addSystem(sdb);
+                handler.sendEmptyMessage(2);
+                Submit();//提交修改数据
                 popWindow.dismiss();
 
             }
@@ -706,100 +625,15 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
             public void onClick(View view) {
 
                 StockManagementDetailsBean sdb = lists.get(pos);//拿到当前的数据
-                //判断是否是已经上传修改的订单还是没有上传修改
-                if (smb.getSm_state().equals("1")) {
-
-                    smb.setSm_state("2");
-                    S_UPLOAD = 2;
-                    smd.UpdateSM(smb);
-                    lists.remove(sdb);
-                    //循环存入单条记录
-                    for (StockManagementDetailsBean s : lists) {
-
-                        smDao.insertSmdd(s);
-
-                    }
-
-                    submit.setText("编辑");
-
-                } else if (smb.getSm_state().equals("2")){
-
-                    smDao.deleteSm(sdb);//删除这条数据
-                    submit.setText("编辑");
-                    S_UPLOAD = 2;
-
-                }else{
-
-                    smDao.deleteSm(sdb);//删除这条数据
-                    submit.setText("上传");
-                    S_UPLOAD = 0;
-
-                }
-                getListData(number);//刷新数据
+                lists.remove(sdb);
+                handler.sendEmptyMessage(2);
+                Submit();//提交修改数据
                 popWindow.dismiss();
 
             }
         });
 
     }
-
-    //存入本地
-    public void addSystem(StockManagementDetailsBean smdbs){
-
-            //判断是否是已经上传修改的订单还是没有上传修改
-            if (smb.getSm_state().equals("1")) {
-
-                smb.setSm_state("2");
-                S_UPLOAD = 2;
-                smd.UpdateSM(smb);
-                //循环存入单条记录
-                for (StockManagementDetailsBean s : lists) {
-
-                    smDao.insertSmdd(s);
-
-                }
-
-                submit.setText("编辑");
-
-            } else if (smb.getSm_state().equals("2")){
-
-                S_UPLOAD = 2;
-                //如果是本地数据就直接存入
-                smDao.UpdateStock(smdbs);
-                submit.setText("编辑");
-
-            }else{
-
-                S_UPLOAD = 0;
-                smDao.UpdateStock(smdbs);
-                submit.setText("上传");
-
-            }
-
-        submit.setEnabled(true);
-        handler.sendEmptyMessage(2);
-
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        //判断是否是上传了，上传就删除本地数据
-        if(S_UPLOAD ==1){
-
-            smd.deleteSb(smb);
-            for (StockManagementDetailsBean s:lists){
-                smDao.deleteSm(s);
-            }
-
-
-        }
-
-
-    }
-
 
     /**
      * 日期选择器对话框监听
@@ -839,37 +673,8 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
 
             title_time.setText(days);
             smb.setRh_time(days);
-
-            //判断是否是已经上传修改的订单还是没有上传修改
-            if (smb.getSm_state().equals("1")) {
-
-                smb.setSm_state("2");
-                S_UPLOAD = 2;
-                smd.UpdateSM(smb);
-                //循环存入单条记录
-                for (StockManagementDetailsBean s : lists) {
-
-                    smDao.insertSmdd(s);
-
-                }
-
-                submit.setText("编辑");
-
-            } else if (smb.getSm_state().equals("2")){
-
-                S_UPLOAD = 2;
-                submit.setText("编辑");
-
-            }else{
-
-                S_UPLOAD = 0;
-                submit.setText("上传");
-
-            }
-
-            //修改数据
-            smd.UpdateStockManagemen(smb);
-            submit.setEnabled(true);
+            Submit();//提交修改数据
+            //更新到服务器
 
 
         }

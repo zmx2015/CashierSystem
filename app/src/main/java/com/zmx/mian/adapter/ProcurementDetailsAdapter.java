@@ -47,11 +47,7 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
     private int state = 0;
     private int I_STATE = 1;//斤和件，2为斤，1位件，默认为件
 
-    private StockManagementDetailsDao smDao;
-
     public ProcurementDetailsAdapter(Context mContext, List<StockManagementDetailsBean> lists, StockManagementBean smbb) {
-
-        smDao = new StockManagementDetailsDao();
 
         this.mContext = mContext;
         this.lists = lists;
@@ -79,7 +75,7 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
 
-        ViewManHolder holder;
+        final ViewManHolder holder;
         if (view == null) {
 
             view = mLayoutInflater.inflate(R.layout.procurement_details_adapter, null);
@@ -105,48 +101,47 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
 
         }
 
-        final TextWatcher oneNoteWatcher = new ProcurementDetailsAdapter.SimpeTextWather() {
+        holder.note.setOnFocusChangeListener(new android.view.View.
+                OnFocusChangeListener() {
             @Override
-            public void afterTextChanged(Editable s) {
-
-                if (TextUtils.isEmpty(s)) {
-
-                    sdb.setG_note(null);
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
 
                 } else {
+                    // 此处为失去焦点时的处理内容
+                    String s = holder.note.getText().toString();
 
-                    sdb.setG_note(s.toString());
+                    //判断输入框内容是否有改变
+                    if(!sdb.getG_note().equals(s)){
 
-                    int sta = 0;
-                    //判断是否是已经上传修改的订单还是没有上传修改
-                    if (smbb.getSm_state().equals("1")) {
-
-                        smbb.setSm_state("2");
-                        sta = 2;
-                        smd.UpdateSM(smbb);
-
-
-                    } else if (smbb.getSm_state().equals("2")){
-
-                        //如果是本地数据就直接存入
-                        sta = 2;
-
-                    }else{
-
-                        sta = 0;
-
+                        sdb.setG_note(s);
+                        ou.setUploadState();
                     }
 
-                    ou.setUploadState(sta);
-                    smDao.UpdateStock(sdb);
-
                 }
-
             }
-        };
+        });
 
-        holder.note.addTextChangedListener(oneNoteWatcher);
-        holder.note.setTag(oneNoteWatcher);
+//        final TextWatcher oneNoteWatcher = new ProcurementDetailsAdapter.SimpeTextWather() {
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//                if (TextUtils.isEmpty(s)) {
+//
+//                    sdb.setG_note(null);
+//
+//                } else {
+//
+//                    sdb.setG_note(s.toString());
+//
+//                }
+//
+//                ou.setUploadState();
+//            }
+//        };
+
+//        holder.note.addTextChangedListener(oneNoteWatcher);
+        holder.note.setTag(i);
 
         holder.textView1.setText(sdb.getG_name());
 
@@ -705,8 +700,6 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
 
-                Log.e("要查的单号", "" + sb.getG_payment_mode());
-
                 sb.setG_weight(textView3.getText().toString());
                 sb.setG_nb(textView1.getText().toString());
                 sb.setG_price(textView2.getText().toString());
@@ -716,36 +709,7 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
                 sb.setUnita(I_STATE + "");
 
                 lists.set(pos, sb);
-
-                int sta = 0;
-                //判断是否是已经上传修改的订单还是没有上传修改
-                if (smbb.getSm_state().equals("1")) {
-
-                    smbb.setSm_state("2");
-                    sta = 2;
-
-                    smd.UpdateSM(smbb);
-                    //循环存入单条记录
-                    for (StockManagementDetailsBean s : lists) {
-
-                        smDao.insertSmdd(s);
-
-                    }
-
-                } else if (smbb.getSm_state().equals("2")){
-
-                    //如果是本地数据就直接存入
-                    sta = 2;
-                    smDao.UpdateStock(sb);
-
-                }else{
-
-                    sta = 0;
-                    smDao.UpdateStock(sb);
-
-                }
-
-                ou.setUploadState(sta);
+                ou.setUploadState();
 
                 //初始化值
                 s_variable = "";
@@ -961,7 +925,6 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
             public void onClick(View view) {
 
                 sb.setG_payment_mode("1");
-                smDao.UpdateStock(sb);
                 pay_text.setText("现金");
                 modify_dialog.dismiss();
 
@@ -973,7 +936,6 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 sb.setG_payment_mode("2");
-                smDao.UpdateStock(sb);
                 pay_text.setText("银行卡");
                 modify_dialog.dismiss();
             }
@@ -984,7 +946,6 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 sb.setG_payment_mode("3");
-                smDao.UpdateStock(sb);
                 pay_text.setText("微信");
                 modify_dialog.dismiss();
             }
@@ -996,7 +957,6 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
             public void onClick(View view) {
 
                 sb.setG_payment_mode("4");
-                smDao.UpdateStock(sb);
                 pay_text.setText("支付宝");
                 modify_dialog.dismiss();
             }
@@ -1008,7 +968,6 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 sb.setG_payment_mode("5");
-                smDao.UpdateStock(sb);
                 pay_text.setText("赊账");
                 modify_dialog.dismiss();
             }
@@ -1020,7 +979,6 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 sb.setG_payment_mode("6");
-                smDao.UpdateStock(sb);
                 pay_text.setText("其他");
                 modify_dialog.dismiss();
             }
@@ -1038,7 +996,7 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
 
     public interface OnClickUpload {
 
-        void setUploadState(int upLoad);//修改上传状态
+        void setUploadState();//修改上传状态
 
     }
 
