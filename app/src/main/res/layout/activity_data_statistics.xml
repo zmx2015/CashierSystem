@@ -31,7 +31,7 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:layout_marginLeft="10dp"
-            android:text="数据统计"
+            android:text="7天数据"
             />
     </RelativeLayout>
 

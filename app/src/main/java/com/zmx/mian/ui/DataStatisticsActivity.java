@@ -106,10 +106,10 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
     protected void initViews() {
 
         //获取前月的第一天
-        Calendar cal_1=Calendar.getInstance();//获取当前日期
-        cal_1.add(Calendar.MONTH, 0);
-        cal_1.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
-        startDate = Tools.DateConversion(cal_1.getTime());
+//        Calendar cal_1=Calendar.getInstance();//获取当前日期
+//        cal_1.add(Calendar.MONTH, 0);
+//        cal_1.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
+        startDate = Tools.getPastDate(7);
 
         showLoading();
         op = new OrderPresenter(this);
@@ -349,7 +349,8 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
                 if (value < tts.size()){
 
                     String str = tts.get((int) value).getToday();
-                    return str.substring(6);
+                    Log.e("显示的天数",""+str);
+                    return str.substring(5);
 
                 }else {
 
@@ -420,8 +421,8 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
         }
 
         data = getData(tqs);
-
         data.notifyDataChanged();
+
         mChart.setData(data);
         mChart.animateX(2000);//动画时间
         mChart.invalidate();
@@ -429,7 +430,6 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
     }
 
     private LineData getData(List<TimeQuantum> tqs){
-
 
         //设置x轴位置
         XAxis xAxis = mChart.getXAxis();
@@ -554,6 +554,15 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
         }
 
         return listNew;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mLoadingDialog != null){
+
+            mLoadingDialog.dismiss();
+        }
     }
 
 

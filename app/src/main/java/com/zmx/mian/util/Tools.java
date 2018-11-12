@@ -199,6 +199,22 @@ public class Tools {
     }
 
 
+    /**
+     * 获取过去第几天的日期
+     *
+     * @param past
+     * @return
+     */
+    public static String getPastDate(int past) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - past);
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String result = format.format(today);
+        Log.e(null, result);
+        return result;
+    }
+
     //获得这个月最后一天
     public static String getDateLastDay(String year, String month) {
 
