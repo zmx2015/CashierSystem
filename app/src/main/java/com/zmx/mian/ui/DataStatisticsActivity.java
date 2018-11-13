@@ -105,6 +105,9 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
     @Override
     protected void initViews() {
 
+        // 沉浸式状态栏
+        setTitleColor(R.id.position_view);
+        BackButton(R.id.back_button);
         //获取前月的第一天
 //        Calendar cal_1=Calendar.getInstance();//获取当前日期
 //        cal_1.add(Calendar.MONTH, 0);

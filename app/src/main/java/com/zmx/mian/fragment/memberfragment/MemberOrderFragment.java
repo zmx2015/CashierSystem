@@ -46,6 +46,7 @@ public class MemberOrderFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.scrollToPosition(0);//回到顶部
         mos = (List<MembersOrder>) getArguments().getSerializable("orders");
 
     }

@@ -16,11 +16,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.ShopAdapter;
@@ -29,11 +31,13 @@ import com.zmx.mian.bean.CommodityPositionGD;
 import com.zmx.mian.bean.Goods;
 import com.zmx.mian.bean_dao.CPDao;
 import com.zmx.mian.bean_dao.goodsDao;
+import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.AddGoodsActivity;
 import com.zmx.mian.ui.SearchGoodsActivity;
 import com.zmx.mian.ui.util.LoadingDialog;
 import com.zmx.mian.util.MySharedPreferences;
+import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IGoodsView;
 
 import org.json.JSONArray;
@@ -42,7 +46,9 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 开发人员：曾敏祥
@@ -50,7 +56,7 @@ import java.util.List;
  * 类功能：商品管理
  */
 
-public class GoodsFragment extends Fragment implements IGoodsView{
+public class GoodsFragment extends Fragment{
 
     private TextView toolsTextViews[];
     private View views[];
@@ -61,9 +67,9 @@ public class GoodsFragment extends Fragment implements IGoodsView{
     private int currentItem=0;
     private ShopAdapter shopAdapter;
     private ImageView type_icon;
+    private Button again_load;
     private RelativeLayout search_btn;
 
-    private OrderPresenter op;
     private List<CommodityPosition> cp;
     private String mid;
 
@@ -78,6 +84,18 @@ public class GoodsFragment extends Fragment implements IGoodsView{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_goods,container,false);
 
+        again_load = view.findViewById(R.id.again_load);
+        again_load.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("mid", mid);
+                OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.line/goods", params, h, 2, 404);
+
+            }
+        });
+
         return view;
     }
 
@@ -85,13 +103,17 @@ public class GoodsFragment extends Fragment implements IGoodsView{
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        again_load.setVisibility(View.GONE);
         showLoadingView("加载中.....");
         gd = new goodsDao();
         cpGD = new CommodityPositionGD();
-        op = new OrderPresenter(this);
         cp = new ArrayList<>();
         mid = MySharedPreferences.getInstance(this.getActivity()).getString(MySharedPreferences.store_id,"");
-        op.getGoods(mid);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("mid", mid);
+
+        OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.line/goods", params, h, 2, 404);
 
         //注册监听广播
         IntentFilter filter = new IntentFilter();
@@ -111,6 +133,8 @@ public class GoodsFragment extends Fragment implements IGoodsView{
                 case 1:
 
                     dismissLoadingView();
+                    again_load.setVisibility(View.GONE);
+
                     if(shopAdapter != null){
 
                         shopAdapter.notifyDataSetChanged();
@@ -121,6 +145,18 @@ public class GoodsFragment extends Fragment implements IGoodsView{
                         showToolsView();
 
                     }
+
+                    break;
+
+                case 2:
+                    getGoodsList(msg.obj.toString());
+                    break;
+
+                case 404:
+
+                    dismissLoadingView();
+                    Toast.makeText(GoodsFragment.this.getActivity(),"连接网络失败，请检查网络！",Toast.LENGTH_LONG).show();
+                    again_load.setVisibility(View.VISIBLE);
 
                     break;
 
@@ -226,7 +262,6 @@ public class GoodsFragment extends Fragment implements IGoodsView{
         }
     };
 
-    @Override
     public void getGoodsList(String goods) {
 
         cp.clear();
@@ -303,10 +338,6 @@ public class GoodsFragment extends Fragment implements IGoodsView{
         h.sendEmptyMessage(1);
     }
 
-    @Override
-    public void ErrerMessage() {
-
-    }
 
     /**
      * 改变textView的颜色
@@ -375,8 +406,6 @@ public class GoodsFragment extends Fragment implements IGoodsView{
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            Log.e("接收", "接收到的广播：" + intent.getAction());
 
             //处理不同的广播
             //登录更新用户信息

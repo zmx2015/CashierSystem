@@ -3,6 +3,8 @@ package com.zmx.mian.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,7 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zmx.mian.R;
+import com.zmx.mian.bean.NetUtil;
+import com.zmx.mian.ui.util.AutoScrollTextView;
 import com.zmx.mian.ui.util.LoadingDialog;
+import com.zmx.mian.util.NetBroadCastReciver;
 
 import java.lang.reflect.Field;
 
@@ -27,11 +32,21 @@ import java.lang.reflect.Field;
  * 时间：2016/8/23 0023 下午 5:36
  * 功能模块：自定义activity
  */
-public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener,NetBroadCastReciver.NetEvevt {
+
+    public static NetBroadCastReciver.NetEvevt evevt;
+    /**
+     * 网络类型
+     */
+    private int netMobile;
+
+    NetBroadCastReciver netBroadCastReciver;
 
     protected View positionView;
     protected Activity mActivity;
     private LinearLayout load_view;//加载提示布局
+
+    private AutoScrollTextView net;
 
     protected LoadingDialog mLoadingDialog; //显示正在加载的对话框
     /**
@@ -45,8 +60,12 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.activity_base);
+        net = findViewById(R.id.net);
+        net.init(getWindowManager());
+        net.startScroll();
         mActivity = this;
-
+        evevt = this;
+        inspectNet();
         //找到资源文件的XML
         if (getLayoutId() != 0) {
 
@@ -54,6 +73,14 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             ((FrameLayout) findViewById(R.id.frame_content)).addView(vContent);
 
         }
+
+        if (netBroadCastReciver == null) {
+            netBroadCastReciver = new NetBroadCastReciver();
+        }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netBroadCastReciver, filter);
+
         initViews();
     }
 
@@ -218,6 +245,60 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     }
 
+    /**
+     * 初始化时判断有没有网络
+     */
+    public boolean inspectNet() {
+        this.netMobile = NetUtil.getNetWorkState(BaseActivity.this);
+        return isNetConnect();
 
+        // if (netMobile == 1) {
+        // System.out.println("inspectNet：连接wifi");
+        // } else if (netMobile == 0) {
+        // System.out.println("inspectNet:连接移动数据");
+        // } else if (netMobile == -1) {
+        // System.out.println("inspectNet:当前没有网络");
+        //
+        // }
+    }
 
+    /**
+     * 网络变化之后的类型
+     */
+    @Override
+    public void onNetChange(int netMobile) {
+        // TODO Auto-generated method stub
+        this.netMobile = netMobile;
+       boolean b = isNetConnect();
+
+       if(b){
+           net.setVisibility(View.GONE);
+       }else{
+           net.setVisibility(View.VISIBLE);
+       }
+
+    }
+
+    /**
+     * 判断有无网络 。
+     *
+     * @return true 有网, false 没有网络.
+     */
+    public boolean isNetConnect() {
+        if (netMobile == 1) {
+            return true;
+        } else if (netMobile == 0) {
+            return true;
+        } else if (netMobile == -1) {
+            return false;
+
+        }
+        return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(netBroadCastReciver);
+        super.onDestroy();
+    }
 }

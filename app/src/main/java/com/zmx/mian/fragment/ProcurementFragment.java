@@ -251,6 +251,13 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
 
                     break;
 
+                case 404:
+
+                    initAdapter();
+                    Toast.makeText(mActivity,"连接网络失败，请检查网络！",Toast.LENGTH_LONG).show();
+
+                    break;
+
             }
 
         }

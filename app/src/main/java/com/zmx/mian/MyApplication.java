@@ -25,8 +25,8 @@ public class MyApplication extends Application{
     private static MyApplication myApplication;
     private static DaoSession daoSession;
 
-    public static String store_id = "store_id";//用户id
-    public static String name = "name";//手机号码
+    public static String store_id = "";//用户id
+    public static String name = "";//手机号码
 
     public static MyApplication getInstance() {
         return myApplication;
@@ -68,18 +68,14 @@ public class MyApplication extends Application{
     }
 
     public static String getStore_id() {
-        return store_id;
-    }
+        return MySharedPreferences.getInstance(myApplication).getString(MySharedPreferences.store_id,"");
 
-    public static void setStore_id(String store_id) {
-        MyApplication.store_id = store_id;
     }
 
     public static String getName() {
-        return name;
+        return MySharedPreferences.getInstance(myApplication).getString(MySharedPreferences.name,"");
+
     }
 
-    public static void setName(String name) {
-        MyApplication.name = name;
-    }
+
 }

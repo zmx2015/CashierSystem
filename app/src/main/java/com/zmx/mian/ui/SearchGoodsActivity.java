@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * 开发人员：曾敏祥
  * 开发时间：2018-10-10 14:56
- * 类功能：查找某个商品【暂时没用到】
+ * 类功能：查找某个商品
  */
 public class SearchGoodsActivity extends BaseActivity {
 

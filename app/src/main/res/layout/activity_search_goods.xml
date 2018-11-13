@@ -55,7 +55,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_toLeftOf="@+id/member_search_btn"
                     android:background="@drawable/transparent_edittext_bg"
-                    android:hint="请输入搜索内容"
+                    android:hint="请输入搜索商品的名称"
                     android:paddingLeft="@dimen/space_8"
                     android:maxLength="50"
                     android:singleLine="true"

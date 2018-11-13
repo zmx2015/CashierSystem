@@ -105,9 +105,9 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
                 OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
 
-                } else {
+                if (!hasFocus) {
+
                     // 此处为失去焦点时的处理内容
                     String s = holder.note.getText().toString();
 

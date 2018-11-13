@@ -58,6 +58,7 @@ public class Pro_type_adapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         final MyView view;
         if (convertView == null) {
+
             view = new MyView();
             convertView = mInflater.inflate(R.layout.list_pro_type_item, null);
             view.icon = convertView.findViewById(R.id.typeicon);
@@ -65,6 +66,7 @@ public class Pro_type_adapter extends BaseAdapter {
             view.price_text = convertView.findViewById(R.id.price_text);
             view.button1 = convertView.findViewById(R.id.button_md);
             view.button2 = convertView.findViewById(R.id.button_sc);
+
             convertView.setTag(view);
         } else {
             view = (MyView) convertView.getTag();
@@ -78,7 +80,8 @@ public class Pro_type_adapter extends BaseAdapter {
             view.name.setText(c.getG_name());
             view.price_text.setText("￥" + c.getG_price());
 
-            Glide.with(context).load(c.getG_img()).transform(new GlideCircleTransform(context)).error(R.mipmap.logo).into(view.icon);
+
+            Glide.with(context).load("http://www.yiyuangy.com/uploads/goods/"+c.getG_img()).transform(new GlideCircleTransform(context)).error(R.mipmap.logo).into(view.icon);
 
 
             view.button1.setTag(c);

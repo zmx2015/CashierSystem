@@ -44,8 +44,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_centerInParent="true"
+                android:textSize="16sp"
                 android:text="单品清单"
                 android:textColor="@color/white" />
+            <TextView
+                android:id="@+id/tile_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rk_choose_time"
+                android:layout_centerHorizontal="true"
+                android:text="(2018-01-02)"
+                android:textSize="10sp"
+                android:textColor="@color/white"
+                />
 
 
         </RelativeLayout>

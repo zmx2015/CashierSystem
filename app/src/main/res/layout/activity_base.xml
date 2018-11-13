@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical">
+    >
+
 
     <FrameLayout
         android:id="@+id/frame_content"
@@ -10,4 +11,15 @@
         android:layout_height="fill_parent"
         android:orientation="vertical">
     </FrameLayout>
-</LinearLayout>
+
+    <com.zmx.mian.ui.util.AutoScrollTextView
+        android:id="@+id/net"
+        android:layout_height="30dp"
+        android:layout_width="fill_parent"
+        android:text="当前网络不可用，请检测你的网络"
+        android:textColor="#f70a0a"
+        android:inputType="text"
+        android:background="#EEEE"
+        android:textSize="50px"/>
+
+</RelativeLayout>

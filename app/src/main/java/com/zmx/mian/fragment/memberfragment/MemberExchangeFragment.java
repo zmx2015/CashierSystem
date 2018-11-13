@@ -25,7 +25,6 @@ import java.util.List;
  */
 public class MemberExchangeFragment  extends Fragment {
 
-
     private List<MembersExchange> list;
     private RecyclerView recyclerView;
 
@@ -33,7 +32,7 @@ public class MemberExchangeFragment  extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list, null);
+        View view = inflater.inflate(R.layout.fragment_menber_a, null);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         return view;
     }
@@ -46,7 +45,8 @@ public class MemberExchangeFragment  extends Fragment {
         MemberExchangeFragment.TextAdapter adapter = new MemberExchangeFragment.TextAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        recyclerView.setNestedScrollingEnabled(false);
+//        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.scrollToPosition(0);//回到顶部
         list = (List<MembersExchange>) getArguments().getSerializable("exchanges");
 
 

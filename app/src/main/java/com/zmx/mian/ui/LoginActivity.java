@@ -295,16 +295,21 @@ public class   LoginActivity extends BaseActivity implements View.OnClickListene
                         }
 
                     } catch (JSONException e) {
-
-                        Log.e("sssss","ss"+e.toString());
                         e.printStackTrace();
+
+                        showToast("登录失败！请联系客服");
+                        setLoginBtnClickable(true);  //这里解放登录按钮，设置为可以点击
+                        dismissLoadingView();//隐藏加载框
+
                     }
-
-
 
                     break;
 
-                case 2:
+                case 404:
+
+                    showToast("网络连接失败！请检查网络");
+                    setLoginBtnClickable(true);  //这里解放登录按钮，设置为可以点击
+                    dismissLoadingView();//隐藏加载框
 
                     break;
 

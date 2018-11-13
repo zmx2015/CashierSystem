@@ -39,12 +39,14 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.bean.MainOrder;
 import com.zmx.mian.bean.Order;
 import com.zmx.mian.bean.TimeQuantum;
 import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.http.API;
+import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.DataStatisticsActivity;
 import com.zmx.mian.ui.GoodsItemRankingActivity;
@@ -70,7 +72,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -84,12 +88,11 @@ import retrofit2.Retrofit;
  * 类功能：首页
  */
 
-public class HomeFragment extends Fragment implements IHomeView, OnChartGestureListener, OnChartValueSelectedListener {
+public class HomeFragment extends Fragment implements OnChartGestureListener, OnChartValueSelectedListener {
 
-    private OrderPresenter op;
+    private OrderPresenter p;
 
-    private TextView order_num,
-            switch_store, store_name,
+    private TextView order_num,switch_store, store_name,
             unit_price, yesterday_num, yesterday_total,
             yesterday_discount_money_text, yesterday_members_total_text, yesterday_unit_price_text;
     private TextView order_total;
@@ -113,7 +116,7 @@ public class HomeFragment extends Fragment implements IHomeView, OnChartGestureL
     private int yesterday_members_total = 0;//会员消费次数
 
     private TextView discount_money_text, members_total_text;
-    private RelativeLayout relative1,relative2,relative3,relative4;
+    private RelativeLayout relative1,relative2,relative3,relative4,relative5,relative6;
     private List<TimeQuantum> tq;
 
 
@@ -187,25 +190,22 @@ public class HomeFragment extends Fragment implements IHomeView, OnChartGestureL
 
         });
 
-//        single_data = view.findViewById(R.id.single_data);
-//        single_data.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(HomeFragment.this.getActivity(), DataStatisticsActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        relative5 = view.findViewById(R.id.relative5);
+        relative5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
+            }
+        });
 
-//        my_dance.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent intent = new Intent(HomeFragment.this.getActivity(), OrderDataActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
+
+        relative6 = view.findViewById(R.id.relative6);
+        relative6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
+            }
+        });
 
         switch_store = view.findViewById(R.id.switch_store);
         switch_store.setOnClickListener(new View.OnClickListener() {
@@ -219,53 +219,8 @@ public class HomeFragment extends Fragment implements IHomeView, OnChartGestureL
             }
         });
 
-//        goods_ph = view.findViewById(R.id.goods_ph);
-//        goods_ph.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                Intent intent = new Intent(HomeFragment.this.getActivity(), GoodsItemRankingActivity.class);
-//                startActivity(intent);
-//
-//            }
-//        });
-
-//        members_text = view.findViewById(R.id.members_text);
-//        members_text.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(HomeFragment.this.getActivity(), MembersActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-
 
         showLoading();
-        op = new OrderPresenter(this);
-
-//        mBarChart = (BarChart) view.findViewById(R.id.mBarChart);
-//
-//        mBarChart.setDrawBarShadow(false);     //表不要阴影
-//        mBarChart.setDrawValueAboveBar(true);
-//        Description description=new Description();
-//        description.setText("日期");
-//        mBarChart.setDescription(description);  //表的描述信息
-//
-//        mBarChart.setPinchZoom(false);
-//        mBarChart.setMaxVisibleValueCount(60); //最大显示的个数。超过60个将不再显示
-//        mBarChart.setScaleEnabled(false);     //禁止缩放
-//        mBarChart.setDragEnabled(true);// 是否可以拖拽
-//        mBarChart.setHighlightPerDragEnabled(true);// 拖拽超过图标绘制画布时高亮显示
-//        mBarChart.setDrawGridBackground(false);//
-//        mBarChart.getAxisRight().setEnabled(false);//右侧不显示Y轴
-//      /*  mBarChart.setAutoScaleMinMaxEnabled(true);*/
-//       /* mBarChart.animateX(500);//数据显示动画，从左往右依次显示*/
-//       /* mBarChart.getAxisRight().setEnabled(false);*/
-//        /*mBarChart.setDragDecelerationEnabled(true);*///拖拽滚动时，手放开是否会持续滚动，默认是true（false是拖到哪是哪，true拖拽之后还会有缓冲）
-//        mBarChart.zoom(2.5f,1f,0,0);//显示的时候 是 按照多大的比率缩放显示   1f表示不放大缩小
-//        //我默认手机屏幕上显示10  剩下的滑动直方图 然后显示。。假如要显示25个 那么除以10 就是放大2.5f。。同理
-//        // 56个民族   那么放大5.6f
-//        draw();
         mChart = view.findViewById(R.id.lineChart);
         mChart.setOnChartGestureListener(this);
         mChart.setOnChartValueSelectedListener(this);
@@ -289,10 +244,18 @@ public class HomeFragment extends Fragment implements IHomeView, OnChartGestureL
          3.在Fonts文件中复制下载好的ttf文件，例如OpenSans-Regular.ttf
          */
         //获取SharedPreferences对象，使用自定义类的方法来获取对象
-        String mid = MySharedPreferences.getInstance(this.getActivity()).getString(MySharedPreferences.store_id, "");
-        String name = MySharedPreferences.getInstance(this.getActivity()).getString(MySharedPreferences.name, "");
+       //请求网络
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("pckey", Tools.getKey(MyApplication.getName()));
+        params.put("account", "1");
+        params.put("today", Tools.getYesterday());
+        params.put("endtime", Tools.getYesterday());
+        params.put("thisPage", "1");
+        params.put("num", "10000");
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
 
-        getYesterday(name, Tools.getYesterday(), Tools.getYesterday(), "1", "10000", name, mid);
+        OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 3, 404);
 
         return view;
     }
@@ -342,6 +305,165 @@ public class HomeFragment extends Fragment implements IHomeView, OnChartGestureL
                     yesterday_unit_price_text.setText("昨日单价" + Math.round(Float.parseFloat(yesterday_allTotal) / Float.parseFloat(yesterday_nums)) + "元");
                     break;
 
+                case 3:
+
+                    try {
+
+                        JSONObject bodys = new JSONObject(msg.obj.toString());
+                        // 处理接口返回的json数据
+
+                        JSONArray array = bodys.getJSONArray("list");
+
+                        lists = new ArrayList<MainOrder>();
+
+                        JSONObject data = bodys.getJSONObject("data");
+                        int nums = data.getInt("pageCount");
+                        int allTotal = data.getInt("allTotal");
+                        int couns = data.getInt("nums");
+
+                        yesterday_nums = data.getInt("nums") + "";
+                        yesterday_allTotal = data.getInt("allTotal") + "";
+
+                        for (int i = 0; i < array.length(); i++) {
+
+                            MainOrder mw = new MainOrder();
+                            JSONObject json = array.getJSONObject(i);
+
+                            mw.setPageNum(nums);
+                            mw.setAllTotal(allTotal);
+                            mw.setCouns(couns);
+                            mw.setId(json.getInt("id"));
+                            mw.setUid(json.getInt("uid"));
+                            mw.setOrder(json.getString("order"));
+                            mw.setTotal(json.getString("total"));
+                            mw.setBackmey(json.getString("backmey"));
+                            mw.setSynchro(json.getString("synchro"));
+                            mw.setBuytime(json.getString("buytime"));
+                            mw.setIntegral(json.getInt("integral"));
+                            mw.setPayment(json.getInt("payment"));
+                            mw.setDiscount(json.getString("discount"));
+                            mw.setReceipts(json.getString("receipts"));
+                            mw.setState(json.getInt("state"));
+
+                            List<ViceOrder> vws = new ArrayList<ViceOrder>();
+
+                            JSONArray ja = json.getJSONArray("detailed");
+                            for (int j = 0; j < ja.length(); j++) {
+
+                                ViceOrder vw = new ViceOrder();
+                                JSONObject jj = ja.getJSONObject(j);
+
+                                vw.setOrder_id(jj.getInt("order_id"));
+                                vw.setGoods_id(jj.getInt("goods_id"));
+                                vw.setWeight(jj.getString("weight"));
+                                vw.setPrice(jj.getString("price"));
+                                vw.setSubtotal(jj.getString("subtotal"));
+                                vw.setType(jj.getInt("type"));
+                                vw.setName(jj.getString("name"));
+
+                                vws.add(vw);
+                            }
+
+                            mw.setLists(vws);
+
+                            lists.add(mw);
+
+                        }
+
+                        mHandler.sendEmptyMessage(2);
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        hideLoading();
+                        Toast.makeText(HomeFragment.this.getActivity(),"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
+                    }
+
+                    break;
+
+                case 4:
+
+                    try {
+
+                        JSONObject bodys = new JSONObject(msg.obj.toString());
+
+                        // 处理接口返回的json数据
+
+                        JSONArray array = bodys.getJSONArray("list");
+
+                        List<MainOrder> lists = new ArrayList<MainOrder>();
+
+                        JSONObject data = bodys.getJSONObject("data");
+                        int nums = data.getInt("pageCount");
+                        int allTotal = data.getInt("allTotal");
+                        int couns = data.getInt("nums");
+
+
+                        for (int i = 0; i < array.length(); i++) {
+
+                            MainOrder mw = new MainOrder();
+                            JSONObject json = array.getJSONObject(i);
+
+                            mw.setPageNum(nums);
+                            mw.setAllTotal(allTotal);
+                            mw.setCouns(couns);
+                            mw.setId(json.getInt("id"));
+                            mw.setUid(json.getInt("uid"));
+                            mw.setOrder(json.getString("order"));
+                            mw.setTotal(json.getString("total"));
+                            mw.setBackmey(json.getString("backmey"));
+                            mw.setSynchro(json.getString("synchro"));
+                            mw.setBuytime(json.getString("buytime"));
+                            mw.setIntegral(json.getInt("integral"));
+                            mw.setPayment(json.getInt("payment"));
+                            mw.setDiscount(json.getString("discount"));
+                            mw.setReceipts(json.getString("receipts"));
+                            mw.setState(json.getInt("state"));
+
+                            List<ViceOrder> vws = new ArrayList<ViceOrder>();
+
+                            JSONArray ja = json.getJSONArray("detailed");
+                            for (int j = 0; j < ja.length(); j++) {
+
+                                ViceOrder vw = new ViceOrder();
+                                JSONObject jj = ja.getJSONObject(j);
+
+                                vw.setOrder_id(jj.getInt("order_id"));
+                                vw.setGoods_id(jj.getInt("goods_id"));
+                                vw.setWeight(jj.getString("weight"));
+                                vw.setPrice(jj.getString("price"));
+                                vw.setSubtotal(jj.getString("subtotal"));
+                                vw.setType(jj.getInt("type"));
+                                vw.setName(jj.getString("name"));
+
+                                vws.add(vw);
+                            }
+
+                            mw.setLists(vws);
+
+                            lists.add(mw);
+
+
+
+                        }
+                        getOrderList(lists);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        hideLoading();
+                        Toast.makeText(HomeFragment.this.getActivity(),"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
+
+                    }
+
+                    break;
+
+                case 404:
+
+                    hideLoading();
+                    Toast.makeText(HomeFragment.this.getActivity(),"连接网络失败，请检查网络！",Toast.LENGTH_LONG).show();
+
+                    break;
+
             }
 
         }
@@ -373,8 +495,6 @@ public class HomeFragment extends Fragment implements IHomeView, OnChartGestureL
         }
     }
 
-
-    @Override
     public void getOrderList(List<MainOrder> lists) {
 
         tq = new ArrayList<>();
@@ -410,24 +530,23 @@ public class HomeFragment extends Fragment implements IHomeView, OnChartGestureL
     }
 
     @Override
-    public void ErrerMessage() {
-
-        hideLoading();
-        Toast.makeText(this.getActivity(), "加载错误", Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
 
         discount_money = 0;
         members_total = 0;
 
-        String mid = MySharedPreferences.getInstance(this.getActivity()).getString(MySharedPreferences.store_id, "");
-        String name = MySharedPreferences.getInstance(this.getActivity()).getString(MySharedPreferences.name, "");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("pckey", Tools.getKey(MyApplication.getName()));
+        params.put("account", "1");
+        params.put("today",Tools.DateConversion(new Date()));
+        params.put("endtime", Tools.DateConversion(new Date()));
+        params.put("thisPage", "1");
+        params.put("num", "10000");
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
 
-        op.getOrderMessage(name, Tools.DateConversion(new Date()), Tools.DateConversion(new Date()), "1", "10000", name, mid);
+        OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 4, 404);
 
     }
 
@@ -690,107 +809,5 @@ public class HomeFragment extends Fragment implements IHomeView, OnChartGestureL
 //        }
     }
 
-    //请求昨天的数据，懒得写在模型里了
-    public void getYesterday(String account, String today, String endtime, String thisPage, String num, String admin, String mid) {
-
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://www.yiyuangy.com/admin/") // 设置 网络请求 Url
-                .build();
-
-        // 步骤5:创建 网络请求接口 的实例
-        API request = retrofit.create(API.class);
-
-        //对 发送请求 进行封装
-        Call<ResponseBody> call = request.getMainOrder(Tools.getKey(admin), account, today, endtime, thisPage, num, admin, mid);
-
-        //步骤6:发送网络请求(异步)
-        call.enqueue(new Callback<ResponseBody>() {
-            //请求成功时候的回调
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                try {
-
-                    JSONObject bodys = new JSONObject(response.body().string());
-
-                    // 处理接口返回的json数据
-
-                    JSONArray array = bodys.getJSONArray("list");
-
-                    lists = new ArrayList<MainOrder>();
-
-                    JSONObject data = bodys.getJSONObject("data");
-                    int nums = data.getInt("pageCount");
-                    int allTotal = data.getInt("allTotal");
-                    int couns = data.getInt("nums");
-
-                    yesterday_nums = data.getInt("nums") + "";
-                    yesterday_allTotal = data.getInt("allTotal") + "";
-
-                    for (int i = 0; i < array.length(); i++) {
-
-                        MainOrder mw = new MainOrder();
-                        JSONObject json = array.getJSONObject(i);
-
-                        mw.setPageNum(nums);
-                        mw.setAllTotal(allTotal);
-                        mw.setCouns(couns);
-                        mw.setId(json.getInt("id"));
-                        mw.setUid(json.getInt("uid"));
-                        mw.setOrder(json.getString("order"));
-                        mw.setTotal(json.getString("total"));
-                        mw.setBackmey(json.getString("backmey"));
-                        mw.setSynchro(json.getString("synchro"));
-                        mw.setBuytime(json.getString("buytime"));
-                        mw.setIntegral(json.getInt("integral"));
-                        mw.setPayment(json.getInt("payment"));
-                        mw.setDiscount(json.getString("discount"));
-                        mw.setReceipts(json.getString("receipts"));
-                        mw.setState(json.getInt("state"));
-
-                        List<ViceOrder> vws = new ArrayList<ViceOrder>();
-
-                        JSONArray ja = json.getJSONArray("detailed");
-                        for (int j = 0; j < ja.length(); j++) {
-
-                            ViceOrder vw = new ViceOrder();
-                            JSONObject jj = ja.getJSONObject(j);
-
-                            vw.setOrder_id(jj.getInt("order_id"));
-                            vw.setGoods_id(jj.getInt("goods_id"));
-                            vw.setWeight(jj.getString("weight"));
-                            vw.setPrice(jj.getString("price"));
-                            vw.setSubtotal(jj.getString("subtotal"));
-                            vw.setType(jj.getInt("type"));
-                            vw.setName(jj.getString("name"));
-
-                            vws.add(vw);
-                        }
-
-                        mw.setLists(vws);
-
-                        lists.add(mw);
-
-                    }
-
-                    mHandler.sendEmptyMessage(2);
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("戳了", "处理" + e.toString());
-                }
-
-            }
-
-            //请求失败时候的回调
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
-
-            }
-        });
-
-    }
 
 }

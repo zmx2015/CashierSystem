@@ -71,12 +71,12 @@ public class GoodsItemRankingAdapter extends RecyclerView.Adapter<RecyclerView.V
         viewholder.goods_item_zzl.setText(mj + "");
         viewholder.goods_item_gmcs.setText(lists.get(position).getzNum() + "次/" + lists.get(position).getNum() + "个");
 
-        if (position % 2 == 0) {
-            viewholder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.temple_header_color));
-        } else {
-            viewholder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.main_bg));
-
-        }
+//        if (position % 2 == 0) {
+//            viewholder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.temple_header_color));
+//        } else {
+//            viewholder.layout.setBackgroundColor(mContext.getResources().getColor(R.color.main_bg));
+//
+//        }
 
     }
 

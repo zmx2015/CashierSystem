@@ -1,12 +1,15 @@
 package com.zmx.mian.ui;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +35,7 @@ import com.zmx.mian.fragment.MineFragment;
 import com.zmx.mian.fragment.ProcurementFragment;
 import com.zmx.mian.ui.util.FragmentTabHost;
 import com.zmx.mian.util.MySharedPreferences;
+import com.zmx.mian.util.NetBroadCastReciver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +68,7 @@ public class MainActivity extends BaseActivity {
         Bugly.init(this,"77df3b0d1d",false);//
         // 沉浸式状态栏
         setTitleColor(R.id.position_view);
+
 
         initTab();
 
@@ -150,6 +155,5 @@ public class MainActivity extends BaseActivity {
             System.exit(0);
         }
     }
-
 
 }

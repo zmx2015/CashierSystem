@@ -8,9 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +47,7 @@ import java.util.List;
 public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItemRankingView,View.OnClickListener{
 
     private RecyclerView mRecyclerView;
+    private RelativeLayout relayout;
     //支持下拉刷新的ViewGroup
     private PtrClassicFrameLayout mPtrFrame;
     //List数据
@@ -56,8 +59,7 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
     private OrderPresenter op;
 
-    private TextView rk_choose_time;
-    private ImageView back_button;
+    private TextView tile_time;
     private DoubleTimeSelectDialog mDoubleTimeSelectDialog;
     /**
      * 默认的周开始时间，格式如：yyyy-MM-dd
@@ -68,8 +70,6 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
      */
     public String defaultWeekEnd;
 
-
-
     private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
     //查询的开始结束时间
@@ -78,8 +78,6 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
     private ImageView no_data;
 
-    private String allTotal="0";//总金额
-    private String nums = "0";//订单数
 
 
     @Override
@@ -92,11 +90,11 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
         // 沉浸式状态栏
         setTitleColor(R.id.position_view);
-        rk_choose_time = findViewById(R.id.rk_choose_time);
-        rk_choose_time.setOnClickListener(this);
-        rk_choose_time.setText(startDate+"（可选）");
+        relayout = findViewById(R.id.relayout);
+        relayout.setOnClickListener(this);
+        tile_time = findViewById(R.id.tile_time);
+        tile_time.setText("("+startDate+")");
         no_data = findViewById(R.id.no_data);
-        back_button = findViewById(R.id.back_button);
         BackButton(R.id.back_button);
         op = new OrderPresenter(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.goods_item_list);
@@ -236,15 +234,12 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
                 public void onSelectFinished(String startTime, String endTime) {
 
                     lists.clear();
-
-                    rk_choose_time.setText(startTime.replace("-", ".") + "至" + endTime.replace("-", "."));
-
+                    tile_time.setText("("+startTime.replace("-", ".") + "至" + endTime.replace("-", ".")+")");
                     startDate = startTime;
                     endDate = endTime;
                     showLoading();
                     handler.sendEmptyMessage(2);
 
-                    Log.e("进来了","时间选择查询");
                 }
             });
 
@@ -292,7 +287,7 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
         switch (view.getId()){
 
-            case R.id.rk_choose_time:
+            case R.id.relayout:
 
                 showCustomTimePicker();
 
@@ -302,4 +297,14 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
     }
 
+    @Override
+    protected void onDestroy() {
+
+        if (mLoadingDialog != null) {
+
+            mLoadingDialog.dismiss();
+
+        }
+        super.onDestroy();
+    }
 }

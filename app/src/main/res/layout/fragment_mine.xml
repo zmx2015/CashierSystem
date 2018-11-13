@@ -2,9 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/relayout"
@@ -24,39 +22,48 @@
             android:textSize="18sp" />
 
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@color/tou"
-        android:gravity="center"
-        >
+        android:padding="@dimen/dp_10">
 
 
-            <TextView
-                android:id="@+id/mine_name"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="当前登录账号：admin5"
-                android:textColor="@color/white"
-                android:gravity="center"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                />
+        <ImageView
+            android:id="@+id/moren"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_morentu" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_10"
             android:gravity="center"
-            android:layout_toRightOf="@+id/mine_name">
+            android:layout_toRightOf="@+id/moren">
 
-            <TextView
-                android:layout_width="10dp"
-                android:layout_height="15dp"
-                android:background="@mipmap/right"
-                />
+        <TextView
+            android:id="@+id/mine_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="账号：admin5"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mine_name"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_5"
+            android:text="(永久免费)"
+            android:textColor="@color/red" />
 
         </RelativeLayout>
-
 
     </RelativeLayout>
 
@@ -65,14 +72,16 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:background="@drawable/setting_item_selector"
-        android:drawableLeft="@mipmap/me_feedback"
+        android:drawableLeft="@mipmap/ic_shouji"
         android:drawablePadding="10dp"
         android:drawableRight="@mipmap/right"
         android:gravity="center_vertical"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:text="门店管理"
+        android:layout_marginTop="@dimen/dp_20"
+        android:text="门店信息"
         android:textSize="16sp" />
+
 
     <TextView
         style="@style/TxtTitle"
@@ -80,21 +89,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/setting_item_selector"
-        android:drawableLeft="@mipmap/me_feedback"
-        android:drawablePadding="10dp"
-        android:drawableRight="@mipmap/right"
-        android:gravity="center_vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:text="店员管理"
-        android:textSize="16sp" />
-    <TextView
-        style="@style/TxtTitle"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/setting_item_selector"
-        android:drawableLeft="@mipmap/me_feedback"
+        android:drawableLeft="@mipmap/ic_fankui"
         android:drawablePadding="10dp"
         android:drawableRight="@mipmap/right"
         android:gravity="center_vertical"
@@ -109,7 +104,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/setting_item_selector"
-        android:drawableLeft="@mipmap/me_feedback"
+        android:drawableLeft="@mipmap/ic_shangpin_fenxi"
         android:drawablePadding="10dp"
         android:drawableRight="@mipmap/right"
         android:gravity="center_vertical"
@@ -125,7 +120,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="5dp"
         android:background="@drawable/setting_item_selector"
-        android:drawableLeft="@mipmap/me_feedback"
+        android:drawableLeft="@mipmap/ic_huiyuan_fenxi"
         android:drawablePadding="10dp"
         android:drawableRight="@mipmap/right"
         android:gravity="center_vertical"
@@ -138,11 +133,10 @@
         android:id="@+id/log_ut"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_50"
         android:background="@drawable/buttonstyle"
-        android:text="退出登录"
-        />
+        android:text="退出登录" />
 
 </LinearLayout>
