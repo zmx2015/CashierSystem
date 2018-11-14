@@ -76,11 +76,11 @@ public class MainActivity extends BaseActivity {
 
     private void initTab() {
 
-        Tab home = new Tab(R.string.home,R.drawable.selector_icon_home,HomeFragment.class);
-        Tab procurement = new Tab(R.string.procurement,R.drawable.selector_icon_cart,ProcurementFragment.class);
-        Tab dynamic = new Tab(R.string.dynamic,R.drawable.selector_icon_hot,GoodsFragment.class);
-        Tab cart = new Tab(R.string.cart,R.drawable.selector_icon_cart,MessageFragment.class);
-        Tab mine = new Tab(R.string.mine,R.drawable.selector_icon_mine,MineFragment.class);
+        Tab home = new Tab("数据",R.drawable.selector_icon_home,HomeFragment.class);
+        Tab procurement = new Tab("采购",R.drawable.selector_icon_cart,ProcurementFragment.class);
+        Tab dynamic = new Tab("商品",R.drawable.selector_icon_hot,GoodsFragment.class);
+        Tab cart = new Tab("订单",R.drawable.selector_icon_cart,MessageFragment.class);
+        Tab mine = new Tab("我的",R.drawable.selector_icon_mine,MineFragment.class);
 
         mTabs.add(home);
         mTabs.add(procurement);
@@ -88,15 +88,13 @@ public class MainActivity extends BaseActivity {
         mTabs.add(cart);
         mTabs.add(mine);
 
-
-
         inFlater = LayoutInflater.from(this);
         mTabhost = (FragmentTabHost) this.findViewById(R.id.tabhost);
         mTabhost.setup(this,getSupportFragmentManager(),R.id.realtabcontent);
 
         for(Tab tab : mTabs){
 
-            TabHost.TabSpec tabSpec = mTabhost.newTabSpec(getString(tab.getTitle()));
+            TabHost.TabSpec tabSpec = mTabhost.newTabSpec(tab.getTitle());
             tabSpec.setIndicator(buildIndicator(tab));
             mTabhost.addTab(tabSpec, tab.getFragment(),null);
 
@@ -112,12 +110,10 @@ public class MainActivity extends BaseActivity {
     private View buildIndicator(Tab tab){
 
         View view = inFlater.inflate(R.layout.tab_indicator,null);
-        ImageView img = (ImageView) view.findViewById(R.id.icon_tab);
-        TextView text = (TextView) view.findViewById(R.id.txt_indicator);
-
+        ImageView img = view.findViewById(R.id.icon_tab);
+        TextView text = view.findViewById(R.id.txt_indicator);
         img.setBackgroundResource(tab.getIcon());
-        text.setText(tab.getTitle());
-
+        text.setText(""+tab.getTitle());
         return view;
     }
 

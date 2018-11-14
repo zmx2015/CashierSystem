@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,8 +62,9 @@ import java.util.Map;
  */
 public class ProcurementFragment extends BaseFragment implements View.OnClickListener {
 
-    private TextView title;
     private RecyclerView mRecyclerView;
+    private RelativeLayout title_relative;
+    private TextView tile_time;
     //支持下拉刷新的ViewGroup
     private PtrClassicFrameLayout mPtrFrame;
     //List数据
@@ -111,6 +113,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
         int m = cal_1.get(Calendar.MONTH);
 
         startDate = Tools.DateConversion(cal_1.getTime());
+
         endDate = new Tools().getDateLastDay(y + "", m + "");
 
         lists = new ArrayList<>();
@@ -124,8 +127,18 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
             }
         });
 
-        title = view.findViewById(R.id.title);
-        title.setOnClickListener(this);
+        title_relative = view.findViewById(R.id.title_relative);
+        title_relative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCustomTimePicker();
+            }
+        });
+        tile_time = view.findViewById(R.id.tile_time);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM");
+        String dateString = formatter.format(new Date());
+        tile_time.setText("("+dateString+")");
+
         no_data = view.findViewById(R.id.no_data);
         mRecyclerView = view.findViewById(R.id.stock_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
@@ -229,7 +242,6 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
 
                             lists.add(sb);
 
-
                         }
 
                     } catch (JSONException e) {
@@ -251,6 +263,10 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
 
                     break;
 
+                case 2:
+                    loadingData();//加载网络订单
+                    break;
+
                 case 404:
 
                     initAdapter();
@@ -269,6 +285,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
      */
     public void initAdapter() {
 
+        dismissLoadingView();
         mAdapter.notifyDataSetChanged();
         mPtrFrame.refreshComplete();
         if (load_tag == 0) {
@@ -295,9 +312,10 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
                 @Override
                 public void onSelectFinished(String startTime, String endTime) {
 
-                    title.setText(startTime.replace("-", ".") + "至\n" + endTime.replace("-", "."));
+                    tile_time.setText("("+startTime.replace("-", ".") + "至" + endTime.replace("-", ".")+")");
                     startDate = startTime;
                     endDate = endTime;
+                    showLoadingView("加载中...");
                     handler.sendEmptyMessage(2);
 
                 }
@@ -316,21 +334,6 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
     }
 
 
-    /**
-     * 获取过去第几天的日期
-     *
-     * @param past
-     * @return
-     */
-    public static String getPastDate(int past) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - past);
-        Date today = calendar.getTime();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String result = format.format(today);
-        Log.e(null, result);
-        return result;
-    }
 
 
     //    //弹出框

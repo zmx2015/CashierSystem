@@ -19,7 +19,7 @@ public class Goods implements Serializable {
     private String cp_group;
     private String rowCount;
     private String vip_g_price;
-    private String mall_state;//门店上架下架1上架，2下架
+    private String mall_state;//门店上架下架1上架，0下架
     private String store_state;//商城上架和下架
 
     public Goods(String g_id, String g_img, String g_price, String g_name,

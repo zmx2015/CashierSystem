@@ -1,7 +1,9 @@
 package com.zmx.mian.ui;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
@@ -12,6 +14,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,8 +22,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -34,13 +40,18 @@ import com.zmx.mian.fragment.memberfragment.MemberExchangeFragment;
 import com.zmx.mian.fragment.memberfragment.MemberOrderFragment;
 import com.zmx.mian.fragment.memberfragment.MemberPrizeFragment;
 import com.zmx.mian.fragment.memberfragment.MembersSignFragment;
+import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.util.FragmentViewPager;
 import com.zmx.mian.ui.util.GlideCircleTransform;
+import com.zmx.mian.ui.util.MyButton;
 import com.zmx.mian.util.BlurTransformation;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IMembersMessageView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -49,13 +60,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MemberMessageActivity extends BaseActivity implements IMembersMessageView {
 
     Toolbar mToolbar;
     AppBarLayout mAppBar;
-    ImageView mHeadImage,member_background;
+    ImageView mHeadImage, member_background;
     TextView mTitle;
     TextView tvSearch;
     TextView login_time;
@@ -67,10 +80,13 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
     private String[] titles = {"购买记录", "签到记录", "兑换记录", "抽奖记录"};
     private List<Fragment> fragmentList;
 
-    private TextView account_text,consumption_text,phone_number_text,consumption_text_1;
+    private MembersList ml;
+
+    private TextView account_text, consumption_text, phone_number_text, consumption_text_1;
+    private Button binding;//绑定手机号
 
     private OrderPresenter op;
-    private String account;
+    private String account,shoujihao="";
     private Members m;
 
     private float mSelfHeight = 0;  //用以判断是否得到正确的宽高值
@@ -93,13 +109,16 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
 
         Bundle data = getIntent().getExtras();//从bundle中取出数据
         account = data.getString("account");
-        Log.e("account","account"+account);
+        Log.e("account", "account" + account);
         op = new OrderPresenter(this);
 
         account_text = findViewById(R.id.account_text);
         consumption_text = findViewById(R.id.consumption_text);
         phone_number_text = findViewById(R.id.phone_number_text);
         consumption_text_1 = findViewById(R.id.consumption_text_1);
+
+        binding = findViewById(R.id.binding);
+        binding.setOnClickListener(this);
 
         mToolbar = findViewById(R.id.toolbar);
         mAppBar = findViewById(R.id.app_bar);
@@ -156,8 +175,8 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
 
                     //得到高度差缩放比值  高度差／能滑动总长度 以此类推
                     mTitleScale = distanceTitle / (initHeight - toolbarHeight);
-                    mTestScaleY = distanceTest / (initHeight - toolbarHeight)+1;
-                    mHeadImgScale = distanceHeadImg / (initHeight - toolbarHeight)+1;
+                    mTestScaleY = distanceTest / (initHeight - toolbarHeight) + 1;
+                    mHeadImgScale = distanceHeadImg / (initHeight - toolbarHeight) + 1;
 //                    mTestScaleX = distanceSubscribeX / (initHeight - toolbarHeight);
 
                 }
@@ -186,7 +205,7 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
         String name = MySharedPreferences.getInstance(this).getString(MySharedPreferences.name, "");
 
 
-        op.getMembersMessage(mid,account,name);
+        op.getMembersMessage(mid, account, name);
 
         mHeadImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,45 +217,44 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
     }
 
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
 
-            MembersList ml = m.getList();
-            switch (msg.what){
+            ml = m.getList();
+            switch (msg.what) {
 
                 case 1:
 
                     mScrollView.setVisibility(View.VISIBLE);
 
-                    if(Util.isOnMainThread())
-                    {
+                    if (Util.isOnMainThread()) {
                         Glide.with(MemberMessageActivity.this).load(ml.getWechatImg()).transform(new GlideCircleTransform(MemberMessageActivity.this)).error(R.drawable.icon_login_account).into(mHeadImage);
-                        Glide.with(MemberMessageActivity.this).load(ml.getWechatImg()).bitmapTransform(new BlurTransformation(MemberMessageActivity.this,23 )).error(R.drawable.icon_login_account).into(member_background);
+                        Glide.with(MemberMessageActivity.this).load(ml.getWechatImg()).bitmapTransform(new BlurTransformation(MemberMessageActivity.this, 23)).error(R.drawable.icon_login_account).into(member_background);
 
                     }
 
 
-                    account_text.setText("账号："+ml.getAccount());
+                    account_text.setText("账号：" + ml.getAccount());
 
-                    if(ml.getWechatName() == null){
+                    if (ml.getWechatName() == null) {
 
                         mTitle.setText("水果大户");
-                    }else{
+                    } else {
 
                         mTitle.setText(ml.getWechatName());
                     }
 
-                    String lasttime = ml.getLasttime()+"";
-                    if(lasttime.equals("") || lasttime.equals("")){
+                    String lasttime = ml.getLasttime() + "";
+                    if (lasttime.equals("") || lasttime.equals("")) {
 
                         login_time.setText("很久没登录了");
 
-                    }else{
+                    } else {
 
-                        login_time.setText("最近登录："+(Tools.refFormatNowDate(ml.getLasttime()+"",1)));
+                        login_time.setText("最近登录：" + (Tools.refFormatNowDate(ml.getLasttime() + "", 1)));
 
                     }
 
@@ -245,23 +263,28 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                     float total = 0;
                     float f = 0;
                     float discount = 0;
-                    for(MembersOrder m:mos){
+                    for (MembersOrder m : mos) {
 
-                        f = Float.parseFloat(m.getTotal())- Float.parseFloat(m.getDiscount());
-                        discount = Float.parseFloat(m.getDiscount())+discount;
-                        total = total+f;
+                        f = Float.parseFloat(m.getTotal()) - Float.parseFloat(m.getDiscount());
+                        discount = Float.parseFloat(m.getDiscount()) + discount;
+                        total = total + f;
 
                     }
-                    consumption_text.setText("消费金额："+(float) (Math.round(total * 100)) / 100+"元 | 已优惠："+(Math.round(discount * 100)) / 100+"元");
+                    consumption_text.setText("消费金额：" + (float) (Math.round(total * 100)) / 100 + "元 | 已优惠：" + (Math.round(discount * 100)) / 100 + "元");
                     //绑定的手机号码
-                    consumption_text_1.setText("消费次数："+mos.size()+"次 | 消费均价："+(float) (Math.round((total/mos.size()) * 100)) / 100+"元 ");
+                    consumption_text_1.setText("消费次数：" + mos.size() + "次 | 消费均价：" + (float) (Math.round((total / mos.size()) * 100)) / 100 + "元 ");
 
-                    if(ml.getMob() == null || ml.getMob() == ""){
+                    if (ml.getMob() == null || ml.getMob() == "") {
 
                         phone_number_text.setText("手机号： 未绑定");
-                    }else{
+                        binding.setText("绑定号码");
 
-                        phone_number_text.setText("手机号："+ml.getMob());
+
+                    } else {
+
+                        phone_number_text.setText("手机号：" + ml.getMob());
+                        binding.setText("更换号码");
+
                     }
 
                     Bundle bundle = new Bundle();
@@ -295,8 +318,39 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
 
                     break;
 
+                case 2:
+
+                    dismissLoadingView();//隐藏加载框
+
+                    try {
+
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+                        String content = jsonObject.getString("content");
+                        String code = jsonObject.getString("code");
+                        if(code.equals("1")){
+
+                            phone_number_text.setText("手机号：" + shoujihao);
+                            binding.setText("更换号码");
+
+                        }
+                        Toast.makeText(mActivity,content,Toast.LENGTH_LONG).show();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+
                 case 3:
+
                     imgMax(ml.getWechatImg());
+                    break;
+
+                case 404:
+
+                    Toast.makeText(mActivity, "网络连接失败！请检查网络", Toast.LENGTH_LONG).show();
+                    dismissLoadingView();//隐藏加载框
+
                     break;
 
             }
@@ -304,6 +358,7 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
 
         }
     };
+
     @Override
     public void getMembersMessage(Members m) {
         this.m = m;
@@ -321,15 +376,15 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
      */
     public void imgMax(String url) {
 
-        url= url .substring(0,url.lastIndexOf("/"));
-        Log.e("截取的图片路径",""+url);
+        url = url.substring(0, url.lastIndexOf("/"));
+        Log.e("截取的图片路径", "" + url);
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View imgEntryView = inflater.inflate(R.layout.to_view_image, null);
         // 加载自定义的布局文件
         final android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(this).create();
         ImageView img = (ImageView) imgEntryView.findViewById(R.id.large_image);
-        Glide.with(MemberMessageActivity.this).load(url+"/0").error(R.drawable.icon_login_account).into(img);
+        Glide.with(MemberMessageActivity.this).load(url + "/0").error(R.drawable.icon_login_account).into(img);
 
         dialog.setView(imgEntryView); // 自定义dialog
         dialog.show();
@@ -339,6 +394,79 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                 dialog.cancel();
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+
+        switch (v.getId()) {
+
+            //绑定手机号码
+            case R.id.binding:
+
+                alert_edit();
+
+                break;
+
+        }
+
+    }
+
+    public void alert_edit() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+
+        LayoutInflater factory = LayoutInflater.from(this);//提示框
+        final View view = factory.inflate(R.layout.dialog_edit, null);//这里必须是final的
+        final EditText et = view.findViewById(R.id.editText);
+        builder.setTitle("请输入绑定手机");
+
+        final AlertDialog dialog = builder.create();
+        dialog.setView(view);
+
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if (Tools.isChinaPhoneLegal(et.getText().toString())) {
+
+                    showLoadingView("绑定中...");
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
+                    params.put("mid", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, ""));
+                    params.put("pckey", new Tools().getKey(mActivity));
+                    params.put("account", ml.getAccount());
+                    params.put("phone", et.getText().toString());
+                    shoujihao = et.getText().toString();
+                    OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.user/bindPhone", params, handler, 2, 404);
+                    dialog.dismiss();
+                } else {
+
+                    Toast.makeText(mActivity, "请输入正确的手机号码", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+
     }
 
 

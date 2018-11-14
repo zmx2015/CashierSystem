@@ -154,7 +154,6 @@ public class StockManagementListActivity extends BaseActivity{
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("sb", (Serializable) lists.get(position));
-                intent.setClass(mActivity, StoreListActivity.class);
                 intent.putExtras(bundle);
                 startActivity(StockManagementDetailsActivity.class, bundle);
 

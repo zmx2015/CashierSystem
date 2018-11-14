@@ -187,7 +187,8 @@
         <activity
             android:name=".ui.ProcurementDetailsActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity android:name=".ui.GoodsDetailsActivity"></activity>
+        <activity android:name=".ui.GoodsDetailsActivity" />
+        <activity android:name=".ui.CPManagementActivity"></activity>
     </application>
 
 </manifest>

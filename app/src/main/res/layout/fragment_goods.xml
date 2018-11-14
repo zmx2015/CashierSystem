@@ -1,106 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <Button
         android:id="@+id/again_load"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="wrap_content"
-        android:layout_marginRight="30dp"
+        android:layout_centerInParent="true"
         android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:text="重新加载数据"
-        android:layout_centerInParent="true"/>
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/relayout"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_below="@+id/position_view"
-        android:background="@color/tou">
-
-        <TextView
-            android:id="@+id/members_size"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:gravity="center"
-            android:text="商品列表"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/tou">
-
         <RelativeLayout
-            android:id="@+id/search_btn"
+            android:id="@+id/relayout"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_centerInParent="true"
-            android:layout_toLeftOf="@+id/type_icon"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
-            android:background="@drawable/layoutyj">
+            android:layout_height="40dp"
+            android:layout_below="@+id/position_view"
+            android:background="@color/tou">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center_vertical"
-                android:text="搜索商品"
-                android:textColor="@color/white" />
+                android:id="@+id/members_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:text="商品列表"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
 
         </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/type_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginRight="@dimen/dp_15"
-            android:contentDescription="@null"
-            android:src="@mipmap/ic_xinzenggoods" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/tou">
 
-    </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/search_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/type_icon"
+                android:background="@drawable/layoutyj">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:text="搜索商品"
+                    android:textColor="@color/white" />
 
-        <ScrollView
-            android:id="@+id/tools_scrlllview"
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/type_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/dp_15"
+                android:contentDescription="@null"
+                android:src="@mipmap/ic_xinzenggoods" />
+
+        </RelativeLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:fadingEdge="none"
-            android:scrollbars="none">
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/tools"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical" />
-        </ScrollView>
+                android:layout_weight="3">
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/goods_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-    </LinearLayout>
+                <ScrollView
+                    android:id="@+id/tools_scrlllview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/dp_50"
+                    android:fadingEdge="none"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/tools"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical" />
+
+                </ScrollView>
+
+
+                <RelativeLayout
+                    android:id="@+id/cp_management"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="true"
+                    >
+
+
+                    <TextView
+                        android:id="@+id/about_text"
+                        style="@style/TxtTitle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/setting_item_selector"
+                        android:drawableLeft="@mipmap/ic_xitongshezhi"
+                        android:gravity="center_vertical"
+                        android:text="分类管理"
+                        android:textColor="@color/tou"
+                        android:textSize="14sp" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/goods_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

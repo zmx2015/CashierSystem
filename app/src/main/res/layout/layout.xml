@@ -2,130 +2,148 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/nestedScrollView"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    >
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ScrollView
-            android:id="@+id/scroll_View"
+    <ScrollView
+        android:id="@+id/scroll_View"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:id="@+id/viewPager_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:id="@+id/viewPager_layout"
+                android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <RelativeLayout
-                    android:id="@+id/image"
+                <TextView
+                    android:id="@+id/account_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="账号：0629"
+                    android:textColor="@color/black" />
 
-                    <TextView
-                        android:id="@+id/account_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
-                        android:text="账号：0629"
-                        android:textColor="@color/black" />
+                <View
+                    android:id="@+id/divider1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1px"
+                    android:layout_below="@+id/account_text"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/black" />
 
-                    <View
-                        android:id="@+id/divider1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="1px"
-                        android:layout_below="@+id/account_text"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/black" />
+                <TextView
+                    android:id="@+id/consumption_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider1"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="消费总金额：10 | 优惠：100元"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
 
-                    <TextView
-                        android:id="@+id/consumption_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/divider1"
-                        android:layout_marginLeft="16dp"
-                        android:textSize="13sp"
-                        android:layout_marginTop="16dp"
-                        android:text="消费总金额：10 | 优惠：100元"
-                        android:textColor="@color/black" />
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1px"
+                    android:layout_below="@+id/consumption_text"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/black" />
 
-                    <View
-                        android:id="@+id/divider2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="1px"
-                        android:layout_below="@+id/consumption_text"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/black" />
+                <TextView
+                    android:id="@+id/consumption_text_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider2"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="消费次数：10 | 消费均价：100元"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
 
-                    <TextView
-                        android:id="@+id/consumption_text_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/divider2"
-                        android:layout_marginLeft="16dp"
-                        android:textSize="13sp"
-                        android:layout_marginTop="16dp"
-                        android:text="消费次数：10 | 消费均价：100元"
-                        android:textColor="@color/black" />
+                <View
+                    android:id="@+id/divider2_1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1px"
+                    android:layout_below="@+id/consumption_text_1"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/black" />
 
-                    <View
-                        android:id="@+id/divider2_1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="1px"
-                        android:layout_below="@+id/consumption_text_1"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/black" />
+                <RelativeLayout
+                    android:id="@+id/re_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider2_1"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="10dp">
 
                     <TextView
                         android:id="@+id/phone_number_text"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/divider2_1"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_centerVertical="true"
                         android:text="绑定手机号："
                         android:textColor="@color/black" />
 
-                    <View
-                        android:id="@+id/divider3"
-                        android:layout_width="fill_parent"
-                        android:layout_height="1px"
-                        android:layout_below="@+id/phone_number_text"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/black" />
-
-                    <android.support.design.widget.TabLayout
-                        android:id="@+id/tab_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/divider3"
-                        android:layout_marginTop="16dp"
-                        android:background="@color/white"
-                        app:tabIndicatorColor="@color/colorAccent"
-                        app:tabSelectedTextColor="@color/colorAccent"
-                        app:tabTextColor="@android:color/black" />
+                    <Button
+                        android:id="@+id/binding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="绑定手机"
+                        android:background="@drawable/buttonstyle"
+                        android:textSize="12sp" />
 
                 </RelativeLayout>
 
-                <com.zmx.mian.ui.util.FragmentViewPager
-                    android:id="@+id/viewPager_zhihu"
+                <View
+                    android:id="@+id/divider3"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1px"
+                    android:layout_below="@+id/re_layout"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/black" />
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tab_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/image" />
+                    android:layout_below="@+id/divider3"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/white"
+                    app:tabIndicatorColor="@color/colorAccent"
+                    app:tabSelectedTextColor="@color/colorAccent"
+                    app:tabTextColor="@android:color/black" />
 
             </RelativeLayout>
 
-        </ScrollView>
+            <com.zmx.mian.ui.util.FragmentViewPager
+                android:id="@+id/viewPager_zhihu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image" />
 
-    </android.support.v4.widget.NestedScrollView>
+        </RelativeLayout>
+
+    </ScrollView>
+
+</android.support.v4.widget.NestedScrollView>

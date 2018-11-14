@@ -60,9 +60,7 @@
         <RelativeLayout
             android:id="@+id/relayout"
             android:layout_width="match_parent"
-            android:layout_height="40dp">
-
-
+            android:layout_height="25dp">
 
             <TextView
                 android:id="@+id/choose_time"
@@ -71,6 +69,8 @@
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:layout_marginLeft="10dp"
+                android:textSize="12sp"
+                android:singleLine="true"
                 android:text="2018-01-02"
                 />
 
@@ -80,6 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
+                android:textSize="13sp"
                 android:layout_marginRight="10dp"
                 android:textColor="@color/white"
                 android:gravity="center"
@@ -93,6 +94,7 @@
                 android:layout_toLeftOf="@+id/total_of"
                 android:textColor="@color/white"
                 android:layout_marginRight="10dp"
+                android:textSize="13sp"
                 android:gravity="center"
                 android:text="销量：5000元"
                 />

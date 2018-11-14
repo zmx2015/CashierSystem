@@ -298,7 +298,15 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     @Override
     protected void onDestroy() {
+
+        if (mLoadingDialog != null) {
+
+            mLoadingDialog.dismiss();
+
+        }
+        //注销广播
         unregisterReceiver(netBroadCastReciver);
         super.onDestroy();
     }
+
 }

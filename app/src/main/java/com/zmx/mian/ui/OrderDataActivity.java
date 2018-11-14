@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,7 @@ import java.util.List;
  * 开发时间：2018-06-28 0:03
  * 类功能：订单管理界面
  */
-public class OrderDataActivity extends BaseActivity implements IOrderDataView, View.OnClickListener {
+public class  OrderDataActivity extends BaseActivity implements IOrderDataView, View.OnClickListener {
 
     private RecyclerView mRecyclerView;
     //支持下拉刷新的ViewGroup
@@ -200,8 +201,11 @@ public class OrderDataActivity extends BaseActivity implements IOrderDataView, V
                     }
                     hideLoading();
 
-                    total_of.setText("人次：" + nums + "次");
-                    total_price.setText("销量：" + allTotal + "元");
+
+                    String tn="人次：<font color='#FF0000'>"+nums+"次</font>";
+                    total_of.setText(Html.fromHtml(tn));
+                    String ta = "销量：<font color='#FF0000'>"+allTotal+"元</font>";
+                    total_price.setText(Html.fromHtml(ta));
                     mRecyclerView.scrollToPosition(0);//回到顶部
                     initAdapter();
 

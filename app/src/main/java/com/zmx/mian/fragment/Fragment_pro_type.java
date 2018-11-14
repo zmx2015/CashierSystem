@@ -35,6 +35,7 @@ import com.zmx.mian.bean.Type;
 import com.zmx.mian.bean_dao.goodsDao;
 import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
+import com.zmx.mian.ui.GoodsDetailsActivity;
 import com.zmx.mian.ui.OrderDataActivity;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
@@ -45,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,8 +94,15 @@ public class Fragment_pro_type extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                position = arg2;
-                showPhoto(gs.get(arg2));
+
+                // 通过Intent传递对象给Service
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("goods", gs.get(arg2));
+                intent.setClass(Fragment_pro_type.this.getActivity(), GoodsDetailsActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+
             }
         });
 

@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_margin="10dp"
     android:id="@+id/cv_item"
     android:foreground="?android:attr/selectableItemBackground"
     card_view:cardCornerRadius="4dp"
@@ -13,7 +13,7 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
+    android:padding="3dp"
     android:background="@color/order_bag"
     android:orientation="vertical"
     >
@@ -21,10 +21,10 @@
     <TextView
         android:id="@+id/order_number"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="25dp"
         android:gravity="center_vertical"
         android:text="订单编号：062546568962"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textColor="@color/drop_down_unselected"
         />
 
@@ -39,6 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="14sp"
             android:textColor="@color/transparent_half"
             android:text="总价格：25元"
             />
@@ -47,6 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="14sp"
             android:textColor="@color/transparent_half"
             android:text="折后价：25元"
             />
@@ -65,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="14sp"
             android:textColor="@color/transparent_half"
             android:text="优     惠：25元"
             />
@@ -73,6 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="14sp"
             android:textColor="@color/transparent_half"
             android:text="实    收：25元"
             />
@@ -91,6 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="14sp"
             android:textColor="@color/transparent_half"
             android:text="支付方式：25元"
             />
@@ -99,6 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="14sp"
             android:textColor="@color/transparent_half"
             android:text="状    态：25元"
             />
@@ -109,7 +115,8 @@
     <TextView
         android:id="@+id/order_time"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="20dp"
+        android:textSize="14sp"
         android:gravity="center_vertical"
         android:text="购买时间：2018-06-28"
         android:textColor="@color/transparent_half"
@@ -121,17 +128,17 @@
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="25dp"
             android:gravity="center_vertical"
             android:text="订单详情"
-            android:textSize="18sp"
+            android:textSize="14sp"
             android:textColor="@color/drop_down_unselected"
             />
 
         <LinearLayout
             android:id="@+id/title_name"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:background="@color/order_bag_item"
             android:layout_below="@+id/sna_head"
             android:orientation="horizontal">
@@ -140,6 +147,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:gravity="center"
+                android:textSize="13sp"
                 android:textColor="@color/drop_down_unselected"
                 android:text="商品" />
             <TextView
@@ -147,6 +155,7 @@
                 android:layout_height="match_parent"
                 android:textColor="@color/drop_down_unselected"
                 android:layout_weight="1"
+                android:textSize="13sp"
                 android:gravity="center"
                 android:text="重量/kg" />
 
@@ -156,6 +165,7 @@
                 android:layout_height="match_parent"
                 android:textColor="@color/drop_down_unselected"
                 android:layout_weight="1"
+                android:textSize="13sp"
                 android:gravity="center"
                 android:text="单价/元" />
 
@@ -165,6 +175,7 @@
                 android:textColor="@color/drop_down_unselected"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:textSize="13sp"
                 android:text="总价/元" />
 
         </LinearLayout>

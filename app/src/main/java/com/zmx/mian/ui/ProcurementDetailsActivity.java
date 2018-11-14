@@ -66,7 +66,7 @@ import java.util.Map;
  * 开发时间：2018-10-25 18:18
  * 类功能：
  */
-public class  ProcurementDetailsActivity extends BaseActivity implements ProcurementDetailsAdapter.OnClickUpload {
+public class ProcurementDetailsActivity extends BaseActivity implements ProcurementDetailsAdapter.OnClickUpload {
 
     private ListView listview;
     //List数据
@@ -77,18 +77,19 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
     private Button speed_model, up_model, add_model;
     private TextView title_time;
 
-    private String number,ru_time;
+    private String number, ru_time;
 
     private int S_UPLOAD = 0;//判断是否是新建的采购单还是已经保存过的采购单
 
     private goodsDao gdao;
     private StockManagementBean smb;
-    private StockManagementDao smd;
 
     Calendar c = Calendar.getInstance();
     int mYear = c.get(Calendar.YEAR);
     int mMonth = c.get(Calendar.MONTH);
     int mDay = c.get(Calendar.DAY_OF_MONTH);
+
+    private String pid = "";
 
     @Override
     protected int getLayoutId() {
@@ -100,10 +101,9 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
 
         setTitleColor(R.id.position_view);
         gdao = new goodsDao();
-        smd = new StockManagementDao();
 
         smb = (StockManagementBean) getIntent().getSerializableExtra("sb");
-        Log.e("pid","pid"+smb.getId());
+        Log.e("pid", "pid" + smb.getId());
         number = smb.getNumber();
         ru_time = smb.getRh_time();
         S_UPLOAD = Integer.parseInt(smb.getSm_state());
@@ -122,7 +122,7 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
         add_model = findViewById(R.id.add_model);
         add_model.setOnClickListener(this);
 
-        adapter = new ProcurementDetailsAdapter(this, lists,smb);
+        adapter = new ProcurementDetailsAdapter(this, lists, smb);
         adapter.setOnClickUpload(this);
         listview.setAdapter(adapter);
 
@@ -137,9 +137,10 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
         });
 
         //先判断点击进来的是否是新建采购单还是已经有数据的采购单，有就查询这个订单
-        if(smb.getSm_state().equals("1")){
+        if (smb.getSm_state().equals("1")) {
 
             loadingData();
+            pid = smb.getId()+"";
 
         }
 
@@ -150,7 +151,7 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
     public void onClick(View v) {
         super.onClick(v);
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.title:
                 new DatePickerDialog(mActivity, onDateSetListener, mYear, mMonth, mDay).show();
@@ -178,21 +179,21 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
     /**
      * 提交或者更新订单
      */
-    public void Submit(){
+    public void Submit() {
 
         List<SMDBean> smds = new ArrayList<>();
 
         float total = 0;
 
-        for (int i=0;i<lists.size();i++){
+        for (int i = 0; i < lists.size(); i++) {
 
-            if(lists.get(i).getUnita().equals("1")){
+            if (lists.get(i).getUnita().equals("1")) {
 
-                total = Float.parseFloat(lists.get(i).getG_price())*Float.parseFloat(lists.get(i).getG_nb())+total;
+                total = Float.parseFloat(lists.get(i).getG_price()) * Float.parseFloat(lists.get(i).getG_nb()) + total;
 
-            }else{
+            } else {
 
-                total = Float.parseFloat(lists.get(i).getG_price())*Float.parseFloat(lists.get(i).getG_weight())+total;
+                total = Float.parseFloat(lists.get(i).getG_price()) * Float.parseFloat(lists.get(i).getG_weight()) + total;
 
             }
             SMDBean smd = new SMDBean();
@@ -218,52 +219,51 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
         Gson g = new Gson();
         String jsonString = g.toJson(smds);
 
-
         Map<String, String> params = new HashMap<String, String>();
         params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
         params.put("mid", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, ""));
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("purtime", smb.getRh_time());
-        params.put("content",  "");
-        params.put("p_order",  smb.getNumber());
-        params.put("list",  jsonString);
+        params.put("content", "");
+        params.put("p_order", smb.getNumber());
+        params.put("list", jsonString);
 
-        Log.e("现在的状态",""+S_UPLOAD);
+        Log.e("现在的状态", "" + S_UPLOAD);
 
-        if(S_UPLOAD == 0){
+        if (S_UPLOAD == 0) {
 
-            params.put("type",  "insert");
-            params.put("pid",  "");
+            params.put("type", "insert");
+            params.put("pid", "");
 
-        }else{
+        } else {
 
-            params.put("type",  "update");
-            params.put("pid",  smb.getId()+"");
+            params.put("type", "update");
+            params.put("pid", pid);
 
         }
 
-        params.put("total",  total+"");
-        OkHttp3ClientManager.getInstance().postStringExecute("http://www.yiyuangy.com/admin/api.Purchase/insert", params, handler, 3,404);
+        params.put("total", total + "");
+        OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.Purchase/insert", params, handler, 3, 404);
 
     }
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
 
-            switch (msg.what){
+            switch (msg.what) {
 
                 case 1:
 
-                    Log.e("返回数据",""+msg.obj.toString());
+                    Log.e("返回数据", "" + msg.obj.toString());
 
                     try {
 
                         JSONArray jsonArray = new JSONArray(msg.obj.toString());
-                        for (int i = 0;i<jsonArray.length();i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
                             JSONObject object = jsonArray.getJSONObject(i);
 
@@ -311,12 +311,19 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
 
                         String status = jsonObject.getString("status");
 
-                        if(status.equals("1")){
+                        if (status.equals("1")) {
 
+                            if (S_UPLOAD == 0) {
+
+                                S_UPLOAD = 1;
+                                pid = jsonObject.getString("pid");
+
+                            }
                             //提交成功
-                            Toast.makeText(mActivity,jsonObject.getString("content"),Toast.LENGTH_LONG).show();
+                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
 
-                        }else{
+
+                        } else {
 
                         }
 
@@ -333,14 +340,14 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
 
 
     //加载服务器的订单列表
-    public void loadingData(){
+    public void loadingData() {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
         params.put("mid", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, ""));
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
-        params.put("pid", smb.getId()+"");
+        params.put("pid", smb.getId() + "");
 
         OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.Purchase/detail", params, handler, 1, 404);
 
@@ -349,15 +356,15 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
     @Override
     public void setUploadState() {
 
-        float f_total=0;
+        float f_total = 0;
 
-        for (StockManagementDetailsBean sb:lists){
+        for (StockManagementDetailsBean sb : lists) {
 
-            f_total = Float.parseFloat(sb.getG_total())+f_total;
+            f_total = Float.parseFloat(sb.getG_total()) + f_total;
 
         }
 
-        smb.setTotal(f_total+"");//更改列表的总价
+        smb.setTotal(f_total + "");//更改列表的总价
         handler.sendEmptyMessage(2);
         Submit();//提交修改数据
 
@@ -502,7 +509,6 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
     }
 
 
-
     private void popWindow(final int pos) {
 
         LayoutInflater inflater = LayoutInflater.from(this);//获取一个填充器
@@ -541,7 +547,7 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 adapter.update(pos, listview, R.color.button1);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("1");
-                lists.set(pos,sdb);
+                lists.set(pos, sdb);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();
@@ -559,7 +565,7 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
 
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("2");
-                lists.set(pos,sdb);
+                lists.set(pos, sdb);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();
@@ -576,7 +582,7 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 adapter.update(pos, listview, R.color.button3);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("3");
-                lists.set(pos,sdb);
+                lists.set(pos, sdb);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();
@@ -593,7 +599,7 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 adapter.update(pos, listview, R.color.button4);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("4");
-                lists.set(pos,sdb);
+                lists.set(pos, sdb);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();
@@ -610,7 +616,7 @@ public class  ProcurementDetailsActivity extends BaseActivity implements Procure
                 adapter.update(pos, listview, R.color.button5);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("5");
-                lists.set(pos,sdb);
+                lists.set(pos, sdb);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();

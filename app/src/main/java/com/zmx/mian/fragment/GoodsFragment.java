@@ -34,6 +34,7 @@ import com.zmx.mian.bean_dao.goodsDao;
 import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.AddGoodsActivity;
+import com.zmx.mian.ui.CPManagementActivity;
 import com.zmx.mian.ui.SearchGoodsActivity;
 import com.zmx.mian.ui.util.LoadingDialog;
 import com.zmx.mian.util.MySharedPreferences;
@@ -68,13 +69,13 @@ public class GoodsFragment extends Fragment{
     private ShopAdapter shopAdapter;
     private ImageView type_icon;
     private Button again_load;
-    private RelativeLayout search_btn;
+    private RelativeLayout search_btn,cp_management;
 
     private List<CommodityPosition> cp;
     private String mid;
 
     private goodsDao gd;
-    private CommodityPositionGD cpGD;
+    private CPDao dao;
 
 
     protected LoadingDialog mLoadingDialog; //显示正在加载的对话框
@@ -107,8 +108,21 @@ public class GoodsFragment extends Fragment{
         again_load.setVisibility(View.GONE);
         showLoadingView("加载中.....");
         gd = new goodsDao();
-        cpGD = new CommodityPositionGD();
+        dao = new CPDao();
         cp = new ArrayList<>();
+
+        cp_management = view.findViewById(R.id.cp_management);
+        cp_management.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent();
+                intent.setClass(GoodsFragment.this.getContext(),CPManagementActivity.class);
+                GoodsFragment.this.getContext().startActivity(intent);
+
+            }
+        });
+
         mid = MySharedPreferences.getInstance(this.getActivity()).getString(MySharedPreferences.store_id,"");
         Map<String, String> params = new HashMap<String, String>();
         params.put("mid", mid);
@@ -281,9 +295,9 @@ public class GoodsFragment extends Fragment{
 
             for (int i = 0; i < stringArr.length; i++) {
 
+                CommodityPositionGD cpGD = new CommodityPositionGD();
                 CommodityPosition c = new CommodityPosition();
 
-                String type = "type-" + (i + 1);
 
                 String str = stringArr[i];
                 String s_type;
@@ -300,15 +314,13 @@ public class GoodsFragment extends Fragment{
                 c.setType(s_type);
                 c.setName(str);
 
+                String type_id = s_type.substring(s_type.indexOf("-") + 1);
                 //保存到本地
-                cpGD.setId((long) (i+1));
+                cpGD.setId(Long.parseLong(type_id));
                 cpGD.setName(str);
                 cpGD.setType(s_type);
-                CPDao dao = new CPDao();
                 long l = dao.insertCp(cpGD);//保存到本地
-                Log.e("保存本地状态:"+type,"str:"+l);
-
-                Log.e("type:"+type,"str:"+str);
+                Log.e("保存本地状态:"+s_type,"str:"+str+" 保存状态："+l);
 
                 JSONArray array = data.getJSONArray(s_type);
                 for (int z = 0; z < array.length(); z++) {

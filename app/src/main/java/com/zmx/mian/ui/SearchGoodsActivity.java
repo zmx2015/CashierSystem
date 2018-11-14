@@ -1,5 +1,6 @@
 package com.zmx.mian.ui;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -13,10 +14,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.chanven.lib.cptr.PtrClassicFrameLayout;
+import com.chanven.lib.cptr.PtrFrameLayout;
+import com.chanven.lib.cptr.PtrHandler;
+import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.SearchGoodsAdapter;
 import com.zmx.mian.bean.Goods;
 import com.zmx.mian.bean_dao.goodsDao;
+import com.zmx.mian.fragment.Fragment_pro_type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +37,8 @@ public class SearchGoodsActivity extends BaseActivity {
     private List<Goods> lists;
     private SearchGoodsAdapter adapter;
     private RecyclerView rv;
+    private PtrClassicFrameLayout mPtrFrame;
+    private RecyclerAdapterWithHF mAdapter;
     private EditText et;
     private goodsDao gdao;
     private ImageView no_data;
@@ -49,11 +57,61 @@ public class SearchGoodsActivity extends BaseActivity {
         gdao = new goodsDao();
         rv = findViewById(R.id.search_view);
         no_data = findViewById(R.id.no_data);
-        lists = gdao.SelectDimGoods("");;
-        adapter = new SearchGoodsAdapter(this,lists);
+        lists = gdao.SelectDimGoods("");
+        ;
+        adapter = new SearchGoodsAdapter(this, lists);
         rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(adapter);
+        mAdapter = new RecyclerAdapterWithHF(adapter);
+        rv.setAdapter(mAdapter);
         rv.setNestedScrollingEnabled(false);
+
+        mAdapter.setOnItemClickListener(new RecyclerAdapterWithHF.OnItemClickListener() {
+            @Override
+            public void onItemClick(RecyclerAdapterWithHF adapter, RecyclerView.ViewHolder vh, int position) {
+
+                // 通过Intent传递对象给Service
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("goods", lists.get(position));
+                intent.setClass(mActivity, GoodsDetailsActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+
+
+            }
+        });
+
+        mPtrFrame = findViewById(R.id.rotate_header_list_view_frame);
+//下拉刷新支持时间
+        mPtrFrame.setLastUpdateTimeRelateObject(this);
+//下拉刷新一些设置 详情参考文档
+        mPtrFrame.setResistance(1.7f);
+        mPtrFrame.setRatioOfHeaderHeightToRefresh(1.2f);
+        mPtrFrame.setDurationToClose(200);
+        mPtrFrame.setDurationToCloseHeader(1000);
+// default is false
+        mPtrFrame.setPullToRefresh(false);
+// default is true
+        mPtrFrame.setKeepHeaderWhenRefresh(true);
+
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                frame.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPtrFrame.refreshComplete();
+                    }
+                }, 1800);
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                // 默认实现，根据实际情况做改动
+                return false;
+            }
+        });
+
         et = findViewById(R.id.goods_search_edit);
         et.addTextChangedListener(new TextWatcher() {
             @Override
@@ -78,17 +136,17 @@ public class SearchGoodsActivity extends BaseActivity {
 
                 lists.clear();
                 //查询更新
-                if(et.getText().toString() != null || !et.getText().toString().equals("")){
+                if (et.getText().toString() != null || !et.getText().toString().equals("")) {
 
                     List<Goods> gs = gdao.SelectDimGoods(et.getText().toString());
 
-                    for (Goods gg:gs){
+                    for (Goods gg : gs) {
 
                         lists.add(gg);
 
                     }
 
-                    Log.e("查询到的商品数量=",""+lists.size());
+                    Log.e("查询到的商品数量=", "" + lists.size());
 
                 }
 
@@ -99,21 +157,21 @@ public class SearchGoodsActivity extends BaseActivity {
 
     }
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
 
-            switch (msg.what){
+            switch (msg.what) {
 
                 case 1:
 
-                    Log.e("ssffasd","fda="+lists.size());
+                    Log.e("ssffasd", "fda=" + lists.size());
 
-                    if(lists.size()>0){
+                    if (lists.size() > 0) {
                         no_data.setVisibility(View.GONE);
-                    }else {
+                    } else {
                         no_data.setVisibility(View.VISIBLE);
                     }
 

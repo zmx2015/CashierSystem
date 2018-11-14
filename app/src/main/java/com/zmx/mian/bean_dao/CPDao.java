@@ -1,5 +1,7 @@
 package com.zmx.mian.bean_dao;
 
+import android.util.Log;
+
 import com.zmx.mian.MyApplication;
 import com.zmx.mian.bean.CommodityPositionGD;
 import com.zmx.mian.dao.CommodityPositionGDDao;
@@ -29,7 +31,8 @@ public class CPDao {
      * 查询全部数据
      */
     public static List<CommodityPositionGD> queryAll() {
-        return cpDao .loadAll();
+
+        return cpDao.loadAll();
     }
 
 

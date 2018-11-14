@@ -200,7 +200,8 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
             holder.stock_layout.setBackgroundColor(mContext.getResources().getColor(R.color.button4));
 
         } else if (sdb.getG_color().equals("5")) {
-            holder.stock_layout.setBackgroundColor(mContext.getResources().getColor(R.color.button5));
+
+            holder.stock_layout.setBackgroundColor(mContext.getResources().getColor(R.color.grey_200));
 
         } else {
 

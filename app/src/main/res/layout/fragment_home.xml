@@ -417,14 +417,14 @@
                             android:id="@+id/image4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@mipmap/ic_huiyuanguanli"
+                            android:background="@mipmap/ic_zhichuguanli"
                             />
 
                         <TextView
                             android:layout_below="@+id/image4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="会员管理"
+                            android:text="采购分析"
                             />
 
                     </RelativeLayout>
@@ -458,15 +458,18 @@
                             android:id="@+id/image5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@mipmap/ic_shouyinjizhang"
+                            android:background="@mipmap/ic_huiyuanguanli"
                             />
+
                         <TextView
+                            android:layout_below="@+id/image5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/image5"
-                            android:text="前台收银" />
+                            android:text="会员管理"
+                            />
 
                     </RelativeLayout>
+
                     <RelativeLayout
                         android:id="@+id/relative6"
                         android:layout_width="match_parent"
@@ -480,24 +483,37 @@
                             android:id="@+id/image6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@mipmap/ic_shouyinjizhang"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/image6"
+                            android:text="前台收银" />
+
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/relative0"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/layout_background"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        >
+
+                        <ImageView
+                            android:id="@+id/image0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:background="@mipmap/ic_gengduo"
                             />
 
                         <TextView
-                            android:layout_below="@+id/image6"
+                            android:layout_below="@+id/image0"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="更多功能"
                             android:id="@+id/textView6" />
-
-                    </RelativeLayout>
-                    <RelativeLayout
-                        android:id="@+id/relative7"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:layout_weight="1"
-                        >
 
                     </RelativeLayout>
                     <RelativeLayout

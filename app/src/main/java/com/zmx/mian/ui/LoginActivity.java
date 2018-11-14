@@ -37,7 +37,7 @@ import cn.jpush.android.api.TagAliasCallback;
  * 开发时间：2018-06-24 2:30
  * 类功能：登录界面
  */
-public class   LoginActivity extends BaseActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
+public class LoginActivity extends BaseActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener{
     //布局内的控件
     private EditText et_name;
     private EditText et_password;

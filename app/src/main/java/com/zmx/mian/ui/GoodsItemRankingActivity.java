@@ -70,7 +70,6 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
      */
     public String defaultWeekEnd;
 
-    private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
     //查询的开始结束时间
     public String startDate=Tools.DateConversion(new Date());
@@ -181,7 +180,7 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
                     }
 
-                    hideLoading();
+                    dismissLoadingView();
                     initAdapter();
                     break;
 
@@ -237,7 +236,7 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
                     tile_time.setText("("+startTime.replace("-", ".") + "至" + endTime.replace("-", ".")+")");
                     startDate = startTime;
                     endDate = endTime;
-                    showLoading();
+                    showLoadingView("加载中...");
                     handler.sendEmptyMessage(2);
 
                 }
@@ -255,31 +254,6 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
         }
     }
 
-    /**
-     * 显示加载的进度款
-     */
-    public void showLoading() {
-        if (mLoadingDialog == null) {
-            mLoadingDialog = new LoadingDialog(this,"正在加载...", false);
-        }
-        mLoadingDialog.show();
-    }
-
-
-    /**
-     * 隐藏加载的进度框
-     */
-    public void hideLoading() {
-        if (mLoadingDialog != null) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLoadingDialog.hide();
-                }
-            });
-
-        }
-    }
 
 
     @Override
@@ -297,14 +271,4 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
     }
 
-    @Override
-    protected void onDestroy() {
-
-        if (mLoadingDialog != null) {
-
-            mLoadingDialog.dismiss();
-
-        }
-        super.onDestroy();
-    }
 }

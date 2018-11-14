@@ -3,21 +3,21 @@ package com.zmx.mian.bean;
 
 public class Tab {
 
-    private int title;
+    private String title;
     private int icon;
     private Class fragment;
 
-    public Tab(int title, int icon, Class fragment) {
+    public Tab(String title, int icon, Class fragment) {
         this.title = title;
         this.icon = icon;
         this.fragment = fragment;
     }
 
-    public int getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(int title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 

@@ -99,8 +99,8 @@
             android:background="#00000000"
             android:gravity="left|center_vertical"
             android:padding="10dp"
-            android:text="标记蓝色"
-            android:textColor="#1336d4"
+            android:text="取消标色"
+            android:textColor="#EEEEEE"
             android:textSize="15sp" />
         <View
             android:layout_width="match_parent"

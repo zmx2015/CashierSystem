@@ -9,27 +9,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#efefef">
+        <!--沉浸式activity，这个view是用来占位的   -->
+        <View
+            android:id="@+id/position_view"
+            android:layout_width="5px"
+            android:layout_height="5px" />
 
         <RelativeLayout
-            android:id="@+id/sna_head"
+            android:id="@+id/title_relative"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:background="@color/tou">
-            <!--沉浸式activity，这个view是用来占位的   -->
-            <View
-                android:id="@+id/position_view"
-                android:layout_width="10px"
-                android:layout_height="10px" />
 
             <TextView
-                android:id="@+id/title"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_below="@+id/position_view"
-                android:gravity="center"
-                android:text="采购单"
+                android:id="@+id/rk_choose_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_centerInParent="true"
+                android:textSize="18sp"
+                android:text="单品清单"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/tile_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rk_choose_time"
+                android:layout_centerHorizontal="true"
+                android:text="(2018-01-02)"
+                android:textSize="10sp"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                />
 
         </RelativeLayout>
 
@@ -38,7 +49,7 @@
             android:id="@+id/title_name"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_below="@+id/sna_head"
+            android:layout_below="@+id/title_relative"
             android:background="@color/tou"
             android:orientation="horizontal">
 

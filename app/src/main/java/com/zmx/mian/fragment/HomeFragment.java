@@ -116,7 +116,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
     private int yesterday_members_total = 0;//会员消费次数
 
     private TextView discount_money_text, members_total_text;
-    private RelativeLayout relative1,relative2,relative3,relative4,relative5,relative6;
+    private RelativeLayout relative1,relative2,relative3,relative4,relative5,relative0;
     private List<TimeQuantum> tq;
 
 
@@ -142,6 +142,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         store_name = view.findViewById(R.id.store_name);
         store_name.setText(s_name);
 
+        //数据统计
         relative1 = view.findViewById(R.id.relative1);
         relative1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,6 +155,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
         });
 
+        //单品销量
         relative2 = view.findViewById(R.id.relative2);
         relative2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,6 +168,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
         });
 
+        //订单管理
         relative3 = view.findViewById(R.id.relative3);
         relative3.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,29 +181,32 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
         });
 
+        //采购分析
         relative4 = view.findViewById(R.id.relative4);
         relative4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(HomeFragment.this.getActivity(), MembersActivity.class);
-                startActivity(intent);
+                Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
+
 
             }
 
         });
 
+        //会员管理
         relative5 = view.findViewById(R.id.relative5);
         relative5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
-            }
+                Intent intent = new Intent(HomeFragment.this.getActivity(), MembersActivity.class);
+                startActivity(intent);
+                    }
         });
 
 
-        relative6 = view.findViewById(R.id.relative6);
-        relative6.setOnClickListener(new View.OnClickListener() {
+        relative0 = view.findViewById(R.id.relative0);
+        relative0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();

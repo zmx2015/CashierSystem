@@ -32,13 +32,11 @@
             android:id="@+id/submit"
             android:layout_width="80dp"
             android:layout_height="30dp"
-            android:layout_centerInParent="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp_5"
-            android:text="同步"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/title"
             android:background="@drawable/border_line_while"
-            android:textColor="@color/white"
-            />
+            android:text="同步"
+            android:textColor="@color/white" />
 
     </RelativeLayout>
 
