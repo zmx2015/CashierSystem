@@ -196,7 +196,7 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                     }
 
-                    OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.goods/update", params, h, 1, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/update", params, h, 1, 404);
 
                 }
 

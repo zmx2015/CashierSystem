@@ -266,7 +266,7 @@ public class Fragment_pro_type extends Fragment{
                     params.put("store_state", g.getStore_state());
                     params.put("mall_state", g.getMall_state());
 
-                    OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.goods/update", params, h, 2, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/update", params, h, 2, 404);
 
 
                 }

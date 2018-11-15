@@ -15,6 +15,7 @@ import com.zmx.mian.R;
 import com.zmx.mian.ui.FeedbackActivity;
 import com.zmx.mian.ui.LoginActivity;
 import com.zmx.mian.util.MySharedPreferences;
+import com.zmx.mian.util.Tools;
 
 /**
  * 开发人员：曾敏祥
@@ -45,7 +46,8 @@ public class MineFragment extends BaseFragment{
             @Override
             public void onClick(View view) {
 
-                MySharedPreferences.getInstance(mActivity).clear();//清空本地数据
+                Tools.deleteData(mActivity);//清空本地数据
+
                 Intent intent = new Intent();
                 intent.setClass(mActivity, LoginActivity.class);
                 startActivity(intent);

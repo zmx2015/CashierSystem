@@ -92,7 +92,7 @@ public class GoodsFragment extends Fragment{
 
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("mid", mid);
-                OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.line/goods", params, h, 2, 404);
+                OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/goods", params, h, 2, 404);
 
             }
         });
@@ -127,7 +127,7 @@ public class GoodsFragment extends Fragment{
         Map<String, String> params = new HashMap<String, String>();
         params.put("mid", mid);
 
-        OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.line/goods", params, h, 2, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/goods", params, h, 2, 404);
 
         //注册监听广播
         IntentFilter filter = new IntentFilter();

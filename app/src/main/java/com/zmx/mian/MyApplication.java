@@ -28,6 +28,8 @@ public class MyApplication extends Application{
     public static String store_id = "";//用户id
     public static String name = "";//手机号码
 
+    public static String NetworkRequestMode = "post";
+
     public static MyApplication getInstance() {
         return myApplication;
     }
@@ -77,5 +79,8 @@ public class MyApplication extends Application{
 
     }
 
+    public static String getNetworkRequestMode() {
+        return "get";
+    }
 
 }

@@ -73,4 +73,10 @@ public class goodsDao {
         return dao.queryBuilder().where(GoodsDao.Properties.G_name.like("%" + name + "%")).list();
     }
 
+    public void deleteData(){
+
+        dao.deleteAll();
+
+    }
+
 }

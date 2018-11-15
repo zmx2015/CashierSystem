@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zmx.mian.R;
+import com.zmx.mian.bean_dao.CPDao;
+import com.zmx.mian.bean_dao.goodsDao;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -248,6 +250,19 @@ public class Tools {
         calendar.set(Calendar.DATE, calendar.getActualMaximum(Calendar.DATE));
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd ");
         return format.format(calendar.getTime());
+    }
+
+    //清空本地所有数据
+    public static void deleteData(Context context){
+
+        MySharedPreferences.getInstance(context).clear();//清空本地数据
+
+        CPDao cp = new CPDao();
+        cp.deleteData();
+        goodsDao gdao = new goodsDao();
+        gdao.deleteData();
+
+
     }
 
 }

@@ -36,4 +36,36 @@ public class CPDao {
     }
 
 
+
+    /**
+     * 修改某条数据的内容
+     */
+    public static void UpdateCp(CommodityPositionGD cp){
+
+        //1.where是查询条件，
+        //2.unique()表示查询结果为一条数据，若数据不存在，findUser为null。
+        CommodityPositionGD c = cpDao.queryBuilder().where(CommodityPositionGDDao.Properties.Id.eq(cp.getId())).build().unique();
+
+        if(c != null) {
+
+            c.setName(cp.getName());
+            c.setType(cp.getType());
+            c.setId(cp.getId());
+            // update为更新
+            cpDao.update(c);
+            Log.e("更新","更新");
+
+        } else {
+
+            Log.e("更新aa","更新aaa");
+
+        }
+
+    }
+
+    public void deleteData(){
+
+        cpDao.deleteAll();
+
+    }
 }

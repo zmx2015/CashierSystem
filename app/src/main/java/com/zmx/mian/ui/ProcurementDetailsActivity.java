@@ -244,7 +244,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         }
 
         params.put("total", total + "");
-        OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.Purchase/insert", params, handler, 3, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/insert", params, handler, 3, 404);
 
     }
 
@@ -349,7 +349,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         params.put("account", "0");
         params.put("pid", smb.getId() + "");
 
-        OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.Purchase/detail", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/detail", params, handler, 1, 404);
 
     }
 

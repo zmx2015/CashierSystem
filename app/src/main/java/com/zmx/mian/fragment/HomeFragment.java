@@ -261,7 +261,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         params.put("admin", MyApplication.getName());
         params.put("mid", MyApplication.getStore_id());
 
-        OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 3, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 3, 404);
 
         return view;
     }
@@ -552,7 +552,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         params.put("admin", MyApplication.getName());
         params.put("mid", MyApplication.getStore_id());
 
-        OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 4, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 4, 404);
 
     }
 

@@ -5,6 +5,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.zmx.mian.MyApplication;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -331,4 +332,30 @@ public class OkHttp3ClientManager {
             }
         });
     }
+
+    //网络请求方式
+
+    /**
+     *
+     * @param reqUrl 请求的url
+     * @param map    请求的参数
+     * @param mHandler  处理返回数据的handler
+     * @param state     在handler处理成功返回的数据
+     * @param errorState 在handler处理失败返回的数据
+     */
+    public void NetworkRequestMode(String reqUrl, Map<String, String> map, final Handler mHandler, final int state , final int errorState){
+
+        if(MyApplication.getNetworkRequestMode().equals("get")){
+
+            getStringExecute(reqUrl,map,mHandler,state,errorState);
+
+        }else{
+
+            postStringExecute(reqUrl,map,mHandler,state,errorState);
+
+        }
+
+
+    }
+
 }

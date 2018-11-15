@@ -456,7 +456,7 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                     params.put("account", ml.getAccount());
                     params.put("phone", et.getText().toString());
                     shoujihao = et.getText().toString();
-                    OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.user/bindPhone", params, handler, 2, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.user/bindPhone", params, handler, 2, 404);
                     dialog.dismiss();
                 } else {
 

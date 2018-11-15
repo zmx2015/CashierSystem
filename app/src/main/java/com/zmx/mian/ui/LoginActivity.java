@@ -216,7 +216,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         params.put("username", getAccount());
         params.put("password", md5(getPassword()));
 
-        OkHttp3ClientManager.getInstance().getStringExecute("http://www.yiyuangy.com/admin/api.line/login", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/login", params, handler, 1, 404);
 
     }
 
