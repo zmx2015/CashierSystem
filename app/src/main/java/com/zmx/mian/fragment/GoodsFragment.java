@@ -29,8 +29,11 @@ import com.zmx.mian.adapter.ShopAdapter;
 import com.zmx.mian.bean.CommodityPosition;
 import com.zmx.mian.bean.CommodityPositionGD;
 import com.zmx.mian.bean.Goods;
+import com.zmx.mian.bean.MallTypeBean;
 import com.zmx.mian.bean_dao.CPDao;
+import com.zmx.mian.bean_dao.MallTypeDao;
 import com.zmx.mian.bean_dao.goodsDao;
+import com.zmx.mian.dao.MallTypeBeanDao;
 import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.AddGoodsActivity;
@@ -57,7 +60,7 @@ import java.util.Map;
  * 类功能：商品管理
  */
 
-public class GoodsFragment extends Fragment{
+public class GoodsFragment extends Fragment {
 
     private TextView toolsTextViews[];
     private View views[];
@@ -65,17 +68,20 @@ public class GoodsFragment extends Fragment{
     private ScrollView scrollView;
     private int scrllViewWidth = 0, scrollViewMiddle = 0;
     private ViewPager shop_pager;
-    private int currentItem=0;
+    private int currentItem = 0;
     private ShopAdapter shopAdapter;
     private ImageView type_icon;
     private Button again_load;
-    private RelativeLayout search_btn,cp_management;
+    private RelativeLayout search_btn, cp_management;
 
     private List<CommodityPosition> cp;
     private String mid;
 
     private goodsDao gd;
     private CPDao dao;
+    private MallTypeDao mtDao;
+
+    private ImageView no_data;//没有数据的时候显示
 
 
     protected LoadingDialog mLoadingDialog; //显示正在加载的对话框
@@ -83,8 +89,8 @@ public class GoodsFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_goods,container,false);
-
+        View view = inflater.inflate(R.layout.fragment_goods, container, false);
+        no_data = view.findViewById(R.id.no_data);
         again_load = view.findViewById(R.id.again_load);
         again_load.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +103,30 @@ public class GoodsFragment extends Fragment{
             }
         });
 
+        type_icon = view.findViewById(R.id.type_icon);
+        type_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent();
+                intent.setClass(GoodsFragment.this.getContext(), AddGoodsActivity.class);
+                intent.putExtra("cp", (Serializable) cp);
+                startActivity(intent);
+
+            }
+        });
+
+        search_btn = view.findViewById(R.id.search_btn);
+        search_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent();
+                intent.setClass(GoodsFragment.this.getContext(), SearchGoodsActivity.class);
+                startActivity(intent);
+
+            }
+        });
         return view;
     }
 
@@ -109,6 +139,7 @@ public class GoodsFragment extends Fragment{
         showLoadingView("加载中.....");
         gd = new goodsDao();
         dao = new CPDao();
+        mtDao = new MallTypeDao();
         cp = new ArrayList<>();
 
         cp_management = view.findViewById(R.id.cp_management);
@@ -117,17 +148,16 @@ public class GoodsFragment extends Fragment{
             public void onClick(View view) {
 
                 Intent intent = new Intent();
-                intent.setClass(GoodsFragment.this.getContext(),CPManagementActivity.class);
+                intent.setClass(GoodsFragment.this.getContext(), CPManagementActivity.class);
                 GoodsFragment.this.getContext().startActivity(intent);
 
             }
         });
 
-        mid = MySharedPreferences.getInstance(this.getActivity()).getString(MySharedPreferences.store_id,"");
+        mid = MySharedPreferences.getInstance(this.getActivity()).getString(MySharedPreferences.store_id, "");
         Map<String, String> params = new HashMap<String, String>();
         params.put("mid", mid);
-
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/goods", params, h, 2, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/goodsTwo", params, h, 2, 404);
 
         //注册监听广播
         IntentFilter filter = new IntentFilter();
@@ -136,27 +166,36 @@ public class GoodsFragment extends Fragment{
 
     }
 
-    private Handler h = new Handler(){
+    private Handler h = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
 
-            switch (msg.what){
+            switch (msg.what) {
 
                 case 1:
 
                     dismissLoadingView();
                     again_load.setVisibility(View.GONE);
 
-                    if(shopAdapter != null){
+                    if (shopAdapter != null) {
 
                         shopAdapter.notifyDataSetChanged();
 
-                    }else{
+                    } else {
 
-                        initPager();
-                        showToolsView();
+                        if (cp.size() > 0) {
+
+                            no_data.setVisibility(View.GONE);
+                            initPager();
+                            showToolsView();
+
+                        } else {
+
+                            no_data.setVisibility(View.VISIBLE);
+                        }
+
 
                     }
 
@@ -169,7 +208,7 @@ public class GoodsFragment extends Fragment{
                 case 404:
 
                     dismissLoadingView();
-                    Toast.makeText(GoodsFragment.this.getActivity(),"连接网络失败，请检查网络！",Toast.LENGTH_LONG).show();
+                    Toast.makeText(GoodsFragment.this.getActivity(), "连接网络失败，请检查网络！", Toast.LENGTH_LONG).show();
                     again_load.setVisibility(View.VISIBLE);
 
                     break;
@@ -184,32 +223,34 @@ public class GoodsFragment extends Fragment{
      */
     private void showToolsView() {
 
-         LinearLayout toolsLayout=(LinearLayout) getActivity().findViewById(R.id.tools);
-        toolsTextViews=new TextView[cp.size()];
-        views=new View[cp.size()];
+        LinearLayout toolsLayout = getActivity().findViewById(R.id.tools);
+        toolsTextViews = new TextView[cp.size()];
+        views = new View[cp.size()];
 
         for (int i = 0; i < cp.size(); i++) {
 
-            View view=inflater.inflate(R.layout.item_b_top_nav_layout, null);
+            View view = inflater.inflate(R.layout.item_b_top_nav_layout, null);
             view.setId(i);
             view.setOnClickListener(toolsItemListener);
-            TextView textView=view.findViewById(R.id.text);
+            TextView textView = view.findViewById(R.id.text);
             textView.setText(cp.get(i).getName());
             toolsLayout.addView(view);
-            toolsTextViews[i]=textView;
-            views[i]=view;
+            toolsTextViews[i] = textView;
+            views[i] = view;
 
         }
         changeTextColor(0);
     }
 
-    private View.OnClickListener toolsItemListener =new View.OnClickListener() {
+    private View.OnClickListener toolsItemListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+            Log.e("点击了","点击了"+v.getId());
             shop_pager.setCurrentItem(v.getId());
+
         }
     };
-
 
 
     /**
@@ -219,38 +260,11 @@ public class GoodsFragment extends Fragment{
     private void initPager() {
 
         scrollView = getActivity().findViewById(R.id.tools_scrlllview);
-        shopAdapter = new ShopAdapter(getFragmentManager(),cp);
+        shopAdapter = new ShopAdapter(getFragmentManager(), cp);
         inflater = LayoutInflater.from(getActivity());
-        shop_pager= getActivity().findViewById(R.id.goods_pager);
+        shop_pager = getActivity().findViewById(R.id.goods_pager);
         shop_pager.setAdapter(shopAdapter);
         shop_pager.setOnPageChangeListener(onPageChangeListener);
-
-        type_icon = getActivity().findViewById(R.id.type_icon);
-        type_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent();
-                intent.setClass(GoodsFragment.this.getContext(), AddGoodsActivity.class);
-                intent.putExtra("cp", (Serializable) cp);
-                startActivity(intent);
-
-            }
-        });
-
-        search_btn = getActivity().findViewById(R.id.search_btn);
-        search_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent();
-                intent.setClass(GoodsFragment.this.getContext(), SearchGoodsActivity.class);
-//                intent.putExtra("cp", (Serializable) cp);
-                startActivity(intent);
-
-            }
-        });
-
     }
 
     /**
@@ -261,16 +275,18 @@ public class GoodsFragment extends Fragment{
     private ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageSelected(int arg0) {
-            if(shop_pager.getCurrentItem()!=arg0)shop_pager.setCurrentItem(arg0);
-            if(currentItem!=arg0){
+            if (shop_pager.getCurrentItem() != arg0) shop_pager.setCurrentItem(arg0);
+            if (currentItem != arg0) {
                 changeTextColor(arg0);
                 changeTextLocation(arg0);
             }
-            currentItem=arg0;
+            currentItem = arg0;
         }
+
         @Override
         public void onPageScrolled(int arg0, float arg1, int arg2) {
         }
+
         @Override
         public void onPageScrollStateChanged(int arg0) {
         }
@@ -280,72 +296,109 @@ public class GoodsFragment extends Fragment{
 
         cp.clear();
         JSONObject json = null;
-        try {
-            json = new JSONObject(goods);
-            // 更新类目
-            JSONObject jj = json.getJSONObject("info");
-            String arr = jj.toString();
-          Log.e("json","json"+json.toString());
-            String[] stringArr = arr.split(",");
 
-            //获得类目下的商品
-            JSONObject data = json.getJSONObject("data");
+        try {
+
+            json = new JSONObject(goods);
+
+            String storeType = json.getString("storeType");//获取门店分类
+            String mallType = json.getString("mallType");//获取商城分类
+            String data = json.getString("goods");//获取全部商品
+
+            //判断各个参数有没有数据
+            JSONObject store = new JSONObject(storeType);
+            JSONObject mall = new JSONObject(mallType);
+            JSONObject g_data = new JSONObject(data);
 
             List<Goods> gs = new ArrayList<>();
 
-            for (int i = 0; i < stringArr.length; i++) {
+            //先判断有没有分类先
+            if (store.getString("code").equals("1")) {
 
-                CommodityPositionGD cpGD = new CommodityPositionGD();
-                CommodityPosition c = new CommodityPosition();
+                //有分类先保存分类数据
+                JSONArray j_store = store.getJSONArray("list");
+                for (int i = 0; i < j_store.length(); i++) {
 
+                    CommodityPositionGD cpGD = new CommodityPositionGD();
+                    CommodityPosition c = new CommodityPosition();
 
-                String str = stringArr[i];
-                String s_type;
-                str = str.replace("{", "");
-                str = str.replace("}", "");
-                String ts = str;
-                str = str.substring(str.indexOf(":") + 1);
-                s_type = ts.substring(0,ts.indexOf(":"));
-                str = str.replace("\"", "");
-                s_type = s_type.replace("\"", "");
+                    JSONObject js = j_store.getJSONObject(i);
+                    c.setType(js.getString("id"));
+                    c.setName(js.getString("gname"));
 
-                Log.e("类型·",""+s_type);
-
-                c.setType(s_type);
-                c.setName(str);
-
-                String type_id = s_type.substring(s_type.indexOf("-") + 1);
-                //保存到本地
-                cpGD.setId(Long.parseLong(type_id));
-                cpGD.setName(str);
-                cpGD.setType(s_type);
-                long l = dao.insertCp(cpGD);//保存到本地
-                Log.e("保存本地状态:"+s_type,"str:"+str+" 保存状态："+l);
-
-                JSONArray array = data.getJSONArray(s_type);
-                for (int z = 0; z < array.length(); z++) {
-
-                    JSONObject ty = array.getJSONObject(z);
-                    Goods g = new Goods (ty.getInt("gid") + "",
-                            ty.getString("img"), ty.getString("gds_price"),
-                            ty.getString("name"), ty.getString("gname"),
-                            ty.getInt("group") + "",ty.getString("vip_price"),ty.getString("mall_state"),ty.getString("store_state"));
-
-                    gs.add(g);
-                    gd.insertCp(g);//保存到本地
-
+                    //保存到本地
+                    cpGD.setId(Long.parseLong(js.getString("id")));
+                    cpGD.setName(js.getString("gname"));
+                    cpGD.setType(js.getString("id"));
+                    long l = dao.insertCp(cpGD);//保存到本地
                 }
 
-                c.setList(gs);
+                //再判断有没有商品
+                if (g_data.getString("code").equals("1")) {
 
-                cp.add(c);
+                    JSONArray j_data = g_data.getJSONArray("list");
+
+                    for (int i = 0; i < j_store.length(); i++) {
+
+                        CommodityPosition c = new CommodityPosition();
+
+                        JSONObject js = j_store.getJSONObject(i);
+                        c.setType(js.getString("id"));
+                        c.setName(js.getString("gname"));
+
+                        for (int z = 0; z < j_data.length(); z++) {
+
+                            JSONObject ty = j_data.getJSONObject(z);
+
+                            if (js.getString("id").equals(ty.getInt("group") + "")) {
+
+                                Goods g = new Goods(ty.getInt("gid") + "",
+                                        ty.getString("img"), ty.getString("gds_price"),
+                                        ty.getString("name"), ty.getString("gname"),
+                                        ty.getInt("group") + "", ty.getString("vip_price"), ty.getString("mall_state"), ty.getString("store_state"));
+                                gs.add(g);
+                                gd.insertCp(g);//保存到本地
+
+                            }
+
+                        }
+
+                        c.setList(gs);
+                        cp.add(c);
+
+                    }
+                }
+
+            }
+
+            //判断是否有商城分类，有就保存本地
+            if(mall.getString("code").equals("1")){
+
+                //有分类先保存分类数据
+                JSONArray j_mall = mall.getJSONArray("list");
+
+                for (int i = 0;i<j_mall.length();i++){
+
+                    JSONObject j = j_mall.getJSONObject(i);
+                    MallTypeBean mtb = new MallTypeBean();
+                    mtb.setId(Long.parseLong(j.getString("id")));
+                    mtb.setTname(j.getString("tname"));
+                    mtb.setState(j.getString("state"));
+                    mtb.setSort(j.getString("sort"));
+                    mtb.setMid(j.getString("mid"));
+                    mtDao.insertMtb(mtb);
+                }
 
             }
 
 
         } catch (JSONException e) {
             e.printStackTrace();
+
+            Log.e("解析异常", "" + e.toString());
+
         }
+
 
         h.sendEmptyMessage(1);
     }
@@ -353,13 +406,14 @@ public class GoodsFragment extends Fragment{
 
     /**
      * 改变textView的颜色
+     *
      * @param id
      */
     private void changeTextColor(int id) {
 
         for (int i = 0; i < toolsTextViews.length; i++) {
 
-            if(i!=id){
+            if (i != id) {
                 toolsTextViews[i].setBackgroundResource(android.R.color.transparent);
                 toolsTextViews[i].setTextColor(0xff000000);
             }
@@ -424,9 +478,9 @@ public class GoodsFragment extends Fragment{
             if (intent.getAction().equals(AddGoodsActivity.action)) {
 
 
-            }else if(intent.getAction().equals(Fragment_pro_type.action)){
+            } else if (intent.getAction().equals(Fragment_pro_type.action)) {
 
-                Log.e("接收", "接收到的广播：修改成功商品" );
+                Log.e("接收", "接收到的广播：修改成功商品");
 
             }
 
@@ -437,18 +491,19 @@ public class GoodsFragment extends Fragment{
     /**
      * 设置加载提示框
      */
-    protected void showLoadingView(String message){
+    protected void showLoadingView(String message) {
 
         if (mLoadingDialog == null) {
-            mLoadingDialog = new LoadingDialog(this.getActivity(),message, false);
+            mLoadingDialog = new LoadingDialog(this.getActivity(), message, false);
         }
         mLoadingDialog.show();
 
     }
+
     /**
      * 数据加载完成
      */
-    protected void dismissLoadingView(){
+    protected void dismissLoadingView() {
 
         if (mLoadingDialog != null) {
             this.getActivity().runOnUiThread(new Runnable() {

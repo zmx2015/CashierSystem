@@ -13,6 +13,16 @@
         android:text="重新加载数据"
         android:visibility="gone" />
 
+    <ImageView
+        android:id="@+id/no_data"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/ic_no_data"
+        />
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -117,7 +127,7 @@
                         android:layout_height="50dp"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/setting_item_selector"
-                        android:drawableLeft="@mipmap/ic_xitongshezhi"
+                        android:drawableLeft="@mipmap/ic_xitongfenlei"
                         android:gravity="center_vertical"
                         android:text="分类管理"
                         android:textColor="@color/tou"

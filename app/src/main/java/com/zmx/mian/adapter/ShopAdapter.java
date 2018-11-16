@@ -23,10 +23,10 @@ public class ShopAdapter extends FragmentPagerAdapter {
     public ShopAdapter(FragmentManager fm, List<CommodityPosition> cp) {
         super(fm);
         this.cp = cp;
+        Log.e("进来了","初始化商品界面");
     }
     @Override
     public Fragment getItem(int arg0) {
-
 
         Fragment_pro_type fragment =new Fragment_pro_type();
         fragment.setData(cp.get(arg0).getList(),cp.get(arg0).getName(),cp);

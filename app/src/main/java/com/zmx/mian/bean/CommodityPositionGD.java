@@ -14,13 +14,18 @@ public class CommodityPositionGD {
 
     @Id(autoincrement = true)
     public Long id;
-    public String name;
-    public String type;
-    @Generated(hash = 960347377)
-    public CommodityPositionGD(Long id, String name, String type) {
+    public String name;//名称
+    public String type;//没有用到了
+    public String state;//是否显示
+    public String mid;
+    @Generated(hash = 910371906)
+    public CommodityPositionGD(Long id, String name, String type, String state,
+            String mid) {
         this.id = id;
         this.name = name;
         this.type = type;
+        this.state = state;
+        this.mid = mid;
     }
     @Generated(hash = 1464399358)
     public CommodityPositionGD() {
@@ -42,6 +47,18 @@ public class CommodityPositionGD {
     }
     public void setType(String type) {
         this.type = type;
+    }
+    public String getState() {
+        return this.state;
+    }
+    public void setState(String state) {
+        this.state = state;
+    }
+    public String getMid() {
+        return this.mid;
+    }
+    public void setMid(String mid) {
+        this.mid = mid;
     }
 
 }

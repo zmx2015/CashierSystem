@@ -1,13 +1,44 @@
 package com.zmx.mian.fragment.cp;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.chanven.lib.cptr.PtrClassicFrameLayout;
+import com.chanven.lib.cptr.PtrFrameLayout;
+import com.chanven.lib.cptr.PtrHandler;
+import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
 import com.zmx.mian.R;
+import com.zmx.mian.adapter.CPOnlineAdapter;
+import com.zmx.mian.adapter.CPStoresAdapter;
+import com.zmx.mian.bean.CommodityPositionGD;
+import com.zmx.mian.bean.MallTypeBean;
+import com.zmx.mian.bean_dao.CPDao;
+import com.zmx.mian.bean_dao.MallTypeDao;
 import com.zmx.mian.fragment.BaseFragment;
+import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.ui.util.MyDialog;
+import com.zmx.mian.util.MySharedPreferences;
+import com.zmx.mian.util.Tools;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 开发人员：曾敏祥
@@ -16,13 +47,200 @@ import com.zmx.mian.fragment.BaseFragment;
  */
 public class CPOnlineFragment extends BaseFragment {
 
+    private RecyclerView mRecyclerView;
+    //支持下拉刷新的ViewGroup
+    private PtrClassicFrameLayout mPtrFrame;
+    private RecyclerAdapterWithHF mAdapter;
+    //List数据
+    private List<MallTypeBean> lists ;
+    //RecyclerView自定义Adapter
+    private CPOnlineAdapter adapter;
+    //添加Header和Footer的封装类
+    private MallTypeDao dao;
+
+    private int positions;
+    private String pc_name;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.cp_online_fragment,container,false);
+        View view = inflater.inflate(R.layout.cp_stores_fragment,container,false);
+
+        mRecyclerView = view.findViewById(R.id.rv_list);
+        mPtrFrame = view.findViewById(R.id.rotate_header_list_view_frame);
+        dao = new MallTypeDao();
+        lists = dao.queryAll();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(layoutManager);
+        adapter = new CPOnlineAdapter(mActivity, lists);
+        mAdapter = new RecyclerAdapterWithHF(adapter);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener(new RecyclerAdapterWithHF.OnItemClickListener() {
+            @Override
+            public void onItemClick(RecyclerAdapterWithHF adapter, RecyclerView.ViewHolder vh, int position) {
+
+                positions = position;
+                showDialog(lists.get(position));
+
+            }
+        });
+//下拉刷新支持时间
+        mPtrFrame.setLastUpdateTimeRelateObject(this);
+//下拉刷新一些设置 详情参考文档
+        mPtrFrame.setResistance(1.7f);
+        mPtrFrame.setRatioOfHeaderHeightToRefresh(1.2f);
+        mPtrFrame.setDurationToClose(200);
+        mPtrFrame.setDurationToCloseHeader(1000);
+// default is false
+        mPtrFrame.setPullToRefresh(false);
+// default is true
+        mPtrFrame.setKeepHeaderWhenRefresh(true);
+
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                frame.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPtrFrame.refreshComplete();
+                    }
+                }, 1800);
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                // 默认实现，根据实际情况做改动
+                return false;
+            }
+        });
+
+        adapter.notifyDataSetChanged();
 
         return view;
     }
+
+
+    private Handler handler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            switch (msg.what){
+
+                case 1:
+
+                    Log.e("返回的内容",""+msg.obj.toString());
+                    try {
+
+                        JSONObject object = new JSONObject(msg.obj.toString());
+                        if(object.getString("status").equals("1")){
+
+                            //更新本地数据
+                            MallTypeBean mtp = lists.get(positions);
+                            mtp.setTname(pc_name);
+                            dao.UpdateMtp(mtp);
+                            adapter.notifyDataSetChanged();
+                            Toast.makeText(mActivity,"修改成功",Toast.LENGTH_LONG).show();
+
+                        }else{
+
+                            Toast.makeText(mActivity,"修改失败",Toast.LENGTH_LONG).show();
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+
+                case 404:
+                    Log.e("返回的内容","失败");
+                    break;
+
+            }
+
+        }
+    };
+
+
+
+    //    弹出框
+    private MyDialog mMyDialog;
+    private EditText edit_name;
+    private Button submit,cancel;
+    private CheckBox cb;
+
+    public void showDialog(final MallTypeBean mtb) {
+
+        View view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_cp_stores, null);
+        mMyDialog = new MyDialog(mActivity, 0, 0, view, R.style.DialogTheme);
+        mMyDialog.setCancelable(true);
+        mMyDialog.show();
+
+        edit_name = view.findViewById(R.id.edit_name);
+        edit_name.setText(mtb.getTname());
+        submit = view.findViewById(R.id.submit);
+        cancel = view.findViewById(R.id.cancel);
+        cb = view.findViewById(R.id.store_sj);
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(TextUtils.isEmpty(edit_name.getText().toString())){
+
+                    Toast.makeText(mActivity,"请输入名称",Toast.LENGTH_LONG).show();
+
+                }else {
+
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
+                    params.put("mid", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, ""));
+                    params.put("pckey", new Tools().getKey(mActivity));
+                    params.put("account", "0");
+                    params.put("execute", "update");
+                    params.put("id", mtb.getId() + "");
+                    params.put("gname", edit_name.getText().toString());
+                    pc_name = edit_name.getText().toString();
+                    params.put("sort", "0");
+
+                    if (cb.isChecked()) {
+
+                        params.put("state", "1");
+
+                    } else {
+
+                        params.put("state", "0");
+
+                    }
+
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/classpc", params, handler, 1, 404);
+                    mMyDialog.dismiss();
+                }
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMyDialog.dismiss();
+            }
+        });
+
+    }
+
+    //新增成功后刷新
+    public void notifyData(MallTypeBean mtp){
+        Log.e("进来了","进来了");
+        lists.add(mtp);
+        adapter.notifyDataSetChanged();
+
+    }
+
 
 
     @Override

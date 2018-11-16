@@ -237,68 +237,75 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                         List<StoresMessage> lists = new ArrayList<>();
 
                         //获取登录账号的信息
-                        if(json.getString("code") == "1" || json.getString("code").equals("1")){
+                        if(json.getString("code") == "1" || json.getString("code").equals("1")) {
 
-                            JSONArray array = json.getJSONArray("store");
+                            int st = json.getInt("codes");
 
-                            for (int i = 0;i<array.length();i++){
+                            if (st == 1) {
 
-                                JSONObject j = array.getJSONObject(i);
+                                JSONArray array = json.getJSONArray("store");
 
-                                Gson gson = new Gson();
-                                StoresMessage sm = gson.fromJson(j.toString(),StoresMessage.class);
-                                lists.add(sm);
+                                for (int i = 0; i < array.length(); i++) {
+
+                                    JSONObject j = array.getJSONObject(i);
+
+                                    Gson gson = new Gson();
+                                    StoresMessage sm = gson.fromJson(j.toString(), StoresMessage.class);
+                                    lists.add(sm);
+
+                                }
+
+                                boolean b = MySharedPreferences.getInstance(mActivity).getBoolean(MySharedPreferences.JPush_state, false);
+                                if (!b) {
+
+                                    // 调用 Handler 来异步设置别名
+                                    mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, getAccount()));
+
+                                }
+
+                                showToast("登录成功");
+                                loadCheckBoxState();//记录下当前用户记住密码和自动登录的状态;
+
+                                //判断是否已经保存了门店信息了，有就直接跳到主页，没有就跳到门店列表
+                                //获取SharedPreferences对象，使用自定义类的方法来获取对象
+                                String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
+                                Log.e("门店id", "mid" + mid);
+                                if (mid.equals("-1") || mid == "") {
+
+                                    MySharedPreferences.getInstance(mActivity).setDataList("store", lists);
+
+                                    // 通过Intent传递对象给Service
+                                    Intent intent = new Intent();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable("stores", (Serializable) lists);
+                                    intent.setClass(mActivity, StoreListActivity.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                    finish();//关闭页面
+
+                                } else {
+
+                                    startActivity(MainActivity.class);
+                                    finish();//关闭页面
+
+                                }
+
+                            } else {
+
+                                showToast("没有门店，请在后台添加门店");
+                                setLoginBtnClickable(true);  //这里解放登录按钮，设置为可以点击
+                                dismissLoadingView();//隐藏加载框
 
                             }
-
-                            boolean b = MySharedPreferences.getInstance(mActivity).getBoolean(MySharedPreferences.JPush_state,false);
-                            if(!b){
-
-                                // 调用 Handler 来异步设置别名
-                                mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, getAccount()));
-
-                            }
-
-                            showToast("登录成功");
-                            loadCheckBoxState();//记录下当前用户记住密码和自动登录的状态;
-
-                            //判断是否已经保存了门店信息了，有就直接跳到主页，没有就跳到门店列表
-                            //获取SharedPreferences对象，使用自定义类的方法来获取对象
-                            String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id,"");
-                            Log.e("门店id","mid"+mid);
-                            if(mid.equals("-1")|| mid == "") {
-
-                                MySharedPreferences.getInstance(mActivity).setDataList("store", lists);
-
-                                // 通过Intent传递对象给Service
-                                Intent intent = new Intent();
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("stores", (Serializable) lists);
-                                intent.setClass(mActivity, StoreListActivity.class);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                                finish();//关闭页面
-
-                            }else {
-
-                                startActivity(MainActivity.class);
-                                finish();//关闭页面
-
-                            }
-
-                        }else {
-
+                        }else{
                             showToast("输入的登录账号或密码不正确");
-                            setLoginBtnClickable(true);  //这里解放登录按钮，设置为可以点击
                             dismissLoadingView();//隐藏加载框
-
                         }
-
                     } catch (JSONException e) {
                         e.printStackTrace();
 
                         showToast("登录失败！请联系客服");
-                        setLoginBtnClickable(true);  //这里解放登录按钮，设置为可以点击
+                        setLoginBtnClickable(true);  //这里解放登录 按钮，设置为可以点击
                         dismissLoadingView();//隐藏加载框
 
                     }

@@ -492,6 +492,32 @@
                             android:text="前台收银" />
 
                     </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/relative7"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/layout_background"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        >
+
+                        <ImageView
+                            android:id="@+id/image7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@mipmap/fast_bank_pay"
+                            />
+
+                        <TextView
+                            android:layout_below="@+id/image7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="卡卷促销"
+                            android:id="@+id/textView7" />
+
+                    </RelativeLayout>
+
                     <RelativeLayout
                         android:id="@+id/relative0"
                         android:layout_width="match_parent"
@@ -513,17 +539,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="更多功能"
-                            android:id="@+id/textView6" />
-
-                    </RelativeLayout>
-                    <RelativeLayout
-                        android:id="@+id/relative8"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:layout_weight="1"
-                        >
-
+                            android:id="@+id/textView0" />
 
                     </RelativeLayout>
                 </LinearLayout>

@@ -257,8 +257,11 @@ public class CPStoresFragment extends BaseFragment{
     }
 
     //新增成功后刷新
-    public void notifyData(){
+    public void notifyData(CommodityPositionGD cp){
+        Log.e("进来了","进来了");
+        lists.add(cp);
         adapter.notifyDataSetChanged();
+
     }
 
 

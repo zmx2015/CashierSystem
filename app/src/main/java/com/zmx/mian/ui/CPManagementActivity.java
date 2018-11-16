@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.TabFragmentAdapter;
 import com.zmx.mian.bean.CommodityPositionGD;
@@ -51,6 +52,8 @@ public class CPManagementActivity extends BaseActivity {
     private ViewPager mViewPager;
     private CPOnlineFragment sof;//商城类别的fragment
     private CPStoresFragment oof;//门店类别的fragment
+
+    private CommodityPositionGD cp = new CommodityPositionGD();//要保存的类别
 
     private int state=0;//默认为零，1为收银分类，2为商城分类
     private CPDao cpDao;
@@ -113,10 +116,16 @@ public class CPManagementActivity extends BaseActivity {
 
                         Toast.makeText(mActivity,jsonObject.getString("content"),Toast.LENGTH_LONG).show();
 
+                        Log.e("state的状态","state="+state);
+
                         if(state == 1){
-//                            CommodityPositionGD cp = new CommodityPositionGD();
-//                            cpDao.insertCp(cp);
-                            oof.notifyData();
+
+                            Log.e("state的状态","进来了" );
+                            cp.setId(Long.parseLong(jsonObject.getString("typeId")));
+                           long l =  cpDao.insertCp(cp);
+                            Log.e("state的状态","l ="+l );
+                            oof.notifyData(cp);
+
                         }
 
                     }else{
@@ -203,13 +212,20 @@ public class CPManagementActivity extends BaseActivity {
                     params.put("gname", edit_name.getText().toString());
                     params.put("sort", "0");
 
+                    cp.setName(edit_name.getText().toString());
+                    cp.setMid(MyApplication.getStore_id());
+
                     if (cb.isChecked()) {
 
                         params.put("state", "1");
 
+                        cp.setState(1+"");
+
                     } else {
 
                         params.put("state", "0");
+
+                        cp.setState(0+"");
 
                     }
 

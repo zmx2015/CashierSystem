@@ -27,6 +27,8 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
         public final static Property Type = new Property(2, String.class, "type", false, "TYPE");
+        public final static Property State = new Property(3, String.class, "state", false, "STATE");
+        public final static Property Mid = new Property(4, String.class, "mid", false, "MID");
     }
 
 
@@ -44,7 +46,9 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
         db.execSQL("CREATE TABLE " + constraint + "\"COMMODITY_POSITION_GD\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"NAME\" TEXT," + // 1: name
-                "\"TYPE\" TEXT);"); // 2: type
+                "\"TYPE\" TEXT," + // 2: type
+                "\"STATE\" TEXT," + // 3: state
+                "\"MID\" TEXT);"); // 4: mid
     }
 
     /** Drops the underlying database table. */
@@ -71,6 +75,16 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
         if (type != null) {
             stmt.bindString(3, type);
         }
+ 
+        String state = entity.getState();
+        if (state != null) {
+            stmt.bindString(4, state);
+        }
+ 
+        String mid = entity.getMid();
+        if (mid != null) {
+            stmt.bindString(5, mid);
+        }
     }
 
     @Override
@@ -91,6 +105,16 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
         if (type != null) {
             stmt.bindString(3, type);
         }
+ 
+        String state = entity.getState();
+        if (state != null) {
+            stmt.bindString(4, state);
+        }
+ 
+        String mid = entity.getMid();
+        if (mid != null) {
+            stmt.bindString(5, mid);
+        }
     }
 
     @Override
@@ -103,7 +127,9 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
         CommodityPositionGD entity = new CommodityPositionGD( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // type
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // type
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // state
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // mid
         );
         return entity;
     }
@@ -113,6 +139,8 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setType(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setState(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setMid(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
      }
     
     @Override
