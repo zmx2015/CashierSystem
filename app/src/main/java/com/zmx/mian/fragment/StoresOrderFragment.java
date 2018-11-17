@@ -81,8 +81,6 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
     private View s_o_all_view_1,s_o_all_view_2,s_o_all_view_3,s_o_all_view_4;
     private int CHOOLS_STATE = 1;//1为判断用户是否点击哪个排序，lift为1是SORT_ASC 升序，为2是SORT_DESC 降序，判断是否升降排列
 
-
-
     private static final String PAGE_NAME_KEY = "PAGE_NAME_KEY";
 
     public static StoresOrderFragment getInstance(String pageName) {
@@ -149,6 +147,7 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
                 params.put("num",  p.getPageSize() + "");
                 params.put("admin", MyApplication.getName());
                 params.put("mid", MyApplication.getStore_id());
+                params.put("type", sort);
                 OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, handler, 3, 404);
 
             }
@@ -178,6 +177,7 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
                     params.put("num",  p.getPageSize() + "");
                     params.put("admin", MyApplication.getName());
                     params.put("mid", MyApplication.getStore_id());
+                    params.put("type", sort);
 
                     OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, handler, 3, 404);
                 }
@@ -251,7 +251,7 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
                 showLoadingView("加载中...");
                 mRecyclerView.scrollToPosition(0);//回到顶部
                 CHOOLS_STATE = 3;
-                handler.sendEmptyMessage(2); sort = "SORT_DESC";
+                handler.sendEmptyMessage(2);
                 sort = "user";
                 p.setPageNow(1);
                 load_tag = 0;
@@ -448,7 +448,12 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
         if (load_tag == 0) {
 
             if(mo.size()>0){
+
                 mPtrFrame.setLoadMoreEnable(true);
+
+            }else{
+
+                mPtrFrame.setLoadMoreEnable(false);
             }
 
 

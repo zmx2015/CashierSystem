@@ -12,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.zmx.mian.MyApplication;
@@ -23,6 +24,9 @@ import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.ui.util.GlideCircleTransform;
 import com.zmx.mian.ui.util.MyButton;
 import com.zmx.mian.util.Tools;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,8 +96,8 @@ public class Pro_type_adapter extends BaseAdapter {
         final Goods c = gs.get(position);
 
         myView.name.setText(c.getG_name());
-        myView.price_text.setText(Html.fromHtml("零售价：<font color='#FF0000'>"+c.getG_price()+"</font>"));
-        myView.vip_price_text.setText(Html.fromHtml("会员价：<font color='#FF0000'>"+c.getVip_g_price()+"</font>"));
+        myView.price_text.setText(Html.fromHtml("零售价：<font color='#FF0000'>" + c.getG_price() + "</font>"));
+        myView.vip_price_text.setText(Html.fromHtml("会员价：<font color='#FF0000'>" + c.getVip_g_price() + "</font>"));
         Glide.with(context).load("http://www.yiyuangy.com/uploads/goods/" + c.getG_img()).transform(new GlideCircleTransform(context)).error(R.mipmap.logo).into(myView.icon);
 
         myView.button1.setTag(c);
@@ -212,7 +216,7 @@ public class Pro_type_adapter extends BaseAdapter {
 
     public class MyView {
         ImageView icon;
-        TextView name, price_text,vip_price_text;
+        TextView name, price_text, vip_price_text;
         MyButton button1, button2;
     }
 
@@ -252,11 +256,25 @@ public class Pro_type_adapter extends BaseAdapter {
 
                     refresh();
 
-                    Log.e("分类类别", "失败");
+                    try {
+
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+                        if (jsonObject.getString("code").equals("1")) {
+                            Toast.makeText(context, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
+
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
                     break;
 
                 case 404:
-                    Log.e("分类类别", "成功");
                     break;
 
             }

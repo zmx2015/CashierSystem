@@ -102,6 +102,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         setTitleColor(R.id.position_view);
         gdao = new goodsDao();
 
+        showLoadingView("加载中...");
         smb = (StockManagementBean) getIntent().getSerializableExtra("sb");
         Log.e("pid", "pid" + smb.getId());
         number = smb.getNumber();
@@ -229,8 +230,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         params.put("p_order", smb.getNumber());
         params.put("list", jsonString);
 
-        Log.e("现在的状态", "" + S_UPLOAD);
-
         if (S_UPLOAD == 0) {
 
             params.put("type", "insert");
@@ -299,6 +298,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
                 case 2:
 
+                    dismissLoadingView();
                     adapter.notifyDataSetChanged();
 
                     break;
@@ -331,6 +331,13 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                         e.printStackTrace();
                     }
 
+
+                    break;
+
+                case 404:
+
+                    dismissLoadingView();
+                    Toast.makeText(mActivity,"连接服务器失败！",Toast.LENGTH_LONG).show();
 
                     break;
             }
@@ -685,6 +692,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
         }
     };
+
 
 
 }

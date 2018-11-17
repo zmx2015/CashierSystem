@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
+import com.zmx.mian.ui.AboutActivity;
 import com.zmx.mian.ui.FeedbackActivity;
 import com.zmx.mian.ui.LoginActivity;
 import com.zmx.mian.util.MySharedPreferences;
@@ -40,7 +41,8 @@ public class MineFragment extends BaseFragment{
         about_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(FeedbackActivity.class);
+//                startActivity(FeedbackActivity.class);
+                startActivity(AboutActivity.class);
             }
         });
 

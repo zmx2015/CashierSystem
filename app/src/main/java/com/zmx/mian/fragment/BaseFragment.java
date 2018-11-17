@@ -16,7 +16,7 @@ import com.zmx.mian.ui.util.LoadingDialog;
  * Created by Administrator on 2018-08-06.
  */
 
-public abstract class BaseFragment  extends Fragment {
+public abstract class BaseFragment extends Fragment {
 
     /**
      * 跳转到下一个activity

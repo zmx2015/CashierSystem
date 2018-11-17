@@ -18,14 +18,23 @@ import com.chanven.lib.cptr.PtrClassicFrameLayout;
 import com.chanven.lib.cptr.PtrFrameLayout;
 import com.chanven.lib.cptr.PtrHandler;
 import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.SearchGoodsAdapter;
 import com.zmx.mian.bean.Goods;
 import com.zmx.mian.bean_dao.goodsDao;
 import com.zmx.mian.fragment.Fragment_pro_type;
+import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.util.Tools;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 开发人员：曾敏祥
@@ -34,13 +43,12 @@ import java.util.List;
  */
 public class SearchGoodsActivity extends BaseActivity {
 
-    private List<Goods> lists;
+    private List<Goods> lists = new ArrayList<>();
     private SearchGoodsAdapter adapter;
     private RecyclerView rv;
     private PtrClassicFrameLayout mPtrFrame;
     private RecyclerAdapterWithHF mAdapter;
     private EditText et;
-    private goodsDao gdao;
     private ImageView no_data;
 
 
@@ -54,10 +62,8 @@ public class SearchGoodsActivity extends BaseActivity {
 
         // 沉浸式状态栏
         setTitleColor(R.id.position_view);
-        gdao = new goodsDao();
         rv = findViewById(R.id.search_view);
         no_data = findViewById(R.id.no_data);
-        lists = gdao.SelectDimGoods("");
         ;
         adapter = new SearchGoodsAdapter(this, lists);
         rv.setLayoutManager(new LinearLayoutManager(this));
@@ -138,19 +144,12 @@ public class SearchGoodsActivity extends BaseActivity {
                 //查询更新
                 if (et.getText().toString() != null || !et.getText().toString().equals("")) {
 
-                    List<Goods> gs = gdao.SelectDimGoods(et.getText().toString());
 
-                    for (Goods gg : gs) {
-
-                        lists.add(gg);
-
-                    }
-
-                    Log.e("查询到的商品数量=", "" + lists.size());
+                    adapter.notifyDataSetChanged();
+                    searchGoods(et.getText().toString());
 
                 }
 
-                handler.sendEmptyMessage(1);
 
             }
         });
@@ -167,16 +166,38 @@ public class SearchGoodsActivity extends BaseActivity {
 
                 case 1:
 
-                    Log.e("ssffasd", "fda=" + lists.size());
 
-                    if (lists.size() > 0) {
-                        no_data.setVisibility(View.GONE);
-                    } else {
-                        no_data.setVisibility(View.VISIBLE);
+                    Log.e("查询到的商品",""+msg.obj.toString());
+                    try {
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+
+                        if(jsonObject.getString("code").equals("1")){
+
+                            lists.clear();
+                            no_data.setVisibility(View.GONE);
+
+                            JSONArray jsonArray = jsonObject.getJSONArray("list");
+
+                            for (int i=0;i<jsonArray.length();i++){
+
+                                JSONObject j = jsonArray.getJSONObject(i);
+
+                                Goods g = new Goods();
+                                g.setG_id(j.getString("gid"));
+                                g.setG_img(j.getString("img"));
+                                g.setG_name(j.getString("name"));
+                                g.setG_price(j.getString("gds_price"));
+                                lists.add(g);
+
+                            }
+                            adapter.notifyDataSetChanged();
+                        }else{
+                            no_data.setVisibility(View.VISIBLE);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-                    adapter.notifyDataSetChanged();
-
 
                     break;
 
@@ -184,5 +205,21 @@ public class SearchGoodsActivity extends BaseActivity {
 
         }
     };
+
+
+    //搜索商品
+    public void searchGoods(String name){
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("pckey", new Tools().getKey(mActivity));
+        params.put("account", "0");
+        params.put("name", name);
+
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/search", params, handler, 1, 404);
+
+
+    }
 
 }

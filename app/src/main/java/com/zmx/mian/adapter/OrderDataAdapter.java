@@ -83,6 +83,9 @@ public class OrderDataAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         if(mo.get(position).getState() == 1){
 
+            viewholder.order_zt.setText(Html.fromHtml("状态：<font color='#ff0000'>待送货</font>"));
+
+        }else if(mo.get(position).getState() == 2){
             viewholder.order_zt.setText("状态：正常");
         }else{
 

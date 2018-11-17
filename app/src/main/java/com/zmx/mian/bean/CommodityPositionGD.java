@@ -4,13 +4,17 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.io.Serializable;
+
 /**
  * 开发人员：曾敏祥
  * 开发时间：2018-09-18 16:16
  * 类功能：保存到greendao
  */
 @Entity
-public class CommodityPositionGD {
+public class CommodityPositionGD implements Serializable{
+
+    static final long serialVersionUID = -15515456L;//解决实现Serializable接口不能编译通过的问题
 
     @Id(autoincrement = true)
     public Long id;

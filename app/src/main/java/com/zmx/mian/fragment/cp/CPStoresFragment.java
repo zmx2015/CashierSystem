@@ -23,6 +23,7 @@ import com.chanven.lib.cptr.PtrClassicFrameLayout;
 import com.chanven.lib.cptr.PtrFrameLayout;
 import com.chanven.lib.cptr.PtrHandler;
 import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.CPStoresAdapter;
 import com.zmx.mian.adapter.StoreListAdapter;
@@ -37,10 +38,12 @@ import com.zmx.mian.ui.util.MyDialog;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,14 +62,13 @@ public class CPStoresFragment extends BaseFragment{
     private PtrClassicFrameLayout mPtrFrame;
     private RecyclerAdapterWithHF mAdapter;
     //List数据
-    private List<CommodityPositionGD> lists ;
+    private List<CommodityPositionGD> lists = new ArrayList<>();
     //RecyclerView自定义Adapter
     private CPStoresAdapter adapter;
     //添加Header和Footer的封装类
-    private CPDao cpDao;
 
     private int positions;
-    private String pc_name;
+    private CommodityPositionGD c;
 
     @Nullable
     @Override
@@ -75,8 +77,6 @@ public class CPStoresFragment extends BaseFragment{
 
         mRecyclerView = view.findViewById(R.id.rv_list);
         mPtrFrame = view.findViewById(R.id.rotate_header_list_view_frame);
-        cpDao = new CPDao();
-        lists = cpDao.queryAll();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -123,7 +123,7 @@ public class CPStoresFragment extends BaseFragment{
             }
         });
 
-        adapter.notifyDataSetChanged();
+        selectStores();
 
         return view;
     }
@@ -142,24 +142,54 @@ public class CPStoresFragment extends BaseFragment{
 
             switch (msg.what){
 
+                case 0:
+
+                    lists.clear();
+                    JSONObject json = null;
+                    try {
+                        json = new JSONObject(msg.obj.toString());
+                        //先判断有没有分类先
+                        if (json.getString("code").equals("1")) {
+
+                            //有分类先保存分类数据
+                            JSONArray j_store = json.getJSONArray("list");
+                            for (int i = 0; i < j_store.length(); i++) {
+
+                                CommodityPositionGD cpGD = new CommodityPositionGD();
+
+                                JSONObject js = j_store.getJSONObject(i);
+                                cpGD.setType(js.getString("id"));
+                                cpGD.setName(js.getString("gname"));
+                                cpGD.setState(js.getString("state"));
+                                cpGD.setId(Long.parseLong(js.getString("id")));
+                                lists.add(cpGD);
+
+                            }
+
+                            adapter.notifyDataSetChanged();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+
                 case 1:
 
-                    Log.e("返回的内容",""+msg.obj.toString());
                     try {
 
                         JSONObject object = new JSONObject(msg.obj.toString());
-                        if(object.getString("status").equals("1")){
+                        if(object.getString("code").equals("1")){
 
-                            //更新本地数据
-                            CommodityPositionGD cp = lists.get(positions);
-                            cp.setName(pc_name);
-                            cpDao.UpdateCp(cp);
+                            //更新
+                            lists.set(positions,c);
                             adapter.notifyDataSetChanged();
-                            Toast.makeText(mActivity,"修改成功",Toast.LENGTH_LONG).show();
+                            Toast.makeText(mActivity,object.getString("content"),Toast.LENGTH_LONG).show();
 
                         }else{
 
-                            Toast.makeText(mActivity,"修改失败",Toast.LENGTH_LONG).show();
+                            Toast.makeText(mActivity,object.getString("content"),Toast.LENGTH_LONG).show();
 
                         }
 
@@ -200,6 +230,7 @@ public class CPStoresFragment extends BaseFragment{
 
     public void showDialog(final CommodityPositionGD cp) {
 
+        this.c = cp;
         View view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_cp_stores, null);
         mMyDialog = new MyDialog(mActivity, 0, 0, view, R.style.DialogTheme);
         mMyDialog.setCancelable(true);
@@ -210,6 +241,10 @@ public class CPStoresFragment extends BaseFragment{
         submit = view.findViewById(R.id.submit);
         cancel = view.findViewById(R.id.cancel);
         cb = view.findViewById(R.id.store_sj);
+
+        if(cp.getState().equals("1")){
+            cb.setChecked(true);
+        }
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,20 +264,22 @@ public class CPStoresFragment extends BaseFragment{
                     params.put("execute", "update");
                     params.put("id", cp.getId() + "");
                     params.put("gname", edit_name.getText().toString());
-                    pc_name = edit_name.getText().toString();
+                    c.setName(edit_name.getText().toString());
                     params.put("sort", "0");
 
                     if (cb.isChecked()) {
 
                         params.put("state", "1");
+                        c.setState("1");
 
                     } else {
 
-                        params.put("state", "0");
+                        params.put("state", "2");
+                        c.setState("2");
 
                     }
 
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/classpc", params, handler, 1, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/classPc", params, handler, 1, 404);
                     mMyDialog.dismiss();
                 }
             }
@@ -257,12 +294,24 @@ public class CPStoresFragment extends BaseFragment{
     }
 
     //新增成功后刷新
-    public void notifyData(CommodityPositionGD cp){
-        Log.e("进来了","进来了");
-        lists.add(cp);
-        adapter.notifyDataSetChanged();
+    public void notifyData(){
+
+        selectStores();
 
     }
 
+
+    //查询所有门店分类
+    public void selectStores(){
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("pckey", new Tools().getKey(this.getActivity()));
+        params.put("account", "0");
+        params.put("type", "store");
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, handler, 0, 404);
+
+    }
 
 }

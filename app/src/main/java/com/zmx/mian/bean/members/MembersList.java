@@ -18,6 +18,7 @@ public class MembersList implements Serializable{
     private String wechat;
     private String wechatName;
     private String mob;
+    private String total;
     private String birthday;
     private String pubtime;
     private String money;
@@ -25,6 +26,8 @@ public class MembersList implements Serializable{
     private int integral;//积分
     private int mid;
     private long lasttime;
+    private String buytime;
+
     public void setUid(int uid) {
         this.uid = uid;
     }
@@ -119,6 +122,22 @@ public class MembersList implements Serializable{
 
     public void setLasttime(long lasttime) {
         this.lasttime = lasttime;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
+
+    public String getBuytime() {
+        return buytime;
+    }
+
+    public void setBuytime(String buytime) {
+        this.buytime = buytime;
     }
 
     public void setWechatName(String wechatName) {

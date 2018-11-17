@@ -25,7 +25,6 @@ public class CPDao {
      */
     public static long insertCp(CommodityPositionGD cp) {
 
-        Log.e("进来了","进来了"+cp.getName()+"  d "+cp.getId());
         return cpDao.insertOrReplace(cp);
 
     }

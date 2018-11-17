@@ -98,7 +98,7 @@
             android:textColor="@color/grey_500"
             android:textSize="16sp"
             android:background="@null"
-            android:hint="西瓜"
+            android:hint=""
             />
 
 
@@ -129,7 +129,7 @@
             android:background="@null"
             android:textColor="@color/grey_500"
             android:textSize="16sp"
-            android:hint="25.6"
+            android:hint=""
             />
 
 
@@ -160,7 +160,7 @@
             android:background="@null"
             android:textColor="@color/grey_500"
             android:textSize="16sp"
-            android:hint="25.6"
+            android:hint=""
             />
 
     </RelativeLayout>
@@ -178,7 +178,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_15"
             android:textColor="@color/drop_down_unselected"
-            android:text="商品类别"
+            android:text="门店分类"
             android:textSize="16sp" />
 
         <Spinner
@@ -190,6 +190,33 @@
             android:id="@+id/g_fenlei"
             />
     </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="商城分类"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/grey_500"
+            android:textSize="16sp"
+            android:id="@+id/sc_fenlei"
+            />
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"

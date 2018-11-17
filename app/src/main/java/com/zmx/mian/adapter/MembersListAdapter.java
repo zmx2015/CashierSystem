@@ -13,6 +13,7 @@ import com.zmx.mian.R;
 import com.zmx.mian.bean.GoodsItemRankingBean;
 import com.zmx.mian.bean.members.MembersList;
 import com.zmx.mian.ui.util.GlideCircleTransform;
+import com.zmx.mian.util.Tools;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private LayoutInflater mLayoutInflater;
     private Context mContext;
     private List<MembersList> lists;
+    private int state=0;
 
     public MembersListAdapter(Context context, List<MembersList> lists) {
         mContext = context;
@@ -33,6 +35,11 @@ public class MembersListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         mLayoutInflater = LayoutInflater.from(context);
     }
 
+    public void notifyData(int state){
+
+        this.state = state;
+        this.notifyDataSetChanged();
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -47,16 +54,32 @@ public class MembersListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         MembersList m = lists.get(position);
 
         if(m.getWechatName() == null){
-
         viewholder.members_name.setText("水果大户");
-
         }else{
-
             viewholder.members_name.setText(m.getWechatName());
-
         }
         viewholder.members_number.setText("会员账号："+m.getAccount()+"   积分："+m.getIntegral());
         Glide.with(mContext).load(m.getWechatImg()).transform(new GlideCircleTransform(mContext)).error(R.drawable.icon_login_account).into(viewholder.members_head);
+
+        if(state == 1){
+
+            if(m.getPubtime() != null){
+
+                viewholder.bei.setText(Tools.refFormatNowDate(m.getPubtime(),1));
+            }
+
+        }else if(state == 2){
+            viewholder.bei.setText("积分："+m.getIntegral());
+        }else if(state == 3){
+            viewholder.bei.setText("金额："+m.getTotal());
+        }else if(state == 4){
+
+            if(m.getBuytime() != null){
+                viewholder.bei.setText("购买时间："+Tools.refFormatNowDate(m.getBuytime(),1));
+            }
+
+        }
+
 
     }
 
@@ -71,7 +94,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     //自定义的ViewHolder，持有每个Item的的所有界面元素
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView  members_name, members_number;
+        TextView  members_name, members_number,bei;
         ImageView members_head;
 
         public MyViewHolder(View itemView) {
@@ -79,6 +102,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             members_head = itemView.findViewById(R.id.members_head);
             members_name = (TextView) itemView.findViewById(R.id.members_name);
             members_number = (TextView) itemView.findViewById(R.id.members_number);
+            bei = itemView.findViewById(R.id.bei);
         }
     }
 

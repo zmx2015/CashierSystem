@@ -24,9 +24,9 @@ public class DaoMaster extends AbstractDaoMaster {
         CommodityPositionGDDao.createTable(db, ifNotExists);
         FeedbackBeanDao.createTable(db, ifNotExists);
         GoodsDao.createTable(db, ifNotExists);
+        MallTypeBeanDao.createTable(db, ifNotExists);
         StockManagementBeanDao.createTable(db, ifNotExists);
         StockManagementDetailsBeanDao.createTable(db, ifNotExists);
-        MallTypeBeanDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -34,9 +34,9 @@ public class DaoMaster extends AbstractDaoMaster {
         CommodityPositionGDDao.dropTable(db, ifExists);
         FeedbackBeanDao.dropTable(db, ifExists);
         GoodsDao.dropTable(db, ifExists);
+        MallTypeBeanDao.dropTable(db, ifExists);
         StockManagementBeanDao.dropTable(db, ifExists);
         StockManagementDetailsBeanDao.dropTable(db, ifExists);
-        MallTypeBeanDao.dropTable(db, ifExists);
     }
 
     /**
@@ -58,9 +58,9 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(CommodityPositionGDDao.class);
         registerDaoClass(FeedbackBeanDao.class);
         registerDaoClass(GoodsDao.class);
+        registerDaoClass(MallTypeBeanDao.class);
         registerDaoClass(StockManagementBeanDao.class);
         registerDaoClass(StockManagementDetailsBeanDao.class);
-        registerDaoClass(MallTypeBeanDao.class);
     }
 
     public DaoSession newSession() {

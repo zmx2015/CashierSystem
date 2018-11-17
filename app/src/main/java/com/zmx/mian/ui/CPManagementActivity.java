@@ -53,9 +53,7 @@ public class CPManagementActivity extends BaseActivity {
     private CPOnlineFragment sof;//商城类别的fragment
     private CPStoresFragment oof;//门店类别的fragment
 
-    private CommodityPositionGD cp = new CommodityPositionGD();//要保存的类别
-
-    private int state=0;//默认为零，1为收银分类，2为商城分类
+    private int state = 0;//默认为零，1为收银分类，2为商城分类
     private CPDao cpDao;
 
     @Override
@@ -93,58 +91,77 @@ public class CPManagementActivity extends BaseActivity {
         mFragmentList.add(oof);
         mFragmentList.add(sof);
 
-        mPagerAdapter = new TabFragmentAdapter(mActivity,getSupportFragmentManager(),
+        mPagerAdapter = new TabFragmentAdapter(mActivity, getSupportFragmentManager(),
                 mFragmentList, mPageTitleList, mBadgeCountList);
         mViewPager.setAdapter(mPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
     }
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
 
-            switch (msg.what){
+            switch (msg.what) {
 
                 case 1:
 
-                try {
+                    try {
 
-                    JSONObject jsonObject = new JSONObject(msg.obj.toString());
-                    if(jsonObject.getString("status").equals("1")){
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+                        if (jsonObject.getString("code").equals("1")) {
 
-                        Toast.makeText(mActivity,jsonObject.getString("content"),Toast.LENGTH_LONG).show();
+                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
 
-                        Log.e("state的状态","state="+state);
+                            if (state == 1) {
+                                //通知更新
+                                oof.notifyData();
+                            }
 
-                        if(state == 1){
+                        } else {
 
-                            Log.e("state的状态","进来了" );
-                            cp.setId(Long.parseLong(jsonObject.getString("typeId")));
-                           long l =  cpDao.insertCp(cp);
-                            Log.e("state的状态","l ="+l );
-                            oof.notifyData(cp);
-
+                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
                         }
 
-                    }else{
 
-                        Toast.makeText(mActivity,jsonObject.getString("content"),Toast.LENGTH_LONG).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
 
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    break;
 
-                Log.e("返回的数据",""+msg.obj.toString());
+                case 2:
+
+                    try {
+
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+                        if (jsonObject.getString("code").equals("1")) {
+
+                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
+
+                            if (state == 2) {
+                                //通知更新
+                                sof.notifyData();
+                            }
+
+                        } else {
+
+                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
 
                     break;
 
                 case 404:
 
-                    Toast.makeText(mActivity,"添加失败",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, "添加失败", Toast.LENGTH_LONG).show();
 
 
                     break;
@@ -158,7 +175,7 @@ public class CPManagementActivity extends BaseActivity {
     //    弹出框
     private MyDialog mMyDialog;
     private EditText edit_name;
-    private Button submit,cancel;
+    private Button submit, cancel;
     private CheckBox cb;
     private RadioGroup radioGroup;
 
@@ -194,13 +211,12 @@ public class CPManagementActivity extends BaseActivity {
         });
 
 
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 //收银
-                if(state == 1){
+                if (state == 1) {
 
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
@@ -212,27 +228,21 @@ public class CPManagementActivity extends BaseActivity {
                     params.put("gname", edit_name.getText().toString());
                     params.put("sort", "0");
 
-                    cp.setName(edit_name.getText().toString());
-                    cp.setMid(MyApplication.getStore_id());
 
                     if (cb.isChecked()) {
 
                         params.put("state", "1");
 
-                        cp.setState(1+"");
-
                     } else {
 
-                        params.put("state", "0");
-
-                        cp.setState(0+"");
+                        params.put("state", "2");
 
                     }
 
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/classpc", params, handler, 1, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/classPc", params, handler, 1, 404);
                     mMyDialog.dismiss();
 
-                }else if(state == 2){
+                } else if (state == 2) {
 
 
                     Map<String, String> params = new HashMap<String, String>();
@@ -251,15 +261,15 @@ public class CPManagementActivity extends BaseActivity {
 
                     } else {
 
-                        params.put("state", "0");
+                        params.put("state", "2");
 
                     }
 
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/classMall", params, handler, 1, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/classMall", params, handler, 2, 404);
                     mMyDialog.dismiss();
 
-                }else{
-                    Toast.makeText(mActivity,"请选择要创建商城或者收银的分类",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mActivity, "请选择要创建商城或者收银的分类", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -272,7 +282,6 @@ public class CPManagementActivity extends BaseActivity {
         });
 
     }
-
 
 
 }

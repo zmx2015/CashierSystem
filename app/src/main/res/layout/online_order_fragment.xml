@@ -29,7 +29,7 @@
                 android:layout_height="40dp"
                 android:textColor="@color/tou"
                 android:gravity="center"
-                android:text="全部订单"
+                android:text="新订单"
                 />
 
             <View
@@ -54,7 +54,7 @@
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:textColor="@color/tv_gray_deep"
-                android:text="待接单"
+                android:text="已完成"
                 />
             <View
                 android:id="@+id/s_o_all_view_2"
@@ -77,7 +77,7 @@
                 android:layout_height="40dp"
                 android:textColor="@color/tv_gray_deep"
                 android:gravity="center"
-                android:text="已接单"
+                android:text="已取消"
                 />
             <View
                 android:id="@+id/s_o_all_view_3"

@@ -24,6 +24,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.ShopAdapter;
 import com.zmx.mian.bean.CommodityPosition;
@@ -39,6 +40,7 @@ import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.AddGoodsActivity;
 import com.zmx.mian.ui.CPManagementActivity;
 import com.zmx.mian.ui.SearchGoodsActivity;
+import com.zmx.mian.ui.util.CustomScrollViewPager;
 import com.zmx.mian.ui.util.LoadingDialog;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
@@ -60,36 +62,34 @@ import java.util.Map;
  * 类功能：商品管理
  */
 
-public class GoodsFragment extends Fragment {
+public class GoodsFragment extends Fragment{
 
     private TextView toolsTextViews[];
     private View views[];
     private LayoutInflater inflater;
     private ScrollView scrollView;
     private int scrllViewWidth = 0, scrollViewMiddle = 0;
-    private ViewPager shop_pager;
+    private CustomScrollViewPager shop_pager;
     private int currentItem = 0;
     private ShopAdapter shopAdapter;
     private ImageView type_icon;
     private Button again_load;
     private RelativeLayout search_btn, cp_management;
 
-    private List<CommodityPosition> cp;
+    private List<CommodityPositionGD> cp;
     private String mid;
-
-    private goodsDao gd;
-    private CPDao dao;
-    private MallTypeDao mtDao;
 
     private ImageView no_data;//没有数据的时候显示
 
 
     protected LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_goods, container, false);
+
         no_data = view.findViewById(R.id.no_data);
         again_load = view.findViewById(R.id.again_load);
         again_load.setOnClickListener(new View.OnClickListener() {
@@ -137,9 +137,6 @@ public class GoodsFragment extends Fragment {
 
         again_load.setVisibility(View.GONE);
         showLoadingView("加载中.....");
-        gd = new goodsDao();
-        dao = new CPDao();
-        mtDao = new MallTypeDao();
         cp = new ArrayList<>();
 
         cp_management = view.findViewById(R.id.cp_management);
@@ -156,13 +153,12 @@ public class GoodsFragment extends Fragment {
 
         mid = MySharedPreferences.getInstance(this.getActivity()).getString(MySharedPreferences.store_id, "");
         Map<String, String> params = new HashMap<String, String>();
-        params.put("mid", mid);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/goodsTwo", params, h, 2, 404);
-
-        //注册监听广播
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(AddGoodsActivity.action);
-        this.getActivity().registerReceiver(broadcastReceiver, filter);
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("pckey", new Tools().getKey(this.getActivity()));
+        params.put("account", "0");
+        params.put("type", "store");
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, h, 2, 404);
 
     }
 
@@ -203,6 +199,10 @@ public class GoodsFragment extends Fragment {
 
                 case 2:
                     getGoodsList(msg.obj.toString());
+                    break;
+
+                case 3:
+                    dismissLoadingView();
                     break;
 
                 case 404:
@@ -246,8 +246,9 @@ public class GoodsFragment extends Fragment {
         @Override
         public void onClick(View v) {
 
-            Log.e("点击了","点击了"+v.getId());
+            showLoadingView("加载中...");
             shop_pager.setCurrentItem(v.getId());
+
 
         }
     };
@@ -260,7 +261,7 @@ public class GoodsFragment extends Fragment {
     private void initPager() {
 
         scrollView = getActivity().findViewById(R.id.tools_scrlllview);
-        shopAdapter = new ShopAdapter(getFragmentManager(), cp);
+        shopAdapter = new ShopAdapter(getFragmentManager(), cp,h);
         inflater = LayoutInflater.from(getActivity());
         shop_pager = getActivity().findViewById(R.id.goods_pager);
         shop_pager.setAdapter(shopAdapter);
@@ -297,108 +298,30 @@ public class GoodsFragment extends Fragment {
         cp.clear();
         JSONObject json = null;
 
+        Log.e("返回",""+goods);
         try {
-
             json = new JSONObject(goods);
-
-            String storeType = json.getString("storeType");//获取门店分类
-            String mallType = json.getString("mallType");//获取商城分类
-            String data = json.getString("goods");//获取全部商品
-
-            //判断各个参数有没有数据
-            JSONObject store = new JSONObject(storeType);
-            JSONObject mall = new JSONObject(mallType);
-            JSONObject g_data = new JSONObject(data);
-
-            List<Goods> gs = new ArrayList<>();
-
             //先判断有没有分类先
-            if (store.getString("code").equals("1")) {
+            if (json.getString("code").equals("1")) {
 
                 //有分类先保存分类数据
-                JSONArray j_store = store.getJSONArray("list");
+                JSONArray j_store = json.getJSONArray("list");
                 for (int i = 0; i < j_store.length(); i++) {
 
                     CommodityPositionGD cpGD = new CommodityPositionGD();
-                    CommodityPosition c = new CommodityPosition();
 
                     JSONObject js = j_store.getJSONObject(i);
-                    c.setType(js.getString("id"));
-                    c.setName(js.getString("gname"));
-
-                    //保存到本地
-                    cpGD.setId(Long.parseLong(js.getString("id")));
-                    cpGD.setName(js.getString("gname"));
                     cpGD.setType(js.getString("id"));
-                    long l = dao.insertCp(cpGD);//保存到本地
+                    cpGD.setName(js.getString("gname"));
+                    cpGD.setId(Long.parseLong(js.getString("id")));
+                    cp.add(cpGD);
+
                 }
-
-                //再判断有没有商品
-                if (g_data.getString("code").equals("1")) {
-
-                    JSONArray j_data = g_data.getJSONArray("list");
-
-                    for (int i = 0; i < j_store.length(); i++) {
-
-                        CommodityPosition c = new CommodityPosition();
-
-                        JSONObject js = j_store.getJSONObject(i);
-                        c.setType(js.getString("id"));
-                        c.setName(js.getString("gname"));
-
-                        for (int z = 0; z < j_data.length(); z++) {
-
-                            JSONObject ty = j_data.getJSONObject(z);
-
-                            if (js.getString("id").equals(ty.getInt("group") + "")) {
-
-                                Goods g = new Goods(ty.getInt("gid") + "",
-                                        ty.getString("img"), ty.getString("gds_price"),
-                                        ty.getString("name"), ty.getString("gname"),
-                                        ty.getInt("group") + "", ty.getString("vip_price"), ty.getString("mall_state"), ty.getString("store_state"));
-                                gs.add(g);
-                                gd.insertCp(g);//保存到本地
-
-                            }
-
-                        }
-
-                        c.setList(gs);
-                        cp.add(c);
-
-                    }
-                }
-
-            }
-
-            //判断是否有商城分类，有就保存本地
-            if(mall.getString("code").equals("1")){
-
-                //有分类先保存分类数据
-                JSONArray j_mall = mall.getJSONArray("list");
-
-                for (int i = 0;i<j_mall.length();i++){
-
-                    JSONObject j = j_mall.getJSONObject(i);
-                    MallTypeBean mtb = new MallTypeBean();
-                    mtb.setId(Long.parseLong(j.getString("id")));
-                    mtb.setTname(j.getString("tname"));
-                    mtb.setState(j.getString("state"));
-                    mtb.setSort(j.getString("sort"));
-                    mtb.setMid(j.getString("mid"));
-                    mtDao.insertMtb(mtb);
-                }
-
-            }
-
+        }
 
         } catch (JSONException e) {
             e.printStackTrace();
-
-            Log.e("解析异常", "" + e.toString());
-
         }
-
 
         h.sendEmptyMessage(1);
     }
@@ -467,26 +390,6 @@ public class GoodsFragment extends Fragment {
         return view.getBottom() - view.getTop();
     }
 
-    //注册广播监听是否登录
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            //处理不同的广播
-            //登录更新用户信息
-            if (intent.getAction().equals(AddGoodsActivity.action)) {
-
-
-            } else if (intent.getAction().equals(Fragment_pro_type.action)) {
-
-                Log.e("接收", "接收到的广播：修改成功商品");
-
-            }
-
-
-        }
-    };
 
     /**
      * 设置加载提示框

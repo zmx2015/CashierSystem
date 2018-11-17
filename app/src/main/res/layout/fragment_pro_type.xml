@@ -4,15 +4,6 @@
     android:layout_height="fill_parent"
     android:background="@color/activity_bg" >
 
-    <!-- <com.jcwl.jdshop.ui.PullUpDownListView
-        android:id="@+id/listView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/activity_bg"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:fadingEdge="none"
-        android:listSelector="@android:color/transparent" /> -->
     <TextView
         android:id="@+id/toptype"
         android:layout_width="wrap_content"
@@ -24,25 +15,25 @@
 
     <GridView
         android:id="@+id/listView"
+        android:layout_below="@+id/toptype"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:numColumns="1"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
         android:horizontalSpacing="10dp"
-        android:verticalSpacing="10dp"
-        android:layout_below="@id/toptype"
+        android:numColumns="1"
         android:scrollbars="none"
-        />
+        android:verticalSpacing="10dp" />
+
 
     <ImageView
-        android:id="@+id/hint_img"
+        android:id="@+id/no_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:contentDescription="@null"
-        android:scaleType="centerInside"
-        android:visibility="gone" />
+        android:layout_centerInParent="true"
+        android:src="@mipmap/ic_no_goods"
+        android:visibility="gone"
+        />
 
 
 </RelativeLayout>

@@ -1,12 +1,14 @@
 package com.zmx.mian.adapter;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
 import com.zmx.mian.bean.CommodityPosition;
+import com.zmx.mian.bean.CommodityPositionGD;
 import com.zmx.mian.fragment.Fragment_pro_type;
 
 import java.util.List;
@@ -17,22 +19,25 @@ import java.util.List;
  * 类功能：
  */
 
-public class ShopAdapter extends FragmentPagerAdapter {
+public class ShopAdapter extends FragmentPagerAdapter implements Fragment_pro_type.NoticeDismissLoadingView {
 
-    List<CommodityPosition> cp ;
-    public ShopAdapter(FragmentManager fm, List<CommodityPosition> cp) {
+    List<CommodityPositionGD> cp ;
+    Handler handler;
+    public ShopAdapter(FragmentManager fm, List<CommodityPositionGD> cp, Handler handler) {
         super(fm);
         this.cp = cp;
-        Log.e("进来了","初始化商品界面");
+        this.handler = handler;
     }
     @Override
     public Fragment getItem(int arg0) {
 
         Fragment_pro_type fragment =new Fragment_pro_type();
-        fragment.setData(cp.get(arg0).getList(),cp.get(arg0).getName(),cp);
+        fragment.setDismissLoadingView(this);
         Bundle bundle=new Bundle();
         String str=cp.get(arg0).getName();
-        bundle.putString("typename",str);
+        String id = cp.get(arg0).getId()+"";
+        bundle.putString("t_name",str);
+        bundle.putString("CID",id);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -40,6 +45,13 @@ public class ShopAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return cp.size();
+    }
+
+    @Override
+    public void dismissLoading() {
+
+        handler.sendEmptyMessage(3);
+
     }
 }
 

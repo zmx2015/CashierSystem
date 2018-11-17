@@ -290,7 +290,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
         mPtrFrame.refreshComplete();
         if (load_tag == 0) {
 
-            if (lists.size() > 0) {
+            if (lists.size() > 0 ) {
                 mPtrFrame.setLoadMoreEnable(true);
             }
 

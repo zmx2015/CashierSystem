@@ -260,6 +260,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         params.put("num", "10000");
         params.put("admin", MyApplication.getName());
         params.put("mid", MyApplication.getStore_id());
+        params.put("type", "all");
 
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 3, 404);
 
@@ -466,6 +467,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                 case 404:
 
                     hideLoading();
+                    mLoadingDialog.dismiss();
                     Toast.makeText(HomeFragment.this.getActivity(),"连接网络失败，请检查网络！",Toast.LENGTH_LONG).show();
 
                     break;
@@ -551,6 +553,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         params.put("num", "10000");
         params.put("admin", MyApplication.getName());
         params.put("mid", MyApplication.getStore_id());
+        params.put("type", "all");
 
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 4, 404);
 

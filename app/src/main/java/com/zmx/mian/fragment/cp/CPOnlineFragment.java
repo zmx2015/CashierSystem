@@ -20,6 +20,7 @@ import com.chanven.lib.cptr.PtrClassicFrameLayout;
 import com.chanven.lib.cptr.PtrFrameLayout;
 import com.chanven.lib.cptr.PtrHandler;
 import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.CPOnlineAdapter;
 import com.zmx.mian.adapter.CPStoresAdapter;
@@ -33,9 +34,11 @@ import com.zmx.mian.ui.util.MyDialog;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,26 +55,22 @@ public class CPOnlineFragment extends BaseFragment {
     private PtrClassicFrameLayout mPtrFrame;
     private RecyclerAdapterWithHF mAdapter;
     //List数据
-    private List<MallTypeBean> lists ;
+    private List<MallTypeBean> lists = new ArrayList<>();
     //RecyclerView自定义Adapter
     private CPOnlineAdapter adapter;
     //添加Header和Footer的封装类
-    private MallTypeDao dao;
+    private MallTypeBean mtp;
 
     private int positions;
-    private String pc_name;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.cp_stores_fragment,container,false);
+        View view = inflater.inflate(R.layout.cp_stores_fragment, container, false);
 
         mRecyclerView = view.findViewById(R.id.rv_list);
         mPtrFrame = view.findViewById(R.id.rotate_header_list_view_frame);
-        dao = new MallTypeDao();
-        lists = dao.queryAll();
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -83,6 +82,7 @@ public class CPOnlineFragment extends BaseFragment {
             public void onItemClick(RecyclerAdapterWithHF adapter, RecyclerView.ViewHolder vh, int position) {
 
                 positions = position;
+                mtp = lists.get(positions);
                 showDialog(lists.get(position));
 
             }
@@ -117,38 +117,72 @@ public class CPOnlineFragment extends BaseFragment {
             }
         });
 
-        adapter.notifyDataSetChanged();
-
+        selectMall();
         return view;
     }
 
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
 
-            switch (msg.what){
+            switch (msg.what) {
+
+                case 0:
+
+                    lists.clear();
+
+                    JSONObject mall = null;
+                    try {
+
+                        mall = new JSONObject(msg.obj.toString());
+                        //判断是否有商城分类，有就保存本地
+                        if (mall.getString("code").equals("1")) {
+
+                            //有分类先保存分类数据
+                            JSONArray j_mall = mall.getJSONArray("list");
+
+                            for (int i = 0; i < j_mall.length(); i++) {
+
+                                JSONObject j = j_mall.getJSONObject(i);
+                                MallTypeBean mtb = new MallTypeBean();
+                                mtb.setId(Long.parseLong(j.getString("id")));
+                                mtb.setTname(j.getString("tname"));
+                                mtb.setState(j.getString("state"));
+                                mtb.setSort(j.getString("sort"));
+                                mtb.setMid(j.getString("mid"));
+                                lists.add(mtb);
+
+                            }
+
+                            adapter.notifyDataSetChanged();
+
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
 
                 case 1:
 
-                    Log.e("返回的内容",""+msg.obj.toString());
                     try {
 
                         JSONObject object = new JSONObject(msg.obj.toString());
-                        if(object.getString("status").equals("1")){
+                        if (object.getString("code").equals("1")) {
 
                             //更新本地数据
-                            MallTypeBean mtp = lists.get(positions);
-                            mtp.setTname(pc_name);
-                            dao.UpdateMtp(mtp);
+                            lists.set(positions,mtp);
                             adapter.notifyDataSetChanged();
-                            Toast.makeText(mActivity,"修改成功",Toast.LENGTH_LONG).show();
+                            Toast.makeText(mActivity, object.getString("content"), Toast.LENGTH_LONG).show();
 
-                        }else{
+                        } else {
 
-                            Toast.makeText(mActivity,"修改失败",Toast.LENGTH_LONG).show();
+                            Toast.makeText(mActivity, object.getString("content"), Toast.LENGTH_LONG).show();
 
                         }
 
@@ -159,7 +193,7 @@ public class CPOnlineFragment extends BaseFragment {
                     break;
 
                 case 404:
-                    Log.e("返回的内容","失败");
+                    Log.e("返回的内容", "失败");
                     break;
 
             }
@@ -168,11 +202,10 @@ public class CPOnlineFragment extends BaseFragment {
     };
 
 
-
     //    弹出框
     private MyDialog mMyDialog;
     private EditText edit_name;
-    private Button submit,cancel;
+    private Button submit, cancel;
     private CheckBox cb;
 
     public void showDialog(final MallTypeBean mtb) {
@@ -187,16 +220,19 @@ public class CPOnlineFragment extends BaseFragment {
         submit = view.findViewById(R.id.submit);
         cancel = view.findViewById(R.id.cancel);
         cb = view.findViewById(R.id.store_sj);
+        if(mtb.getState().equals("1")){
+            cb.setChecked(true);
+        }
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(TextUtils.isEmpty(edit_name.getText().toString())){
+                if (TextUtils.isEmpty(edit_name.getText().toString())) {
 
-                    Toast.makeText(mActivity,"请输入名称",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, "请输入名称", Toast.LENGTH_LONG).show();
 
-                }else {
+                } else {
 
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
@@ -205,21 +241,22 @@ public class CPOnlineFragment extends BaseFragment {
                     params.put("account", "0");
                     params.put("execute", "update");
                     params.put("id", mtb.getId() + "");
-                    params.put("gname", edit_name.getText().toString());
-                    pc_name = edit_name.getText().toString();
+                    params.put("tname", edit_name.getText().toString());
+                    mtp.setTname(edit_name.getText().toString());
                     params.put("sort", "0");
 
                     if (cb.isChecked()) {
 
                         params.put("state", "1");
+                        mtp.setState("1");
 
                     } else {
 
-                        params.put("state", "0");
+                        params.put("state", "2");
+                        mtp.setState("2");
 
                     }
-
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/classpc", params, handler, 1, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/classMall", params, handler, 1, 404);
                     mMyDialog.dismiss();
                 }
             }
@@ -234,13 +271,27 @@ public class CPOnlineFragment extends BaseFragment {
     }
 
     //新增成功后刷新
-    public void notifyData(MallTypeBean mtp){
+    public void notifyData() {
+
         Log.e("进来了","进来了");
-        lists.add(mtp);
-        adapter.notifyDataSetChanged();
+
+        selectMall();
 
     }
 
+    //查询商城分类
+    public void selectMall() {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("pckey", new Tools().getKey(this.getActivity()));
+        params.put("account", "0");
+        params.put("type", "mall");
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, handler, 0, 404);
+
+
+    }
 
 
     @Override

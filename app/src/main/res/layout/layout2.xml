@@ -37,10 +37,25 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/supplier"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center|left"
+        android:padding="@dimen/dp_5"
+        android:background="@drawable/edit_bk"
+        android:layout_below="@+id/relayout2"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:textSize="18sp"
+        android:layout_marginTop="@dimen/dp_5"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:text="选择采购商户"
+        />
+
     <LinearLayout
         android:id="@+id/linear_layout1"
         android:layout_width="match_parent"
-        android:layout_below="@+id/relayout2"
+        android:layout_below="@+id/supplier"
         android:layout_height="90dp"
         android:orientation="horizontal"
         android:padding="@dimen/dp_7">

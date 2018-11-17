@@ -1,11 +1,14 @@
 package com.zmx.mian.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +29,7 @@ import java.util.List;
  * 类功能：消息
  */
 
-public class MessageFragment extends BaseFragment {
+public class MessageFragment extends BaseFragment implements OnlineOrderFragment.UnreadOrderNun{
 
     private List<String> mPageTitleList = new ArrayList<String>();
     private List<Fragment> mFragmentList = new ArrayList<Fragment>();
@@ -37,6 +40,8 @@ public class MessageFragment extends BaseFragment {
     private StoresOrderFragment sof;//门店订单的fragment
     private OnlineOrderFragment oof;//商城订单的fragment
 
+    private int none_Size=0;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -46,10 +51,11 @@ public class MessageFragment extends BaseFragment {
         mPageTitleList.add("门店订单");
         mPageTitleList.add("商城订单");
         mBadgeCountList.add(0);
-        mBadgeCountList.add(5);
+        mBadgeCountList.add(0);
         // 初始化对应的fragment
         sof = StoresOrderFragment.getInstance(mPageTitleList.get(0));
         oof = OnlineOrderFragment.getInstance(mPageTitleList.get(1));
+        oof.setUnreadOrderNun(this);
         mFragmentList.add(sof);
         mFragmentList.add(oof);
 
@@ -68,6 +74,26 @@ public class MessageFragment extends BaseFragment {
 
     }
 
+    private Handler handler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            switch (msg.what){
+
+                case 1:
+
+                    mBadgeCountList.set(1, none_Size);
+                    setUpTabBadge();
+
+                    break;
+
+            }
+
+        }
+    };
+
 
 
     /**
@@ -77,6 +103,7 @@ public class MessageFragment extends BaseFragment {
 
         // 2. 最实用
         for (int i = 0; i < mFragmentList.size(); i++) {
+
             TabLayout.Tab tab = tabLayout.getTabAt(i);
 
             // 更新Badge前,先remove原来的customView,否则Badge无法更新
@@ -96,4 +123,11 @@ public class MessageFragment extends BaseFragment {
         tabLayout.getTabAt(tabLayout.getSelectedTabPosition()).getCustomView().setSelected(true);
     }
 
+    @Override
+    public void setNumber(int num) {
+
+        Log.e("未读数","未读数"+num);
+        none_Size = num;
+        handler.sendEmptyMessage(1);
+    }
 }

@@ -21,12 +21,14 @@ import com.chanven.lib.cptr.PtrDefaultHandler;
 import com.chanven.lib.cptr.PtrFrameLayout;
 import com.chanven.lib.cptr.loadmore.OnLoadMoreListener;
 import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.GoodsItemRankingAdapter;
 import com.zmx.mian.adapter.OrderDataAdapter;
 import com.zmx.mian.bean.GoodsItemRankingBean;
 import com.zmx.mian.bean.MainOrder;
 import com.zmx.mian.bean.Paging;
+import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.util.DoubleTimeSelectDialog;
 import com.zmx.mian.ui.util.LoadingDialog;
@@ -34,17 +36,22 @@ import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IGoodsItemRankingView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 开发人员：曾敏祥
  * 开发时间：2018-06-28 23:38
  * 类功能：商品单品销量排行榜
  */
-public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItemRankingView,View.OnClickListener{
+public class GoodsItemRankingActivity extends BaseActivity implements View.OnClickListener {
 
     private RecyclerView mRecyclerView;
     private RelativeLayout relayout;
@@ -56,8 +63,6 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
     private GoodsItemRankingAdapter adapter;
     //添加Header和Footer的封装类
     private RecyclerAdapterWithHF mAdapter;
-
-    private OrderPresenter op;
 
     private TextView tile_time;
     private DoubleTimeSelectDialog mDoubleTimeSelectDialog;
@@ -72,11 +77,10 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
 
     //查询的开始结束时间
-    public String startDate=Tools.DateConversion(new Date());
+    public String startDate = Tools.DateConversion(new Date());
     public String endDate = Tools.DateConversion(new Date());
 
     private ImageView no_data;
-
 
 
     @Override
@@ -92,10 +96,9 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
         relayout = findViewById(R.id.relayout);
         relayout.setOnClickListener(this);
         tile_time = findViewById(R.id.tile_time);
-        tile_time.setText("("+startDate+")");
+        tile_time.setText("(" + startDate + ")");
         no_data = findViewById(R.id.no_data);
         BackButton(R.id.back_button);
-        op = new OrderPresenter(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.goods_item_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -113,7 +116,7 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
                 bundle.putString("startDate", startDate);
                 bundle.putString("endDate", endDate);
                 bundle.putString("g_name", lists.get(position).getName());
-                startActivity(SingleGoodsActivity.class,bundle);
+                startActivity(SingleGoodsActivity.class, bundle);
 
             }
         });
@@ -121,16 +124,16 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.goods_rotate_header_list_view_frame);
 //下拉刷新支持时间
         mPtrFrame.setLastUpdateTimeRelateObject(this);
-     //下拉刷新一些设置 详情参考文档
+        //下拉刷新一些设置 详情参考文档
         mPtrFrame.setResistance(1.7f);
         mPtrFrame.setRatioOfHeaderHeightToRefresh(1.2f);
         mPtrFrame.setDurationToClose(200);
         mPtrFrame.setDurationToCloseHeader(1000);
-  // default is false
+        // default is false
         mPtrFrame.setPullToRefresh(false);
-  // default is true
+        // default is true
         mPtrFrame.setKeepHeaderWhenRefresh(true);
-  //进入Activity就进行自动下拉刷新
+        //进入Activity就进行自动下拉刷新
         mPtrFrame.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -143,9 +146,7 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
             public void onRefreshBegin(PtrFrameLayout frame) {
 
                 lists.clear();
-                String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id,"");
-                String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name,"");
-                op.getGoodsItemRanking(name, startDate, endDate,name,mid);
+               selectData();
 
             }
         });
@@ -167,6 +168,38 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
             switch (msg.what) {
 
+                case 0:
+
+                    try {
+
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+
+                        if (jsonObject.getString("code").equals("1")) {
+
+                            JSONArray array = jsonObject.getJSONArray("list");
+                            for (int i = 0; i < array.length(); i++) {
+
+                                GoodsItemRankingBean r = new GoodsItemRankingBean();
+                                JSONObject o = array.getJSONObject(i);
+                                r.setGid(o.getString("gid"));
+                                r.setName(o.getString("name"));
+                                r.setzMoney(o.getString("total"));
+                                r.setzNum(o.getString("number"));
+                                r.setzWeight(o.getString("weight"));
+                                r.setNum(o.getString("num"));
+
+                                lists.add(r);
+                            }
+
+
+                        }
+                        handler.sendEmptyMessage(1);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+
                 case 1:
 
                     //判断有没有数据，没有就显示提示
@@ -186,9 +219,9 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
                 case 2:
 
-                    String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id,"");
-                    String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name,"");
-                    op.getGoodsItemRanking(name, startDate, endDate,name,mid);
+                    String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
+                    String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, "");
+                   selectData();
 
                     break;
 
@@ -208,20 +241,6 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
 
     }
 
-    @Override
-    public void getOrderList(List<GoodsItemRankingBean> lists) {
-
-        for (GoodsItemRankingBean g:lists){
-            this.lists.add(g);
-        }
-        handler.sendEmptyMessage(1);
-    }
-
-    @Override
-    public void ErrerMessage() {
-
-    }
-
 
     public void showCustomTimePicker() {
 
@@ -233,7 +252,7 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
                 public void onSelectFinished(String startTime, String endTime) {
 
                     lists.clear();
-                    tile_time.setText("("+startTime.replace("-", ".") + "至" + endTime.replace("-", ".")+")");
+                    tile_time.setText("(" + startTime.replace("-", ".") + "至" + endTime.replace("-", ".") + ")");
                     startDate = startTime;
                     endDate = endTime;
                     showLoadingView("加载中...");
@@ -255,11 +274,10 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
     }
 
 
-
     @Override
     public void onClick(View view) {
 
-        switch (view.getId()){
+        switch (view.getId()) {
 
             case R.id.relayout:
 
@@ -268,6 +286,22 @@ public class GoodsItemRankingActivity extends BaseActivity implements IGoodsItem
                 break;
 
         }
+
+    }
+
+    public void selectData() {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("pckey", Tools.getKey(MyApplication.getName()));
+        params.put("account", "1");
+        params.put("today", startDate);
+        params.put("endtime", endDate);
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("type", "all");
+
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/goodsCount", params, handler, 0, 404);
+
 
     }
 

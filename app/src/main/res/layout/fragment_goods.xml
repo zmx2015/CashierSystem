@@ -137,7 +137,7 @@
 
             </RelativeLayout>
 
-            <android.support.v4.view.ViewPager
+            <com.zmx.mian.ui.util.CustomScrollViewPager
                 android:id="@+id/goods_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

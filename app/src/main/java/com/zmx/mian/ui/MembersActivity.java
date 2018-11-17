@@ -12,30 +12,42 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chanven.lib.cptr.PtrClassicFrameLayout;
 import com.chanven.lib.cptr.PtrDefaultHandler;
 import com.chanven.lib.cptr.PtrFrameLayout;
 import com.chanven.lib.cptr.loadmore.OnLoadMoreListener;
 import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
+import com.google.gson.Gson;
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.GoodsItemRankingAdapter;
 import com.zmx.mian.adapter.MembersListAdapter;
 import com.zmx.mian.bean.GoodsItemRankingBean;
+import com.zmx.mian.bean.Paging;
 import com.zmx.mian.bean.members.MembersList;
+import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.util.MySharedPreferences;
+import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IMembersView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 开发人员：曾敏祥
  * 开发时间：2018-08-26 15:24
  * 类功能：会员列表
  */
-public class MembersActivity extends BaseActivity implements IMembersView{
+public class MembersActivity extends BaseActivity implements IMembersView {
 
     private RecyclerView mRecyclerView;
     //支持下拉刷新的ViewGroup
@@ -48,14 +60,16 @@ public class MembersActivity extends BaseActivity implements IMembersView{
     private List<MembersList> lists = new ArrayList<>();
     private MembersListAdapter adapter;
 
+    private Paging p;
+
+
     private ImageView search_btn;
 
     //分类会员控件
-    private RelativeLayout members_gz,members_jf,members_je,members_time;
-    private TextView m_text_gz,m_text_jf,m_text_je,m_text_time,members_size;
-    private View view_text_gz,view_text_jf,view_text_je,view_text_time;
-    private int CHOOLS_STATE = 1,LIFT_GZ = 0,LIFT_JF = 0,LIFT_JE = 0,LIFT_TIME = 0;//1为判断用户是否点击哪个排序，lift为1是SORT_ASC 升序，为2是SORT_DESC 降序，判断是否升降排列
-
+    private RelativeLayout members_gz, members_jf, members_je, members_time;
+    private TextView m_text_gz, m_text_jf, m_text_je, m_text_time, members_size;
+    private View view_text_gz, view_text_jf, view_text_je, view_text_time;
+    private int CHOOLS_STATE = 1, LIFT_GZ = 0, LIFT_JF = 0, LIFT_JE = 0, LIFT_TIME = 0;//1为判断用户是否点击哪个排序，lift为1是SORT_ASC 升序，为2是SORT_DESC 降序，判断是否升降排列
 
     @Override
     protected int getLayoutId() {
@@ -68,6 +82,7 @@ public class MembersActivity extends BaseActivity implements IMembersView{
         // 沉浸式状态栏
         setTitleColor(R.id.position_view);
 
+        p = new Paging();
         op = new OrderPresenter(this);
         BackButton(R.id.back_button);
         mRecyclerView = findViewById(R.id.members_item_list);
@@ -77,7 +92,7 @@ public class MembersActivity extends BaseActivity implements IMembersView{
         adapter = new MembersListAdapter(this, lists);
         mAdapter = new RecyclerAdapterWithHF(adapter);
         mRecyclerView.setAdapter(mAdapter);
-        search_btn= findViewById(R.id.search_btn);
+        search_btn = findViewById(R.id.search_btn);
         search_btn.setOnClickListener(this);
         mAdapter.setOnItemClickListener(new RecyclerAdapterWithHF.OnItemClickListener() {
             @Override
@@ -86,7 +101,7 @@ public class MembersActivity extends BaseActivity implements IMembersView{
                 Bundle bundle = new Bundle();   //得到一个 bundle对象
                 bundle.putString("account", lists.get(position).getAccount()); // 将获取的edittext 的值通过bundle对象分别给 account 与 password
 
-                startActivity(MemberMessageActivity.class,bundle);
+                startActivity(MemberMessageActivity.class, bundle);
 
             }
         });
@@ -135,12 +150,14 @@ public class MembersActivity extends BaseActivity implements IMembersView{
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
 
+                p.setPageNow(1);
                 lists.clear();
                 load_tag = 0;
                 String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
                 String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, "");
 
-                op.getMembersList(mid,"1",name,"buytime","SORT_DESC");
+//                op.getMembersList(mid, "1", name, "buytime", "SORT_DESC");
+                selectMember("buytime", "SORT_DESC");
             }
         });
         //上拉加载
@@ -148,139 +165,196 @@ public class MembersActivity extends BaseActivity implements IMembersView{
             @Override
             public void loadMore() {
                 load_tag = 1;
+                if (p.getPageNow() == p.getPageCount()) {
 
+                    Toast.makeText(mActivity, "没有更多数据", Toast.LENGTH_SHORT)
+                            .show();
+                    mPtrFrame.loadMoreComplete(true);
+                    mPtrFrame.setLoadMoreEnable(false);
+
+                } else {
+
+                    p.setPageNow(p.getPageNow() + 1);
+                    selectMember("buytime", "SORT_DESC");
+                }
             }
+
         });
 
-
     }
-
-    @Override
-    public void onClick(View v) {
-        super.onClick(v);
-
-        String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
-        String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, "");
-
-        String sort = "SORT_DESC";
-
-        switch (v.getId()){
-
-            case R.id.search_btn:
-
-                startActivity(MembersSearchActivity.class);
-
-                break;
-            case R.id.members_gz:
-
-                showLoadingView("加载中...");
-                CHOOLS_STATE = 1;
-                handler.sendEmptyMessage(2);
-
-                if(LIFT_GZ == 0){
-
-                    sort = "SORT_DESC";
-                    LIFT_GZ = 1;
-
-                }else{
-
-                    sort =  "SORT_ASC";
-                    LIFT_GZ = 0;
-                }
-
-                op.getMembersList(mid,"1",name,"pubtime",sort);
-
-                break;
-            case R.id.members_jf:
-
-                showLoadingView("加载中...");
-                CHOOLS_STATE = 2;
-                handler.sendEmptyMessage(2);
-                if(LIFT_JF == 0){
-
-                    sort = "SORT_DESC";
-                    LIFT_JF = 1;
-
-                }else{
-
-                    sort =  "SORT_ASC";
-                    LIFT_JF = 0;
-                }
-                op.getMembersList(mid,"1",name,"integral",sort);
-
-                break;
-            case R.id.members_je:
-
-                showLoadingView("加载中...");
-                CHOOLS_STATE = 3;
-                handler.sendEmptyMessage(2);
-                if(LIFT_JE == 0){
-
-                    sort = "SORT_DESC";
-                    LIFT_JE = 1;
-
-                }else{
-
-                    sort =  "SORT_ASC";
-                    LIFT_JE = 0;
-                }
-                op.getMembersList(mid,"1",name,"money",sort);
-
-                break;
-            case R.id.members_time:
-
-                showLoadingView("加载中...");
-                CHOOLS_STATE = 4;
-                handler.sendEmptyMessage(2);
-                if(LIFT_TIME == 0){
-
-                    sort = "SORT_DESC";
-                    LIFT_TIME = 1;
-
-                }else{
-
-                    sort =  "SORT_ASC";
-                    LIFT_TIME = 0;
-                }
-                op.getMembersList(mid,"1",name,"buytime",sort);
-
-                break;
-        }
-
-    }
-
-    private Handler handler = new Handler() {
 
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        public void onClick (View v){
+            super.onClick(v);
 
-            switch (msg.what) {
+            String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
+            String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, "");
 
-                case 1:
+            String sort = "SORT_DESC";
 
-                    members_size.setText("会员列表（"+lists.size()+"个） ");
-                    initAdapter();
-                    dismissLoadingView();
-                    break;
+            switch (v.getId()) {
 
-                case 2:
+                case R.id.search_btn:
 
-                    initChoose(CHOOLS_STATE);
+                    startActivity(MembersSearchActivity.class);
 
                     break;
+                case R.id.members_gz:
 
+                    lists.clear();
+                    showLoadingView("加载中...");
+                    CHOOLS_STATE = 1;
+                    handler.sendEmptyMessage(2);
+                    p.setPageNow(1);
+
+                    if (LIFT_GZ == 0) {
+
+                        sort = "SORT_DESC";
+                        LIFT_GZ = 1;
+
+                    } else {
+
+                        sort = "SORT_ASC";
+                        LIFT_GZ = 0;
+                    }
+
+                    selectMember("pubtime", sort);
+//                    op.getMembersList(mid, "1", name, "pubtime", sort);
+
+                    break;
+                case R.id.members_jf:
+
+                    lists.clear();
+                    showLoadingView("加载中...");
+                    CHOOLS_STATE = 2;
+                    p.setPageNow(1);
+                    handler.sendEmptyMessage(2);
+                    if (LIFT_JF == 0) {
+
+                        sort = "SORT_DESC";
+                        LIFT_JF = 1;
+
+                    } else {
+
+                        sort = "SORT_ASC";
+                        LIFT_JF = 0;
+                    }
+//                    op.getMembersList(mid, "1", name, "integral", sort);
+
+                    selectMember("integral", sort);
+                    break;
+                case R.id.members_je:
+
+                    lists.clear();
+                    showLoadingView("加载中...");
+                    CHOOLS_STATE = 3;
+                    p.setPageNow(1);
+                    handler.sendEmptyMessage(2);
+                    if (LIFT_JE == 0) {
+
+                        sort = "SORT_DESC";
+                        LIFT_JE = 1;
+
+                    } else {
+
+                        sort = "SORT_ASC";
+                        LIFT_JE = 0;
+                    }
+//                    op.getMembersList(mid, "1", name, "money", sort);
+                    selectMember("total", sort);
+                    break;
+                case R.id.members_time:
+
+                    lists.clear();
+                    showLoadingView("加载中...");
+                    CHOOLS_STATE = 4;
+                    p.setPageNow(1);
+                    handler.sendEmptyMessage(2);
+                    if (LIFT_TIME == 0) {
+
+                        sort = "SORT_DESC";
+                        LIFT_TIME = 1;
+
+                    } else {
+
+                        sort = "SORT_ASC";
+                        LIFT_TIME = 0;
+                    }
+//                    op.getMembersList(mid, "1", name, "buytime", sort);
+                    selectMember("buytime", sort);
+                    break;
             }
 
         }
-    };
 
-     /**
-     * 更新适配器数据
-     */
+        private Handler handler = new Handler() {
+
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+
+                switch (msg.what) {
+
+                    case 0:
+                        Log.e("返回会员的信息",""+msg.obj.toString());
+
+                        try {
+
+                            JSONObject jsonObject = new JSONObject(msg.obj.toString());
+                            if(jsonObject.getString("code").equals("1")){
+
+                                JSONArray jsonArray = jsonObject.getJSONArray("list");
+
+                                for (int i = 0;i<jsonArray.length();i++){
+
+                                    JSONObject json = jsonArray.getJSONObject(i);
+                                    Gson g = new Gson();
+                                    MembersList ml = g.fromJson(json.toString(),MembersList.class);
+                                    lists.add(ml);
+
+                                }
+
+                                handler.sendEmptyMessage(1);
+
+
+                            }
+
+
+                        } catch (JSONException e) {
+
+                            Log.e("解析错误","解析错误");
+                            e.printStackTrace();
+                        }
+
+
+                        break;
+                    case 1:
+
+                        members_size.setText("会员列表（" + lists.size() + "个） ");
+                        initAdapter();
+                        dismissLoadingView();
+                        break;
+
+                    case 2:
+
+                        initChoose(CHOOLS_STATE);
+
+                        break;
+
+
+
+                }
+
+            }
+        };
+
+        /**
+         * 更新适配器数据
+         */
+
     public void initAdapter() {
 
-        mAdapter.notifyDataSetChanged();
+        adapter.notifyData(CHOOLS_STATE);
         mPtrFrame.refreshComplete();
         if (load_tag == 0) {
 
@@ -296,25 +370,19 @@ public class MembersActivity extends BaseActivity implements IMembersView{
     @Override
     public void getMembersList(List<MembersList> list) {
 
-        Log.e("数据大小","数据"+list.size());
-        lists.clear();
-        for (MembersList ml : list){
-            lists.add(ml);
-        }
 
-        handler.sendEmptyMessage(1);
 
     }
 
     @Override
     public void ErrerMessage() {
 
-        Log.e("数据大小","数据错误");
+        Log.e("数据大小", "数据错误");
     }
 
-    public void initChoose(int state){
+    public void initChoose(int state) {
 
-        switch (state){
+        switch (state) {
 
             case 1:
 
@@ -363,6 +431,22 @@ public class MembersActivity extends BaseActivity implements IMembersView{
                 break;
 
         }
+
+    }
+
+    //查询会员列表
+    public void selectMember(String field,String sort){
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("pckey", Tools.getKey(MyApplication.getName()));
+        params.put("account", "1");
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("thisPage", p.getPageNow() + "");
+        params.put("num",  p.getPageSize() + "");
+        params.put("field",  field);
+        params.put("sort",  sort);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.user/userlist", params, handler, 0, 404);
 
     }
 

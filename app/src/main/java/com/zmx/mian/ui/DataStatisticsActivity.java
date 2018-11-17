@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -37,10 +38,13 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.bean.MainOrder;
 import com.zmx.mian.bean.TimeQuantum;
 import com.zmx.mian.bean.TodayTotalMoney;
+import com.zmx.mian.bean.ViceOrder;
+import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.util.DoubleTimeSelectDialog;
 import com.zmx.mian.ui.util.LoadingDialog;
@@ -49,6 +53,9 @@ import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IHomeView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.Console;
@@ -57,8 +64,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -66,10 +75,8 @@ import java.util.Set;
  * 开发时间：2018-09-12 13:30
  * 类功能：数据统计界面
  */
-public class DataStatisticsActivity extends BaseActivity implements IHomeView,OnChartGestureListener,OnChartValueSelectedListener {
+public class DataStatisticsActivity extends BaseActivity implements OnChartGestureListener,OnChartValueSelectedListener {
 
-
-    private OrderPresenter op;
     private LineChart mChart,lineChart_1;
     private LineData data,date_1;
     private List<TimeQuantum> tq;//根据每小时统计购买人次
@@ -85,7 +92,6 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
     //查询的开始结束时间
     public String startDate="";
     public String endDate = Tools.DateConversion(new Date());
-
 
     private DoubleTimeSelectDialog mDoubleTimeSelectDialog;
     /**
@@ -115,12 +121,11 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
         startDate = Tools.getPastDate(7);
 
         showLoading();
-        op = new OrderPresenter(this);
         //获取SharedPreferences对象，使用自定义类的方法来获取对象
         String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id,"");
         String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name,"");
-        op.getOrderMessage(name, startDate,Tools.DateConversion(new Date()),"1","10000",name,mid);
-
+//        op.getOrderMessage(name, startDate,Tools.DateConversion(new Date()),"1","100000",name,mid);
+        selectOrder(startDate,Tools.DateConversion(new Date()));
         data_order_num = findViewById(R.id.data_order_num);
         data_total = findViewById(R.id.data_total);
         discount_money_text = findViewById(R.id.discount_money_text);
@@ -179,6 +184,82 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+
+            if(msg.what==0){
+
+                try {
+
+                    JSONObject bodys = new JSONObject(msg.obj.toString());
+
+                    // 处理接口返回的json数据
+
+                    JSONArray array = bodys.getJSONArray("list");
+
+                    List<MainOrder> lists = new ArrayList<MainOrder>();
+
+                    JSONObject data = bodys.getJSONObject("data");
+                    int nums = data.getInt("pageCount");
+                    int allTotal = data.getInt("allTotal");
+                    int couns = data.getInt("nums");
+
+
+                    for (int i = 0; i < array.length(); i++) {
+
+                        MainOrder mw = new MainOrder();
+                        JSONObject json = array.getJSONObject(i);
+
+                        mw.setPageNum(nums);
+                        mw.setAllTotal(allTotal);
+                        mw.setCouns(couns);
+                        mw.setId(json.getInt("id"));
+                        mw.setUid(json.getInt("uid"));
+                        mw.setOrder(json.getString("order"));
+                        mw.setTotal(json.getString("total"));
+                        mw.setBackmey(json.getString("backmey"));
+                        mw.setSynchro(json.getString("synchro"));
+                        mw.setBuytime(json.getString("buytime"));
+                        mw.setIntegral(json.getInt("integral"));
+                        mw.setPayment(json.getInt("payment"));
+                        mw.setDiscount(json.getString("discount"));
+                        mw.setReceipts(json.getString("receipts"));
+                        mw.setState(json.getInt("state"));
+
+                        List<ViceOrder> vws = new ArrayList<ViceOrder>();
+
+                        JSONArray ja = json.getJSONArray("detailed");
+                        for (int j = 0; j < ja.length(); j++) {
+
+                            ViceOrder vw = new ViceOrder();
+                            JSONObject jj = ja.getJSONObject(j);
+
+                            vw.setOrder_id(jj.getInt("order_id"));
+                            vw.setGoods_id(jj.getInt("goods_id"));
+                            vw.setWeight(jj.getString("weight"));
+                            vw.setPrice(jj.getString("price"));
+                            vw.setSubtotal(jj.getString("subtotal"));
+                            vw.setType(jj.getInt("type"));
+                            vw.setName(jj.getString("name"));
+
+                            vws.add(vw);
+                        }
+
+                        mw.setLists(vws);
+
+                        lists.add(mw);
+
+                    }
+                    getOrderList(lists);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    hideLoading();
+                    Toast.makeText(mActivity,"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
+
+                }
+
+
+            }
+
             if (msg.what == 1) {
 
                 data_order_num.setText(nums+"条");
@@ -234,7 +315,8 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
 
         }
     }
-    @Override
+
+
     public void getOrderList(List<MainOrder> lists) {
 
         tq = new ArrayList<>();
@@ -274,10 +356,6 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
 
     }
 
-    @Override
-    public void ErrerMessage() {
-
-    }
 
     //柱形图
     public void draw(){
@@ -586,9 +664,8 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
 
                     discount_money=0;//优惠金额
                     members_total=0;//会员次数
-                    String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id,"");
-                    String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name,"");
-                    op.getOrderMessage(name, startDate,endDate,"1","10000",name,mid);
+//                  op.getOrderMessage(name, startDate,endDate,"1","10000",name,mid);
+                    selectOrder(startDate,endDate);
 
                 }
             });
@@ -603,6 +680,27 @@ public class DataStatisticsActivity extends BaseActivity implements IHomeView,On
             mDoubleTimeSelectDialog.recoverButtonState();
             mDoubleTimeSelectDialog.show();
         }
+    }
+
+
+
+    //查询订单列表
+    public void selectOrder(String startD,String endD){
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("pckey", Tools.getKey(MyApplication.getName()));
+        params.put("account", "1");
+        params.put("today",startD);
+        params.put("endtime", endD);
+        params.put("thisPage", "1");
+        params.put("num", "100000");
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("type", "all");
+
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 0, 404);
+
+
     }
 
 

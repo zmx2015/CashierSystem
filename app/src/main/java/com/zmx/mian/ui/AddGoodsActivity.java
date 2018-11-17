@@ -193,6 +193,10 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
 
             switch (msg.what) {
 
+                case 0:
+
+                    break;
+
                 case 1:
 
                     Log.e("返回的数据", "" + msg.obj.toString());
@@ -251,6 +255,19 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
             e.printStackTrace();
         }
 
+
+    }
+
+    //查询商城分类
+    public void selectMall() {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("pckey", new Tools().getKey(mActivity));
+        params.put("account", "0");
+        params.put("type", "mall");
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, handler, 0, 404);
 
     }
 }
