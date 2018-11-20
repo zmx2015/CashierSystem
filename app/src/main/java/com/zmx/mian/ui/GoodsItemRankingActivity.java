@@ -219,9 +219,7 @@ public class GoodsItemRankingActivity extends BaseActivity implements View.OnCli
 
                 case 2:
 
-                    String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
-                    String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, "");
-                   selectData();
+                    selectData();
 
                     break;
 

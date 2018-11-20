@@ -124,16 +124,10 @@ public class SearchGoodsActivity extends BaseActivity {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
 
-                Log.e("sss", "输入文本之前的状态");
-
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                Log.e("输入文字中的状态", "输入文字中的状态，count是输入字符数");
-                Log.e("输入文字中的状态", "sss");
 
             }
 
@@ -166,8 +160,6 @@ public class SearchGoodsActivity extends BaseActivity {
 
                 case 1:
 
-
-                    Log.e("查询到的商品",""+msg.obj.toString());
                     try {
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
 

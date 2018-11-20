@@ -2,6 +2,7 @@ package com.zmx.mian.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,9 @@ public class MembersListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }else{
             viewholder.members_name.setText(m.getWechatName());
         }
+
+        viewholder.describe.setText(TextUtils.isEmpty(m.getDescribe())?"":"( "+m.getDescribe()+")");
+
         viewholder.members_number.setText("会员账号："+m.getAccount()+"   积分："+m.getIntegral());
         Glide.with(mContext).load(m.getWechatImg()).transform(new GlideCircleTransform(mContext)).error(R.drawable.icon_login_account).into(viewholder.members_head);
 
@@ -94,7 +98,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     //自定义的ViewHolder，持有每个Item的的所有界面元素
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView  members_name, members_number,bei;
+        TextView  members_name, members_number,bei,describe;
         ImageView members_head;
 
         public MyViewHolder(View itemView) {
@@ -102,6 +106,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             members_head = itemView.findViewById(R.id.members_head);
             members_name = (TextView) itemView.findViewById(R.id.members_name);
             members_number = (TextView) itemView.findViewById(R.id.members_number);
+            describe = (TextView) itemView.findViewById(R.id.describe);
             bei = itemView.findViewById(R.id.bei);
         }
     }

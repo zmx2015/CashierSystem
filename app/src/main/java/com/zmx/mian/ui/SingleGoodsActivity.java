@@ -189,7 +189,6 @@ public class SingleGoodsActivity extends BaseActivity implements IOrderDataView 
     @Override
     public void getOrderList(List<MainOrder> lists) {
 
-        Log.e("拿到数据", "数据大小" + lists.size());
 
         for (MainOrder m : lists) {
 

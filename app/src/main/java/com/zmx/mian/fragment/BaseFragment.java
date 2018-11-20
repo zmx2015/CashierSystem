@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zmx.mian.R;
 import com.zmx.mian.ui.util.LoadingDialog;
+import com.zmx.mian.util.ToastUtil;
 
 /**
  * Created by Administrator on 2018-08-06.
@@ -145,5 +147,10 @@ public abstract class BaseFragment extends Fragment {
         }
 
     }
+    public void Toast(String msg){
 
+        ToastUtil toastUtil = new ToastUtil(this.getActivity(), R.layout.toast_center_horizontal, msg);
+        toastUtil.show(1500);
+
+    }
 }

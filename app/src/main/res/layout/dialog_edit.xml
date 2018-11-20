@@ -10,7 +10,7 @@
         android:layout_height="50dp"
         android:gravity="center"
         android:background="@null"
-        android:hint="输入手机号码"
+        android:hint="请输入"
         >
 
     </EditText>

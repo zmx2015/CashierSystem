@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,11 +83,11 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
 
     private MembersList ml;
 
-    private TextView account_text, consumption_text, phone_number_text, consumption_text_1;
+    private TextView account_text, consumption_text, phone_number_text, consumption_text_1,text_label;
     private Button binding;//绑定手机号
 
     private OrderPresenter op;
-    private String account,shoujihao="";
+    private String account,shoujihao="",label = "";
     private Members m;
 
     private float mSelfHeight = 0;  //用以判断是否得到正确的宽高值
@@ -130,6 +131,13 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
         mViewpager = findViewById(R.id.viewPager_zhihu);
         mScrollView = findViewById(R.id.nestedScrollView);
         mTabLayout = findViewById(R.id.tab_layout);
+        text_label = findViewById(R.id.text_label);
+        text_label.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alert_label();
+            }
+        });
         mTabLayoutCopy = findViewById(R.id.tab_layout_copy);
         mTabLayoutCopy.setVisibility(View.GONE);
         final float screenW = getResources().getDisplayMetrics().widthPixels;
@@ -270,6 +278,9 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                         total = total + f;
 
                     }
+
+                    String l = TextUtils.isEmpty(ml.getDescribe()) ? "备注：店长很懒，没有对该用户备注":"备注："+ml.getDescribe();
+                    text_label.setText(l);
                     consumption_text.setText("消费金额：" + (float) (Math.round(total * 100)) / 100 + "元 | 已优惠：" + (Math.round(discount * 100)) / 100 + "元");
                     //绑定的手机号码
                     consumption_text_1.setText("消费次数：" + mos.size() + "次 | 消费均价：" + (float) (Math.round((total / mos.size()) * 100)) / 100 + "元 ");
@@ -333,7 +344,8 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                             binding.setText("更换号码");
 
                         }
-                        Toast.makeText(mActivity,content,Toast.LENGTH_LONG).show();
+
+                        Toast(content);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -346,10 +358,33 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                     imgMax(ml.getWechatImg());
                     break;
 
+                case 4:
+
+                try {
+
+                    dismissLoadingView();
+                    JSONObject object = new JSONObject(msg.obj.toString());
+                    String code = object.getString("code");
+                    if(code.equals("1")){
+                        text_label.setText("备注："+label);
+                        Toast(object.getString("content"));
+                    }else{
+
+                        Toast(object.getString("content"));
+
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                break;
+
                 case 404:
 
-                    Toast.makeText(mActivity, "网络连接失败！请检查网络", Toast.LENGTH_LONG).show();
-                    dismissLoadingView();//隐藏加载框
+                    Toast("网络连接失败！请检查网络");
+                   dismissLoadingView();//隐藏加载框
 
                     break;
 
@@ -377,7 +412,6 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
     public void imgMax(String url) {
 
         url = url.substring(0, url.lastIndexOf("/"));
-        Log.e("截取的图片路径", "" + url);
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View imgEntryView = inflater.inflate(R.layout.to_view_image, null);
@@ -405,7 +439,7 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
             //绑定手机号码
             case R.id.binding:
 
-                alert_edit();
+                alert_phone();
 
                 break;
 
@@ -413,8 +447,7 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
 
     }
 
-    public void alert_edit() {
-
+    public void alert_phone() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
 
@@ -460,7 +493,66 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                     dialog.dismiss();
                 } else {
 
-                    Toast.makeText(mActivity, "请输入正确的手机号码", Toast.LENGTH_LONG).show();
+                    Toast("请输入正确的手机号码!");
+                }
+
+            }
+        });
+
+
+    }
+
+
+    public void alert_label() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+
+        LayoutInflater factory = LayoutInflater.from(this);//提示框
+        final View view = factory.inflate(R.layout.dialog_edit, null);//这里必须是final的
+        final EditText et = view.findViewById(R.id.editText);
+        et.setHint("建议15个字内");
+        builder.setTitle("请输入备注");
+
+        final AlertDialog dialog = builder.create();
+        dialog.setView(view);
+
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if (!TextUtils.isEmpty(et.getText().toString())) {
+
+
+                    showLoadingView("加载中...");
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
+                    params.put("mid", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, ""));
+                    params.put("pckey", new Tools().getKey(mActivity));
+                    params.put("account", ml.getAccount());
+                    params.put("describe", et.getText().toString());
+                    label = et.getText().toString();
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.user/userUp", params, handler, 4, 404);
+                    dialog.dismiss();
+
+                } else {
+
+                    Toast("请输入备注!");
                 }
 
             }

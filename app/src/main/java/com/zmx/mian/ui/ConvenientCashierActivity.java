@@ -1,17 +1,13 @@
-package com.zmx.mian.fragment;
+package com.zmx.mian.ui;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Bundle;
+import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,56 +22,55 @@ import android.widget.Toast;
 
 import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
+import com.zmx.mian.adapter.ConvenientAdapter;
 import com.zmx.mian.adapter.ShopAdapter;
-import com.zmx.mian.bean.CommodityPosition;
 import com.zmx.mian.bean.CommodityPositionGD;
-import com.zmx.mian.bean.Goods;
-import com.zmx.mian.bean.MallTypeBean;
-import com.zmx.mian.bean_dao.CPDao;
-import com.zmx.mian.bean_dao.MallTypeDao;
-import com.zmx.mian.bean_dao.goodsDao;
-import com.zmx.mian.dao.MallTypeBeanDao;
+import com.zmx.mian.bean.MainOrder;
+import com.zmx.mian.bean.ViceOrder;
+import com.zmx.mian.fragment.GoodsFragment;
 import com.zmx.mian.http.OkHttp3ClientManager;
-import com.zmx.mian.presenter.OrderPresenter;
-import com.zmx.mian.ui.AddGoodsActivity;
-import com.zmx.mian.ui.CPManagementActivity;
-import com.zmx.mian.ui.SearchGoodsActivity;
 import com.zmx.mian.ui.util.CustomScrollViewPager;
 import com.zmx.mian.ui.util.LoadingDialog;
+import com.zmx.mian.ui.util.ShoppingCartAnimationView;
 import com.zmx.mian.util.MySharedPreferences;
+import com.zmx.mian.util.ToastUtil;
 import com.zmx.mian.util.Tools;
-import com.zmx.mian.view.IGoodsView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * 开发人员：曾敏祥
- * 开发时间：2018-06-25 1:54
- * 类功能：商品管理
+ * 开发时间：2018-11-18 13:52
+ * 类功能：前台收银
  */
+public class ConvenientCashierActivity extends BaseActivity implements ConvenientAdapter.ConvenientFoodActionCallback {
 
-public class GoodsFragment extends Fragment{
 
-    private TextView toolsTextViews[];
+    private TextView toolsTextViews[],text_number,text_total;
     private View views[];
     private LayoutInflater inflater;
     private ScrollView scrollView;
     private int scrllViewWidth = 0, scrollViewMiddle = 0;
     private CustomScrollViewPager shop_pager;
     private int currentItem = 0;
-    private ShopAdapter shopAdapter;
+    private ConvenientAdapter shopAdapter;
     private ImageView type_icon;
-    private Button again_load;
-    private RelativeLayout search_btn, cp_management;
+    private Button again_load,button;
+    private RelativeLayout search_btn;
 
+    private MainOrder mainOrder;
+    private List<ViceOrder> vos = new ArrayList<>();
     private List<CommodityPositionGD> cp;
     private String mid;
 
@@ -84,16 +79,28 @@ public class GoodsFragment extends Fragment{
 
     protected LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
-    private int DIS=0;
+    private int DIS=0;//防止重复点击出现加载框
 
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_goods, container, false);
+    protected int getLayoutId() {
+        return R.layout.activity_convenient_cashier;
+    }
 
-        no_data = view.findViewById(R.id.no_data);
-        again_load = view.findViewById(R.id.again_load);
+    @Override
+    protected void initViews() {
+
+        //初始化订单
+        mainOrder = new MainOrder();
+        initMainOrder();//初始订单的最初值
+
+        // 沉浸式状态栏
+        setTitleColor(R.id.position_view);
+        BackButton(R.id.back_button);
+        text_number = findViewById(R.id.text_number);
+        text_total = findViewById(R.id.text_total);
+        no_data = findViewById(R.id.no_data);
+        again_load = findViewById(R.id.again_load);
         again_load.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,62 +112,115 @@ public class GoodsFragment extends Fragment{
             }
         });
 
-        type_icon = view.findViewById(R.id.type_icon);
+        type_icon = findViewById(R.id.sao);
         type_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent();
-                intent.setClass(GoodsFragment.this.getContext(), AddGoodsActivity.class);
+                intent.setClass(mActivity, AddGoodsActivity.class);
                 intent.putExtra("cp", (Serializable) cp);
                 startActivity(intent);
 
             }
         });
 
-        search_btn = view.findViewById(R.id.search_btn);
+        search_btn = findViewById(R.id.search_btn);
         search_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent();
-                intent.setClass(GoodsFragment.this.getContext(), SearchGoodsActivity.class);
+                intent.setClass(mActivity, SearchGoodsActivity.class);
                 startActivity(intent);
 
             }
         });
-        return view;
-    }
+
+        button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(vos.size()<=0){
+
+                    Toast("没有商品,无法结算！");
+
+                }else{
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("mo",mainOrder);
+                    startActivity(ConvenientCashierDetailActivity.class,bundle,1);
+
+                }
 
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+            }
+        });
+
 
         again_load.setVisibility(View.GONE);
         showLoadingView("加载中.....");
         cp = new ArrayList<>();
 
-        cp_management = view.findViewById(R.id.cp_management);
-        cp_management.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent();
-                intent.setClass(GoodsFragment.this.getContext(), CPManagementActivity.class);
-                GoodsFragment.this.getContext().startActivity(intent);
-
-            }
-        });
-
-        mid = MySharedPreferences.getInstance(this.getActivity()).getString(MySharedPreferences.store_id, "");
+        mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
         Map<String, String> params = new HashMap<String, String>();
         params.put("admin", MyApplication.getName());
         params.put("mid", MyApplication.getStore_id());
-        params.put("pckey", new Tools().getKey(this.getActivity()));
+        params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("type", "store");
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, h, 2, 404);
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode){
+
+            case 1:
+
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+
+                    String state = extras.getString("state");
+                    if(state.equals("0")){
+
+                        initMainOrder();
+                        text_number.setText("0");
+                        text_total.setText("0.00");
+
+                    }else{
+
+                        MainOrder m = (MainOrder) extras.getSerializable("mo");
+
+                        mainOrder.setTotal(m.getTotal());// 订单总金额
+                        mainOrder.setBackmey(m.getBackmey());;// 应找金额
+                        mainOrder.setDiscount(m.getDiscount());// 订单优惠的金额
+                        mainOrder.setReceipts(m.getReceipts());// 订单实收金额
+                        mainOrder.setMo_classify(m.getMo_classify());
+                        mainOrder.setAccount(m.getAccount());
+                        mainOrder.setPayment(m.getPayment());
+
+                        vos.clear();
+                        List<ViceOrder> vs = m.getLists();
+                        for (ViceOrder v:vs){
+                            vos.add(v);
+                        }
+                        mainOrder.setLists(vos);
+                        text_number.setText(vos.size()+"");
+                        text_total.setText(m.getTotal()+"");
+                    }
+
+
+                }
+
+                break;
+        }
+
 
     }
 
@@ -207,10 +267,29 @@ public class GoodsFragment extends Fragment{
                     dismissLoadingView();
                     break;
 
+                case 4:
+
+                    //接收选择的商品
+                    ViceOrder vo = (ViceOrder) msg.getData().getSerializable("vo");
+
+                    vos.add(vo);
+                    //重新计算订单的总价
+                    float total = 0;
+                    for (ViceOrder v : vos){
+                        total = total+Float.parseFloat(v.getSubtotal());
+                    }
+                    mainOrder.setTotal(priceResult(total)+"");
+                    text_number.setText(vos.size()+"");
+                    text_total.setText(total+"");
+                    mainOrder.setLists(vos);
+
+                    break;
+
                 case 404:
 
                     dismissLoadingView();
-                    Toast.makeText(GoodsFragment.this.getActivity(), "连接网络失败，请检查网络！", Toast.LENGTH_LONG).show();
+
+                    Toast("连接网络失败，请检查网络！");
                     again_load.setVisibility(View.VISIBLE);
 
                     break;
@@ -225,7 +304,7 @@ public class GoodsFragment extends Fragment{
      */
     private void showToolsView() {
 
-        LinearLayout toolsLayout = getActivity().findViewById(R.id.tools);
+        LinearLayout toolsLayout = findViewById(R.id.tools);
         toolsTextViews = new TextView[cp.size()];
         views = new View[cp.size()];
 
@@ -267,10 +346,10 @@ public class GoodsFragment extends Fragment{
      */
     private void initPager() {
 
-        scrollView = getActivity().findViewById(R.id.tools_scrlllview);
-        shopAdapter = new ShopAdapter(getFragmentManager(), cp,h);
-        inflater = LayoutInflater.from(getActivity());
-        shop_pager = getActivity().findViewById(R.id.goods_pager);
+        scrollView = findViewById(R.id.tools_scrlllview);
+        shopAdapter = new ConvenientAdapter(getSupportFragmentManager(), cp, h,this);
+        inflater = LayoutInflater.from(mActivity);
+        shop_pager = findViewById(R.id.goods_pager);
         shop_pager.setAdapter(shopAdapter);
         shop_pager.setOnPageChangeListener(onPageChangeListener);
     }
@@ -305,7 +384,6 @@ public class GoodsFragment extends Fragment{
         cp.clear();
         JSONObject json = null;
 
-        Log.e("返回",""+goods);
         try {
             json = new JSONObject(goods);
             //先判断有没有分类先
@@ -324,7 +402,7 @@ public class GoodsFragment extends Fragment{
                     cp.add(cpGD);
 
                 }
-        }
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -350,7 +428,7 @@ public class GoodsFragment extends Fragment{
 
         }
         toolsTextViews[id].setBackgroundResource(android.R.color.white);
-        toolsTextViews[id].setTextColor(this.getActivity().getResources().getColor(R.color.tou));
+        toolsTextViews[id].setTextColor(this.getResources().getColor(R.color.tou));
     }
 
 
@@ -397,33 +475,39 @@ public class GoodsFragment extends Fragment{
         return view.getBottom() - view.getTop();
     }
 
-
-    /**
-     * 设置加载提示框
-     */
-    protected void showLoadingView(String message) {
-
-        if (mLoadingDialog == null) {
-            mLoadingDialog = new LoadingDialog(this.getActivity(), message, false);
-        }
-        mLoadingDialog.show();
+    public String priceResult(double price) {
+        DecimalFormat format = new DecimalFormat("0.00");
+        return format.format(new BigDecimal(price));
 
     }
 
-    /**
-     * 数据加载完成
-     */
-    protected void dismissLoadingView() {
+    @Override
+    public void addAction(View view, int position) {
 
-        if (mLoadingDialog != null) {
-            this.getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLoadingDialog.hide();
-                }
-            });
+        ShoppingCartAnimationView shoppingCartAnimationView = new ShoppingCartAnimationView(this);
+        int positions[] = new int[2];
+        view.getLocationInWindow(positions);
+        shoppingCartAnimationView.setStartPosition(new Point(positions[0], positions[1]));
+        ViewGroup rootView = (ViewGroup) this.getWindow().getDecorView();
+        rootView.addView(shoppingCartAnimationView);
+        int endPosition[] = new int[2];
+        text_number.getLocationInWindow(endPosition);
+        shoppingCartAnimationView.setEndPosition(new Point(endPosition[0], endPosition[1]));
+        shoppingCartAnimationView.startBeizerAnimation();
 
-        }
+    }
+
+    public void initMainOrder(){
+
+        mainOrder.setOrder(new Date().getTime() + "");
+        mainOrder.setTotal("0");// 订单总金额
+        mainOrder.setBackmey("0");;// 应找金额
+        mainOrder.setDiscount("0");// 订单优惠的金额
+        mainOrder.setReceipts("0");// 订单实收金额
+        mainOrder.setMo_classify("4");
+        mainOrder.setAccount("1");
+        mainOrder.setPayment(1);
+        vos.clear();
 
     }
 

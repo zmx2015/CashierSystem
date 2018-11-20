@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -90,7 +91,6 @@ public class Tools {
                 toast.show();
             }
         });
-        Log.d("ToastUtils", context.getResources().getString(resId));
     }
 
     /**
@@ -142,6 +142,23 @@ public class Tools {
         return str.matches(reg);
 
     }
+
+    /**
+     * 判断字符串是否为数字和小数
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isNumerics(String str) {
+
+        Pattern pattern = Pattern.compile("^(\\-|\\+)?\\d+(\\.\\d+)?$");//这个是对的
+        Matcher isNum = pattern.matcher(str);
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
+    }
+
 
     //获得昨天的日期
     public static String getYesterday() {
@@ -262,7 +279,15 @@ public class Tools {
         goodsDao gdao = new goodsDao();
         gdao.deleteData();
 
+    }
+
+
+    //保存两位小数
+    public String priceResult(double price) {
+        DecimalFormat format = new DecimalFormat("0.00");
+        return format.format(new BigDecimal(price));
 
     }
+
 
 }

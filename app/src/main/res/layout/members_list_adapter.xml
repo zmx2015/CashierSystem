@@ -12,15 +12,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_70"
+        android:layout_height="@dimen/dp_90"
         android:background="#ffffff"
         android:gravity="center_vertical">
 
         <ImageView
 
             android:id="@+id/members_head"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="@dimen/dp_70"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_5"
             android:src="@drawable/icon_login_account" />
@@ -34,9 +34,23 @@
             <TextView
                 android:id="@+id/members_name"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="25dp"
+                android:gravity="center"
                 android:layout_marginLeft="@dimen/dp_10"
+                android:textSize="18sp"
+                android:textColor="@color/grey_700"
                 android:text="水果大户" />
+
+            <TextView
+                android:id="@+id/describe"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:textSize="12sp"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:gravity="center|left"
+                android:layout_toRightOf="@+id/members_name"
+                android:text=""
+                />
 
             <TextView
                 android:id="@+id/members_number"
@@ -44,8 +58,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/members_name"
                 android:layout_marginLeft="@dimen/dp_10"
-                android:textSize="12sp"
-                android:layout_marginTop="@dimen/dp_5"
+                android:textSize="14sp"
+                android:layout_marginTop="@dimen/dp_3"
                 android:text="会员号：0629          积分：190" />
 
             <TextView
@@ -53,7 +67,8 @@
                 android:layout_below="@+id/members_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_3"
+                android:textSize="12sp"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:text="备注"
                 />

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:padding="@dimen/dp_10"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+
+        <ImageView
+            android:id="@+id/typeicon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="@null"
+            android:scaleType="center" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/typeicon"
+            android:layout_marginLeft="10dp"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/typename"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="红提"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/price_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_below="@+id/typename"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text="零售价：￥18.9"
+                android:textSize="12sp" />
+            <TextView
+                android:id="@+id/vip_price_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/typename"
+                android:layout_toRightOf="@+id/price_text"
+                android:gravity="center"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_5"
+                android:text="会员价：￥18.9"
+                android:textSize="12sp" />
+
+
+        </RelativeLayout>
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5">
+
+        <com.zmx.mian.ui.util.MyButton
+            android:id="@+id/button_sc"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:padding="@dimen/dp_5"
+            android:text="加入购物车"
+            android:textSize="12sp"
+            android:layout_alignParentRight="true"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

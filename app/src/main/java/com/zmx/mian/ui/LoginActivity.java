@@ -200,12 +200,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
         //先做一些基本的判断，比如输入的用户命为空，密码为空，网络不可用多大情况，都不需要去链接服务器了，而是直接返回提示错误
         if (getAccount().isEmpty()){
-            showToast("你输入的账号为空！");
+            Toast("你输入的账号为空！");
             return;
         }
 
         if (getPassword().isEmpty()){
-            showToast("你输入的密码为空！");
+            Toast("你输入的密码为空！");
             return;
         }
         //登录一般都是请求服务器来判断密码是否正确，要请求网络，要子线程
@@ -263,7 +263,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
                                 }
 
-                                showToast("登录成功");
+                                Toast("登录成功");
                                 loadCheckBoxState();//记录下当前用户记住密码和自动登录的状态;
 
                                 //判断是否已经保存了门店信息了，有就直接跳到主页，没有就跳到门店列表
@@ -292,19 +292,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
                             } else {
 
-                                showToast("没有门店，请在后台添加门店");
+                                Toast("没有门店，请在后台添加门店");
                                 setLoginBtnClickable(true);  //这里解放登录按钮，设置为可以点击
                                 dismissLoadingView();//隐藏加载框
 
                             }
                         }else{
-                            showToast("输入的登录账号或密码不正确");
+                            Toast("输入的登录账号或密码不正确");
                             dismissLoadingView();//隐藏加载框
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
 
-                        showToast("登录失败！请联系客服");
+                        Toast("登录失败！请联系客服");
                         setLoginBtnClickable(true);  //这里解放登录 按钮，设置为可以点击
                         dismissLoadingView();//隐藏加载框
 
@@ -314,7 +314,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
                 case 404:
 
-                    showToast("网络连接失败！请检查网络");
+                    Toast("网络连接失败！请检查网络");
                     setLoginBtnClickable(true);  //这里解放登录按钮，设置为可以点击
                     dismissLoadingView();//隐藏加载框
 
@@ -458,17 +458,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             mLoadingDialog = null;
         }
         super.onDestroy();
-    }
-
-
-    public void showToast(final String msg) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
-            }
-        });
-
     }
 
     /**

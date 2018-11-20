@@ -41,7 +41,7 @@ public class OrderDataAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
     //自定义的ViewHolder，持有每个Item的的所有界面元素
     public static class NormalViewHolder extends RecyclerView.ViewHolder {
-        TextView order_number,order_zj,order_zhj,order_yh,order_ss,order_zffs,order_zt,order_time;
+        TextView order_number,order_zj,order_zhj,order_yh,order_ss,order_zffs,order_zt,order_time,order_mode;
         CardView mCardView;
         ListView listView;
         public NormalViewHolder(View itemView) {
@@ -53,6 +53,7 @@ public class OrderDataAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHol
             order_ss=(TextView)itemView.findViewById(R.id.order_ss);
             order_zffs=(TextView)itemView.findViewById(R.id.order_zffs);
             order_zt=(TextView)itemView.findViewById(R.id.order_zt);
+            order_mode=(TextView)itemView.findViewById(R.id.order_mode);
             order_time=(TextView)itemView.findViewById(R.id.order_time);
             mCardView=(CardView)itemView.findViewById(R.id.cv_item);
             listView = itemView.findViewById(R.id.listview);
@@ -75,21 +76,40 @@ public class OrderDataAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHol
         if(mo.get(position).getPayment() == 1){
             viewholder.order_zffs.setText("支付方式：现金");
         }else if(mo.get(position).getPayment() == 2){
-            viewholder.order_zffs.setText("支付方式：微信");
+            viewholder.order_zffs.setText("支付方式：移动支付");
         }else{
-            viewholder.order_zffs.setText("支付方式：支付宝");
+            viewholder.order_zffs.setText("支付方式：会员支付");
         }
 
 
-        if(mo.get(position).getState() == 1){
+        if(mo.get(position).getState() == 3){
 
-            viewholder.order_zt.setText(Html.fromHtml("状态：<font color='#ff0000'>待送货</font>"));
+            viewholder.order_zt.setText(Html.fromHtml("状态：<font color='#ff0000'>进行中</font>"));
 
         }else if(mo.get(position).getState() == 2){
-            viewholder.order_zt.setText("状态：正常");
+
+            viewholder.order_zt.setText(Html.fromHtml("状态：<font color='#ff0000'>进行中</font>"));
+
+        }else if(mo.get(position).getState() == 1){
+
+            viewholder.order_zt.setText("状态：完成");
+
         }else{
 
             viewholder.order_zt.setText("状态：取消");
+        }
+
+        if(mo.get(position).getMo_classify().equals("1")){
+
+            viewholder.order_mode.setText("订单类型：商城订单");
+
+        }else if(mo.get(position).getMo_classify().equals("2")){
+
+            viewholder.order_mode.setText("订单类型：商城订单");
+
+        }else{
+
+            viewholder.order_mode.setText("订单类型：门店订单");
         }
 
         viewholder.order_time.setText("时间："+refFormatNowDate(mo.get(position).getBuytime()));

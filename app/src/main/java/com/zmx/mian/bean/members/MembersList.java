@@ -22,11 +22,29 @@ public class MembersList implements Serializable{
     private String birthday;
     private String pubtime;
     private String money;
+    private String describe;
     private long sign;
     private int integral;//积分
     private int mid;
+    private String discounts;
     private long lasttime;
     private String buytime;
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
+    }
+
+    public String getDiscounts() {
+        return discounts;
+    }
+
+    public void setDiscounts(String discounts) {
+        this.discounts = discounts;
+    }
 
     public void setUid(int uid) {
         this.uid = uid;

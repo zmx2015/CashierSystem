@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.zmx.mian.ui.ConvenientCashierDetailActivity">
+    <RelativeLayout
+        android:id="@+id/tou"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tou">
+        <!--沉浸式activity，这个view是用来占位的   -->
+        <View
+            android:id="@+id/position_view"
+            android:layout_width="5px"
+            android:layout_height="5px" />
+        >
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/position_view"
+        android:background="@color/tou">
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:src="@mipmap/ic_fanghui" />
+
+        <TextView
+            android:id="@+id/data_statistics_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:text="收银详情"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/dp_5"
+        >
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:textColor="@color/drop_down_unselected"
+            android:text="共3件商品   总计317.0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dp_150"
+        ></ListView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+
+        <RelativeLayout
+            android:id="@+id/relative_number"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:textColor="@color/drop_down_unselected"
+                android:text="会员账号"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/member_text"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dp_30"
+                android:gravity="right|center"
+                android:textSize="16sp"
+                android:text="未选择"
+                />
+
+            <TextView
+                android:layout_width="10dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:background="@mipmap/right"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative_payment"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="@dimen/dp_5"
+            android:background="@color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:textColor="@color/drop_down_unselected"
+                android:text="支付方式"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/payment"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dp_30"
+                android:gravity="right|center"
+                android:textSize="16sp"
+                android:text="现金支付"
+                />
+            <TextView
+                android:layout_width="10dp"
+                android:layout_height="15dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/dp_10"
+                android:background="@mipmap/right"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="@dimen/dp_5"
+            android:background="@color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_15"
+                android:textColor="@color/drop_down_unselected"
+                android:text="本单优惠"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/g_discounts"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dp_30"
+                android:gravity="right|center"
+                android:textSize="16sp"
+                android:text="0.00元"
+                />
+
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/tou"
+            android:text="收款"
+            />
+
+
+    </LinearLayout>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

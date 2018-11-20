@@ -29,6 +29,7 @@ import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.OrderDataActivity;
 import com.zmx.mian.util.MySharedPreferences;
+import com.zmx.mian.util.ToastUtil;
 import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IOrderDataView;
 
@@ -160,8 +161,7 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
                 load_tag = 1;
                 if (p.getPageNow() == p.getPageCount()) {
 
-                    Toast.makeText(mActivity, "没有更多数据", Toast.LENGTH_SHORT)
-                            .show();
+                    Toast("没有更多数据");
                     mPtrFrame.loadMoreComplete(true);
                     mPtrFrame.setLoadMoreEnable(false);
 
@@ -396,6 +396,7 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
                             mw.setDiscount(json.getString("discount"));
                             mw.setReceipts(json.getString("receipts"));
                             mw.setState(json.getInt("state"));
+                            mw.setMo_classify(json.getString("classify"));
 
                             List<ViceOrder> vws = new ArrayList<ViceOrder>();
 
@@ -427,7 +428,7 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
                     } catch (Exception e) {
                         e.printStackTrace();
                         dismissLoadingView();
-                        Toast.makeText(StoresOrderFragment.this.getActivity(),"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
+                        Toast("获取数据失败！请联系客服");
                     }
 
                     break;
@@ -480,5 +481,13 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, handler, 3, 404);
 
     }
+
+    public void Toast(String msg){
+
+        ToastUtil toastUtil = new ToastUtil(this.getActivity(), R.layout.toast_center_horizontal, msg);
+        toastUtil.show(1500);
+
+    }
+
 
 }

@@ -122,12 +122,14 @@ public class GoodsDetailsActivity extends BaseActivity {
                 //判断输入是否为空或者非法输入
                 if (g_name.getText().toString().equals("")) {
 
-                    Toast.makeText(mActivity, "名称不能为空！", Toast.LENGTH_LONG).show();
+                    Toast("名称不能为空！");
 
                 } else if (g_price.getText().toString().equals("") || !Tools.isNumeric(g_price.getText().toString())) {
-                    Toast.makeText(mActivity, "零售价不能为空或者非法输入！", Toast.LENGTH_LONG).show();
+
+                    Toast("零售价不能为空或者非法输入！");
                 } else if (g_vipprice.getText().toString().equals("") || !Tools.isNumeric(g_vipprice.getText().toString())) {
-                    Toast.makeText(mActivity, "会员价价不能为空或者非法输入！", Toast.LENGTH_LONG).show();
+
+                    Toast("会员价价不能为空或者非法输入！");
                 } else {
 
                     showLoadingView("加载中...");
@@ -281,7 +283,6 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                 case 1:
 
-                    Log.e("修改成功","修改成功");
 
                     //修改后返回的状态
                     try {
@@ -289,13 +290,12 @@ public class GoodsDetailsActivity extends BaseActivity {
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
                         if (jsonObject.getString("code").equals("1")) {
 
-                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
+                            Toast(jsonObject.getString("content"));
                             mActivity.finish();
 
                         } else {
 
-                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
-
+                            Toast(jsonObject.getString("content"));
                         }
 
                         dismissLoadingView();//隐藏加载框
@@ -304,7 +304,7 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                         e.printStackTrace();
                         dismissLoadingView();//隐藏加载框
-                        Toast.makeText(mActivity, "获取数据失败！请联系客服", Toast.LENGTH_LONG).show();
+                        Toast("获取数据失败！请联系客服");
 
                     }
 
@@ -389,7 +389,7 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                 case 404:
 
-                    Toast.makeText(mActivity, "网络连接失败！请检查网络", Toast.LENGTH_LONG).show();
+                    Toast("网络连接失败！请检查网络");
                     dismissLoadingView();//隐藏加载框
 
                     break;

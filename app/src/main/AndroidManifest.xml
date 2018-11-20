@@ -189,7 +189,9 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity android:name=".ui.GoodsDetailsActivity" />
         <activity android:name=".ui.CPManagementActivity" />
-        <activity android:name=".ui.AboutActivity"></activity>
+        <activity android:name=".ui.AboutActivity" />
+        <activity android:name=".ui.ConvenientCashierActivity" />
+        <activity android:name=".ui.ConvenientCashierDetailActivity"></activity>
     </application>
 
 </manifest>

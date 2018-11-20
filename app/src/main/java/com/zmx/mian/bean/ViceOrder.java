@@ -11,6 +11,7 @@ public class ViceOrder implements Serializable {
 
     private int order_id;// 关联订单的id
     private int goods_id;// 订单商品关联的id
+    private String img;
     private String name;
     private String weight;// 单品的重量
     private String price;// 单品的单价
@@ -31,6 +32,14 @@ public class ViceOrder implements Serializable {
 
     public int getGoods_id() {
         return goods_id;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 
     public void setWeight(String weight) {

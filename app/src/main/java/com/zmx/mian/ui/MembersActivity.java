@@ -47,7 +47,7 @@ import java.util.Map;
  * 开发时间：2018-08-26 15:24
  * 类功能：会员列表
  */
-public class MembersActivity extends BaseActivity implements IMembersView {
+public class MembersActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
     //支持下拉刷新的ViewGroup
@@ -56,7 +56,6 @@ public class MembersActivity extends BaseActivity implements IMembersView {
     private RecyclerAdapterWithHF mAdapter;
     private int load_tag = 0;//上拉或者下拉标示
 
-    private OrderPresenter op;
     private List<MembersList> lists = new ArrayList<>();
     private MembersListAdapter adapter;
 
@@ -83,7 +82,6 @@ public class MembersActivity extends BaseActivity implements IMembersView {
         setTitleColor(R.id.position_view);
 
         p = new Paging();
-        op = new OrderPresenter(this);
         BackButton(R.id.back_button);
         mRecyclerView = findViewById(R.id.members_item_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -153,10 +151,6 @@ public class MembersActivity extends BaseActivity implements IMembersView {
                 p.setPageNow(1);
                 lists.clear();
                 load_tag = 0;
-                String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
-                String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, "");
-
-//                op.getMembersList(mid, "1", name, "buytime", "SORT_DESC");
                 selectMember("buytime", "SORT_DESC");
             }
         });
@@ -167,8 +161,7 @@ public class MembersActivity extends BaseActivity implements IMembersView {
                 load_tag = 1;
                 if (p.getPageNow() == p.getPageCount()) {
 
-                    Toast.makeText(mActivity, "没有更多数据", Toast.LENGTH_SHORT)
-                            .show();
+                    Toast("没有更多数据!");
                     mPtrFrame.loadMoreComplete(true);
                     mPtrFrame.setLoadMoreEnable(false);
 
@@ -186,9 +179,6 @@ public class MembersActivity extends BaseActivity implements IMembersView {
         @Override
         public void onClick (View v){
             super.onClick(v);
-
-            String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
-            String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, "");
 
             String sort = "SORT_DESC";
 
@@ -219,7 +209,6 @@ public class MembersActivity extends BaseActivity implements IMembersView {
                     }
 
                     selectMember("pubtime", sort);
-//                    op.getMembersList(mid, "1", name, "pubtime", sort);
 
                     break;
                 case R.id.members_jf:
@@ -239,7 +228,6 @@ public class MembersActivity extends BaseActivity implements IMembersView {
                         sort = "SORT_ASC";
                         LIFT_JF = 0;
                     }
-//                    op.getMembersList(mid, "1", name, "integral", sort);
 
                     selectMember("integral", sort);
                     break;
@@ -260,7 +248,6 @@ public class MembersActivity extends BaseActivity implements IMembersView {
                         sort = "SORT_ASC";
                         LIFT_JE = 0;
                     }
-//                    op.getMembersList(mid, "1", name, "money", sort);
                     selectMember("total", sort);
                     break;
                 case R.id.members_time:
@@ -280,7 +267,6 @@ public class MembersActivity extends BaseActivity implements IMembersView {
                         sort = "SORT_ASC";
                         LIFT_TIME = 0;
                     }
-//                    op.getMembersList(mid, "1", name, "buytime", sort);
                     selectMember("buytime", sort);
                     break;
             }
@@ -296,7 +282,6 @@ public class MembersActivity extends BaseActivity implements IMembersView {
                 switch (msg.what) {
 
                     case 0:
-                        Log.e("返回会员的信息",""+msg.obj.toString());
 
                         try {
 
@@ -322,11 +307,9 @@ public class MembersActivity extends BaseActivity implements IMembersView {
 
                         } catch (JSONException e) {
 
-                            Log.e("解析错误","解析错误");
+                            Toast("未知错误，请联系客服！");
                             e.printStackTrace();
                         }
-
-
                         break;
                     case 1:
 
@@ -367,18 +350,6 @@ public class MembersActivity extends BaseActivity implements IMembersView {
         }
     }
 
-    @Override
-    public void getMembersList(List<MembersList> list) {
-
-
-
-    }
-
-    @Override
-    public void ErrerMessage() {
-
-        Log.e("数据大小", "数据错误");
-    }
 
     public void initChoose(int state) {
 

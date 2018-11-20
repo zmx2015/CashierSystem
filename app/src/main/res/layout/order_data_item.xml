@@ -111,6 +111,15 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/order_mode"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:textSize="14sp"
+        android:gravity="center_vertical"
+        android:text="订单类型：门店订单"
+        android:textColor="@color/transparent_half"
+        />
 
     <TextView
         android:id="@+id/order_time"

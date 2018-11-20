@@ -114,7 +114,7 @@
         android:textSize="@dimen/text_size_16" />
 
     <Spinner
-        android:id="@+id/g_s_fenlei"
+        android:id="@+id/sc_fenlei"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 

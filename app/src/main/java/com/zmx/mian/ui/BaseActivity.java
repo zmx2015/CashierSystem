@@ -24,6 +24,7 @@ import com.zmx.mian.bean.NetUtil;
 import com.zmx.mian.ui.util.AutoScrollTextView;
 import com.zmx.mian.ui.util.LoadingDialog;
 import com.zmx.mian.util.NetBroadCastReciver;
+import com.zmx.mian.util.ToastUtil;
 
 import java.lang.reflect.Field;
 
@@ -136,7 +137,9 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     protected void showLoadingView(String message){
 
         if (mLoadingDialog == null) {
+
             mLoadingDialog = new LoadingDialog(this,message, false);
+
         }
         mLoadingDialog.show();
 
@@ -307,6 +310,13 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         //注销广播
         unregisterReceiver(netBroadCastReciver);
         super.onDestroy();
+    }
+
+    public void Toast(String msg){
+
+        ToastUtil toastUtil = new ToastUtil(this, R.layout.toast_center_horizontal, msg);
+        toastUtil.show(1500);
+
     }
 
 }

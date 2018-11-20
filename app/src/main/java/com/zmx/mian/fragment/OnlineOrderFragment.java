@@ -27,6 +27,7 @@ import com.zmx.mian.bean.MainOrder;
 import com.zmx.mian.bean.Paging;
 import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.util.ToastUtil;
 import com.zmx.mian.util.Tools;
 
 import org.json.JSONArray;
@@ -127,8 +128,7 @@ public class OnlineOrderFragment extends BaseFragment implements View.OnClickLis
                 load_tag = 1;
                 if (p.getPageNow() == p.getPageCount()) {
 
-                    Toast.makeText(mActivity, "没有更多数据", Toast.LENGTH_SHORT)
-                            .show();
+                    Toast("没有更多数据");
                     mPtrFrame.loadMoreComplete(true);
                     mPtrFrame.setLoadMoreEnable(false);
 
@@ -177,7 +177,6 @@ public class OnlineOrderFragment extends BaseFragment implements View.OnClickLis
             switch (msg.what){
 
                 case 0:
-                    Log.e("返回数据",""+msg.obj.toString());
                     try {
 
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
@@ -210,6 +209,7 @@ public class OnlineOrderFragment extends BaseFragment implements View.OnClickLis
                             mw.setDiscount(json.getString("discount"));
                             mw.setReceipts(json.getString("receipts"));
                             mw.setState(json.getInt("state"));
+                            mw.setMo_classify(json.getString("detailed"));
 
                             List<ViceOrder> vws = new ArrayList<ViceOrder>();
 

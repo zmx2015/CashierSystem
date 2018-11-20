@@ -173,8 +173,7 @@ public class ProcurementActivity extends BaseActivity {
             public void loadMore() {
 
                 load_tag = 1;
-                Toast.makeText(mActivity, "没有更多数据", Toast.LENGTH_SHORT)
-                        .show();
+                Toast("没有更多数据");
                 mPtrFrame.loadMoreComplete(true);
                 mPtrFrame.setLoadMoreEnable(false);
 
@@ -210,13 +209,11 @@ public class ProcurementActivity extends BaseActivity {
                         lists.clear();
                         //先查本地没有上传服务器的
                         List<StockManagementBean> ss = smDao.queryAll();
-                        Log.e("本地数据","本地数据"+ss.size());
 
                         for (StockManagementBean s : ss) {
 
                             if(!s.getSm_state().equals("1")){
 
-                                Log.e("本地数据","本地数据"+s.getNumber() + "状态" +s.getSm_state());
                                 lists.add(s);
 
                             }

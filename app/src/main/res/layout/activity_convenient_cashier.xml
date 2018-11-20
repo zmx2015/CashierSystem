@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/again_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:text="重新加载数据"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/no_data"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/ic_no_data"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_50"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/tou"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/tou">
+            <!--沉浸式activity，这个view是用来占位的   -->
+            <View
+                android:id="@+id/position_view"
+                android:layout_width="5px"
+                android:layout_height="5px" />
+            >
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relayout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/position_view"
+            android:background="@color/tou">
+
+            <ImageView
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:src="@mipmap/ic_fanghui" />
+
+            <TextView
+                android:id="@+id/data_statistics_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="10dp"
+                android:text="前台收银"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:visibility="gone"
+            android:background="@color/tou">
+
+            <RelativeLayout
+                android:id="@+id/search_btn"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_toLeftOf="@+id/type_icon"
+                android:background="@drawable/layoutyj">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_vertical"
+                    android:text="搜索商品"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/sao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/dp_15"
+                android:contentDescription="@null"
+                android:src="@mipmap/ic_saoyisao" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+
+                <ScrollView
+                    android:id="@+id/tools_scrlllview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fadingEdge="none"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/tools"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical" />
+
+                </ScrollView>
+
+            </RelativeLayout>
+
+            <com.zmx.mian.ui.util.CustomScrollViewPager
+                android:id="@+id/goods_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/dp_5"
+        >
+
+        <TextView
+            android:id="@+id/text_number"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="0"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:background="@mipmap/ic_jianshu"
+            />
+
+        <TextView
+            android:id="@+id/text_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@+id/text_number"
+            />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:text="结算"
+            android:background="@color/tou"
+            />
+
+    </RelativeLayout>
+    
+</RelativeLayout>

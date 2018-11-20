@@ -253,7 +253,7 @@ public class DataStatisticsActivity extends BaseActivity implements OnChartGestu
                 } catch (JSONException e) {
                     e.printStackTrace();
                     hideLoading();
-                    Toast.makeText(mActivity,"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
+                    Toast("获取数据失败！请联系客服");
 
                 }
 

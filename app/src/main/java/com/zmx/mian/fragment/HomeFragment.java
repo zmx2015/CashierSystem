@@ -48,6 +48,7 @@ import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.http.API;
 import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
+import com.zmx.mian.ui.ConvenientCashierActivity;
 import com.zmx.mian.ui.DataStatisticsActivity;
 import com.zmx.mian.ui.GoodsItemRankingActivity;
 import com.zmx.mian.ui.MainActivity;
@@ -59,6 +60,7 @@ import com.zmx.mian.ui.StockManagementListActivity;
 import com.zmx.mian.ui.StoreListActivity;
 import com.zmx.mian.ui.util.LoadingDialog;
 import com.zmx.mian.util.MySharedPreferences;
+import com.zmx.mian.util.ToastUtil;
 import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IHomeView;
 
@@ -116,7 +118,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
     private int yesterday_members_total = 0;//会员消费次数
 
     private TextView discount_money_text, members_total_text;
-    private RelativeLayout relative1,relative2,relative3,relative4,relative5,relative0;
+    private RelativeLayout relative1,relative2,relative3,relative4,relative5,relative6,relative0;
     private List<TimeQuantum> tq;
 
 
@@ -187,8 +189,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
-
+                Toast("正在马不停蹄的开发中");
 
             }
 
@@ -204,12 +205,21 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                     }
         });
 
+        //会员管理
+        relative6 = view.findViewById(R.id.relative6);
+        relative6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeFragment.this.getActivity(), ConvenientCashierActivity.class);
+                startActivity(intent);
+            }
+        });
 
         relative0 = view.findViewById(R.id.relative0);
         relative0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
+                Toast("正在马不停蹄的开发中");
             }
         });
 
@@ -307,7 +317,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
                     yesterday_total.setText("昨日金额：" + yesterday_allTotal + "元");
                     yesterday_num.setText("昨日订单：" + yesterday_nums + "单");
-                    yesterday_discount_money_text.setText("昨日优惠：" + yesterday_discount_money + "元");
+                    yesterday_discount_money_text.setText("昨日优惠：" + new Tools().priceResult(yesterday_discount_money) + "元");
                     yesterday_members_total_text.setText("昨日会员：" + yesterday_members_total + "次");
                     yesterday_unit_price_text.setText("昨日单价" + Math.round(Float.parseFloat(yesterday_allTotal) / Float.parseFloat(yesterday_nums)) + "元");
                     break;
@@ -383,7 +393,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                     } catch (Exception e) {
                         e.printStackTrace();
                         hideLoading();
-                        Toast.makeText(HomeFragment.this.getActivity(),"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
+                        Toast("获取数据失败！请联系客服");
                     }
 
                     break;
@@ -458,8 +468,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                     } catch (JSONException e) {
                         e.printStackTrace();
                         hideLoading();
-                        Toast.makeText(HomeFragment.this.getActivity(),"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
-
+                        Toast("获取数据失败！请联系客服");
                     }
 
                     break;
@@ -468,8 +477,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
                     hideLoading();
                     mLoadingDialog.dismiss();
-                    Toast.makeText(HomeFragment.this.getActivity(),"连接网络失败，请检查网络！",Toast.LENGTH_LONG).show();
-
+                    Toast("获取数据失败！请联系客服");
                     break;
 
             }
@@ -816,6 +824,13 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 //            mBarChart.setData(data);
 //
 //        }
+    }
+
+    public void Toast(String msg){
+
+        ToastUtil toastUtil = new ToastUtil(this.getActivity(), R.layout.toast_center_horizontal, msg);
+        toastUtil.show(1500);
+
     }
 
 

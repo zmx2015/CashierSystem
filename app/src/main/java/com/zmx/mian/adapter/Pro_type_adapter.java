@@ -275,6 +275,9 @@ public class Pro_type_adapter extends BaseAdapter {
                     break;
 
                 case 404:
+
+                    Toast.makeText(context, "连接服务器失败！", Toast.LENGTH_LONG).show();
+
                     break;
 
             }

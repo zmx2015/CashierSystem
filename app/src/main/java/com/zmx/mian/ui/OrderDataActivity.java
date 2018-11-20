@@ -158,8 +158,7 @@ public class  OrderDataActivity extends BaseActivity implements View.OnClickList
                 load_tag = 1;
                 if (p.getPageNow() == p.getPageCount()) {
 
-                    Toast.makeText(OrderDataActivity.this, "没有更多数据", Toast.LENGTH_SHORT)
-                            .show();
+                    Toast("没有更多数据");
                     mPtrFrame.loadMoreComplete(true);
                     mPtrFrame.setLoadMoreEnable(false);
 
@@ -185,8 +184,6 @@ public class  OrderDataActivity extends BaseActivity implements View.OnClickList
 
                 case 0:
 
-                    Log.e("数据","返回数据"+msg.obj.toString());
-
                     try {
 
                         JSONObject bodys = new JSONObject(msg.obj.toString());
@@ -201,11 +198,8 @@ public class  OrderDataActivity extends BaseActivity implements View.OnClickList
                         allTotal = data.getInt("allTotal")+"";
                         nums = data.getInt("nums")+"";
 
-                        Log.e("进来了s","进来了s");
-
                         for (int i = 0; i < array.length(); i++) {
 
-                            Log.e("进来了","进来了");
                             MainOrder mw = new MainOrder();
                             JSONObject json = array.getJSONObject(i);
 
@@ -224,6 +218,7 @@ public class  OrderDataActivity extends BaseActivity implements View.OnClickList
                             mw.setDiscount(json.getString("discount"));
                             mw.setReceipts(json.getString("receipts"));
                             mw.setState(json.getInt("state"));
+                            mw.setMo_classify(json.getString("classify"));
 
                             List<ViceOrder> vws = new ArrayList<ViceOrder>();
 
@@ -256,7 +251,7 @@ public class  OrderDataActivity extends BaseActivity implements View.OnClickList
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Log.e("戳了","处理"+e.toString());
+                        Toast("未知错误，请联系客服！");
                     }
 
 

@@ -112,7 +112,7 @@ public class CPManagementActivity extends BaseActivity {
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
                         if (jsonObject.getString("code").equals("1")) {
 
-                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
+                            Toast(jsonObject.getString("content"));
 
                             if (state == 1) {
                                 //通知更新
@@ -121,7 +121,7 @@ public class CPManagementActivity extends BaseActivity {
 
                         } else {
 
-                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
+                            Toast(jsonObject.getString("content"));
                         }
 
 
@@ -139,8 +139,7 @@ public class CPManagementActivity extends BaseActivity {
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
                         if (jsonObject.getString("code").equals("1")) {
 
-                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
-
+                            Toast(jsonObject.getString("content"));
                             if (state == 2) {
                                 //通知更新
                                 sof.notifyData();
@@ -148,8 +147,7 @@ public class CPManagementActivity extends BaseActivity {
 
                         } else {
 
-                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
-                        }
+                            Toast(jsonObject.getString("content"));                        }
 
 
                     } catch (JSONException e) {
@@ -161,8 +159,7 @@ public class CPManagementActivity extends BaseActivity {
 
                 case 404:
 
-                    Toast.makeText(mActivity, "添加失败", Toast.LENGTH_LONG).show();
-
+                    Toast("添加失败");
 
                     break;
 
@@ -269,7 +266,7 @@ public class CPManagementActivity extends BaseActivity {
                     mMyDialog.dismiss();
 
                 } else {
-                    Toast.makeText(mActivity, "请选择要创建商城或者收银的分类", Toast.LENGTH_LONG).show();
+                    Toast("请选择要创建商城或者收银的分类");
                 }
 
             }

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 开发人员：曾敏祥
  * 开发时间：2018-07-31 21:51
- * 类功能：
+ * 类功能：首页商品列表
  */
 
 public class ShopAdapter extends FragmentPagerAdapter implements Fragment_pro_type.NoticeDismissLoadingView {

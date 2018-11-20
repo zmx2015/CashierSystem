@@ -40,6 +40,7 @@ import com.zmx.mian.ui.ProcurementDetailsActivity;
 import com.zmx.mian.ui.util.DoubleTimeSelectDialog;
 import com.zmx.mian.ui.util.MyDialog;
 import com.zmx.mian.util.MySharedPreferences;
+import com.zmx.mian.util.ToastUtil;
 import com.zmx.mian.util.Tools;
 
 import org.json.JSONArray;
@@ -197,8 +198,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
             public void loadMore() {
 
                 load_tag = 1;
-                Toast.makeText(mActivity, "没有更多数据", Toast.LENGTH_SHORT)
-                        .show();
+                Toast("没有更多数据");
                 mPtrFrame.loadMoreComplete(true);
                 mPtrFrame.setLoadMoreEnable(false);
 
@@ -270,7 +270,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
                 case 404:
 
                     initAdapter();
-                    Toast.makeText(mActivity,"连接网络失败，请检查网络！",Toast.LENGTH_LONG).show();
+                    Toast("连接网络失败，请检查网络！");
 
                     break;
 
@@ -279,6 +279,12 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
         }
     };
 
+    public void Toast(String msg){
+
+        ToastUtil toastUtil = new ToastUtil(this.getActivity(), R.layout.toast_center_horizontal, msg);
+        toastUtil.show(1500);
+
+    }
 
     /**
      * 更新适配器数据

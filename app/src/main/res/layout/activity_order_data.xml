@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/tou"
                 android:layout_centerInParent="true"
-                android:text="进货详情"
+                android:text="订单列表"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 

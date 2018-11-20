@@ -36,6 +36,7 @@ import com.chanven.lib.cptr.PtrFrameLayout;
 import com.chanven.lib.cptr.PtrHandler;
 import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
 import com.google.gson.Gson;
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.ProcurementDetailsAdapter;
 import com.zmx.mian.adapter.SearchGoodsAdapter;
@@ -81,7 +82,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
     private int S_UPLOAD = 0;//判断是否是新建的采购单还是已经保存过的采购单
 
-    private goodsDao gdao;
     private StockManagementBean smb;
 
     Calendar c = Calendar.getInstance();
@@ -100,11 +100,8 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
     protected void initViews() {
 
         setTitleColor(R.id.position_view);
-        gdao = new goodsDao();
 
-        showLoadingView("加载中...");
         smb = (StockManagementBean) getIntent().getSerializableExtra("sb");
-        Log.e("pid", "pid" + smb.getId());
         number = smb.getNumber();
         ru_time = smb.getRh_time();
         S_UPLOAD = Integer.parseInt(smb.getSm_state());
@@ -140,6 +137,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         //先判断点击进来的是否是新建采购单还是已经有数据的采购单，有就查询这个订单
         if (smb.getSm_state().equals("1")) {
 
+            showLoadingView("加载中...");
             loadingData();
             pid = smb.getId()+"";
 
@@ -211,7 +209,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             smd.setUnita(lists.get(i).getUnita());
             smd.setSubtotal(lists.get(i).getG_total());
             smd.setPayment(lists.get(i).getG_payment_mode());
-//                    smd.setTotal(lists.get(i).getG_total());
 
             smds.add(smd);
 
@@ -255,9 +252,39 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
             switch (msg.what) {
 
-                case 1:
+                case 0:
 
-                    Log.e("返回数据", "" + msg.obj.toString());
+                    try {
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+
+                        if(jsonObject.getString("code").equals("1")){
+                            gs.clear();
+                            JSONArray jsonArray = jsonObject.getJSONArray("list");
+
+                            for (int i=0;i<jsonArray.length();i++){
+
+                                JSONObject j = jsonArray.getJSONObject(i);
+
+                                Goods g = new Goods();
+                                g.setG_id(j.getString("gid"));
+                                g.setG_img(j.getString("img"));
+                                g.setG_name(j.getString("name"));
+                                g.setG_price(j.getString("gds_price"));
+                                gs.add(g);
+
+                            }
+                            goods_adapter.notifyDataSetChanged();
+                        }else{
+//                            no_data.setVisibility(View.VISIBLE);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+
+                case 1:
 
                     try {
 
@@ -283,7 +310,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                             sdb.setNumber(object.getString("p_order"));
                             sdb.setUnita(object.getString("unita"));
                             lists.add(sdb);
-
                         }
 
                         handler.sendEmptyMessage(2);
@@ -320,7 +346,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
                             }
                             //提交成功
-                            Toast.makeText(mActivity, jsonObject.getString("content"), Toast.LENGTH_LONG).show();
+                            Toast(jsonObject.getString("content"));
 
 
                         } else {
@@ -337,7 +363,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                 case 404:
 
                     dismissLoadingView();
-                    Toast.makeText(mActivity,"连接服务器失败！",Toast.LENGTH_LONG).show();
+                    Toast("连接服务器失败！");
 
                     break;
             }
@@ -377,15 +403,15 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
     }
 
+    List<Goods> gs;
+    SearchGoodsAdapter goods_adapter;
 
     public void chooseGoods() {
 
-        final List<Goods> g = gdao.SelectDimGoods("");
-        final SearchGoodsAdapter adapter = new SearchGoodsAdapter(mActivity, g);
-
+        gs = new ArrayList<>();
+        goods_adapter = new SearchGoodsAdapter(mActivity, gs);
         final PtrClassicFrameLayout mPtrFrame;
         RecyclerAdapterWithHF mAdapter;
-
         //修改商品界面属性
         final Dialog search_dialog = new Dialog(mActivity, R.style.ActionSheetDialogStyle);
         View search_goods = LayoutInflater.from(mActivity).inflate(R.layout.search_goods, null);//选择性别的view
@@ -396,7 +422,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
         RecyclerView rv = search_goods.findViewById(R.id.search_view);
         rv.setLayoutManager(new LinearLayoutManager(mActivity));
-        mAdapter = new RecyclerAdapterWithHF(adapter);
+        mAdapter = new RecyclerAdapterWithHF(goods_adapter);
         rv.setAdapter(mAdapter);
         rv.setNestedScrollingEnabled(false);
         mAdapter.setOnItemClickListener(new RecyclerAdapterWithHF.OnItemClickListener() {
@@ -415,8 +441,8 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                 sb.setG_the_fare("0");
                 sb.setG_the_deposit("0");
                 sb.setSupplier("");
-                sb.setG_name(g.get(position).getG_name());
-                sb.setG_id(g.get(position).getG_id());
+                sb.setG_name(gs.get(position).getG_name());
+                sb.setG_id(gs.get(position).getG_id());
                 sb.setG_total("0");
                 sb.setUnita("1");
                 lists.add(sb);
@@ -462,36 +488,23 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-
-                Log.e("sss", "输入文本之前的状态");
-
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                Log.e("输入文字中的状态", "输入文字中的状态，count是输入字符数");
-                Log.e("输入文字中的状态", "sss");
 
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
 
-                g.clear();
+                gs.clear();
                 //查询更新
                 if (et.getText().toString() != null || !et.getText().toString().equals("")) {
 
-                    List<Goods> gs = gdao.SelectDimGoods(et.getText().toString());
-
-                    for (Goods gg : gs) {
-
-                        g.add(gg);
-
-                    }
-                    adapter.notifyDataSetChanged();
-                    Log.e("查询到的商品数量=", "" + g.size());
+                    goods_adapter.notifyDataSetChanged();
+                    searchGoods(et.getText().toString());
 
                 }
 
@@ -550,7 +563,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onClick(View view) {
 
-                Log.e("点击了", "点击了");
                 adapter.update(pos, listview, R.color.button1);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("1");
@@ -567,7 +579,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onClick(View view) {
 
-                Log.e("点击了", "点击了");
                 adapter.update(pos, listview, R.color.button2);
 
                 StockManagementDetailsBean sdb = lists.get(pos);
@@ -585,7 +596,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onClick(View view) {
 
-                Log.e("点击了", "点击了");
                 adapter.update(pos, listview, R.color.button3);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("3");
@@ -602,7 +612,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onClick(View view) {
 
-                Log.e("点击了", "点击了");
                 adapter.update(pos, listview, R.color.button4);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("4");
@@ -619,7 +628,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onClick(View view) {
 
-                Log.e("点击了", "点击了");
                 adapter.update(pos, listview, R.color.button5);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("5");
@@ -694,5 +702,19 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
     };
 
 
+    //搜索商品
+    public void searchGoods(String name){
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("pckey", new Tools().getKey(mActivity));
+        params.put("account", "0");
+        params.put("name", name);
+
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/search", params, handler, 0, 404);
+
+
+    }
 
 }

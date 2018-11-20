@@ -14,9 +14,13 @@ public class MainOrder implements Serializable{
 
     private int id;// 订单id
     private int uid;// 会员id
+    private String account;//会员账号
     private String order;// 订单标号
     private String total;// 订单总金额
     private String backmey;// 应找金额
+    private String mo_yhui; //折后价
+    private String mo_shishou;//实收
+    private String mo_yingzhao;//找零
     private String synchro;// 订单提交到云端时间
     private String buytime;// 订单产生时间
     private int integral;// 订单积分
@@ -25,11 +29,29 @@ public class MainOrder implements Serializable{
     private String receipts;// 订单实收金额
     private int state;// 订单状态：0取消1正常
 
+    private String mo_classify;
+
+    public String getMo_classify() {
+        return mo_classify;
+    }
+
+    public void setMo_classify(String mo_classify) {
+        this.mo_classify = mo_classify;
+    }
+
     private List<ViceOrder> lists;
 
     private int pageNum;// 总条数
     private int allTotal;// 总金额
     private int couns;// 购买人次
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
 
     public int getPageNum() {
         return pageNum;
