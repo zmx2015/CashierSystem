@@ -60,7 +60,6 @@ import com.zmx.mian.ui.StockManagementListActivity;
 import com.zmx.mian.ui.StoreListActivity;
 import com.zmx.mian.ui.util.LoadingDialog;
 import com.zmx.mian.util.MySharedPreferences;
-import com.zmx.mian.util.ToastUtil;
 import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IHomeView;
 
@@ -92,8 +91,6 @@ import retrofit2.Retrofit;
 
 public class HomeFragment extends Fragment implements OnChartGestureListener, OnChartValueSelectedListener {
 
-    private OrderPresenter p;
-
     private TextView order_num,switch_store, store_name,
             unit_price, yesterday_num, yesterday_total,
             yesterday_discount_money_text, yesterday_members_total_text, yesterday_unit_price_text;
@@ -103,10 +100,13 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
     private String nums = "0";//订单数
     private String yesterday_nums = "0";//昨天金额
     private String yesterday_allTotal = "0";//昨天订单数
+    private String today_member = "0",yesterday_member="0";
+    private TextView today_member_text,yesterday_member_text;
+
 
     private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
-    //    BarChart mBarChart;//图表
+    //   BarChart mBarChart;//图表
     private LineChart mChart;
     private LineData data;
 
@@ -143,6 +143,9 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         yesterday_unit_price_text = view.findViewById(R.id.yesterday_unit_price_text);
         store_name = view.findViewById(R.id.store_name);
         store_name.setText(s_name);
+
+        today_member_text = view.findViewById(R.id.today_member_text);
+        yesterday_member_text = view.findViewById(R.id.yesterday_member_text);
 
         //数据统计
         relative1 = view.findViewById(R.id.relative1);
@@ -189,7 +192,8 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
             @Override
             public void onClick(View view) {
 
-                Toast("正在马不停蹄的开发中");
+                Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
+
 
             }
 
@@ -219,7 +223,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         relative0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast("正在马不停蹄的开发中");
+                Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
             }
         });
 
@@ -274,6 +278,9 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 3, 404);
 
+        selectMember(Tools.DateConversion(new Date()),Tools.DateConversion(new Date()));
+        selectMembers(Tools.getYesterday(),Tools.getYesterday());
+
         return view;
     }
 
@@ -289,7 +296,6 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
                     order_num.setText(nums + "条");
                     order_total.setText(allTotal + "元");
-
                     discount_money_text.setText(discount_money + "元");
                     members_total_text.setText(members_total + "次");
                     unit_price.setText(Math.round(Float.parseFloat(allTotal) / Float.parseFloat(nums)) + "元");
@@ -317,7 +323,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
                     yesterday_total.setText("昨日金额：" + yesterday_allTotal + "元");
                     yesterday_num.setText("昨日订单：" + yesterday_nums + "单");
-                    yesterday_discount_money_text.setText("昨日优惠：" + new Tools().priceResult(yesterday_discount_money) + "元");
+                    yesterday_discount_money_text.setText("昨日优惠：" + yesterday_discount_money + "元");
                     yesterday_members_total_text.setText("昨日会员：" + yesterday_members_total + "次");
                     yesterday_unit_price_text.setText("昨日单价" + Math.round(Float.parseFloat(yesterday_allTotal) / Float.parseFloat(yesterday_nums)) + "元");
                     break;
@@ -393,7 +399,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                     } catch (Exception e) {
                         e.printStackTrace();
                         hideLoading();
-                        Toast("获取数据失败！请联系客服");
+                        Toast.makeText(HomeFragment.this.getActivity(),"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
                     }
 
                     break;
@@ -468,8 +474,53 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                     } catch (JSONException e) {
                         e.printStackTrace();
                         hideLoading();
-                        Toast("获取数据失败！请联系客服");
+                        Toast.makeText(HomeFragment.this.getActivity(),"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
+
                     }
+
+                    break;
+
+                case 5:
+
+                try {
+
+                    JSONObject jsonObject = new JSONObject(msg.obj.toString());
+
+                    String code = jsonObject.getString("code");
+                    if(code.equals("1")){
+
+                        today_member = jsonObject.getString("list");
+                        today_member_text.setText(today_member+"个");
+
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                break;
+
+                case 6:
+
+                    try {
+
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+
+                        String code = jsonObject.getString("code");
+                        if(code.equals("1")){
+
+                            yesterday_member = jsonObject.getString("list");
+                            yesterday_member_text.setText("昨天新增："+yesterday_member+"个");
+
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
 
                     break;
 
@@ -477,7 +528,8 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
                     hideLoading();
                     mLoadingDialog.dismiss();
-                    Toast("获取数据失败！请联系客服");
+                    Toast.makeText(HomeFragment.this.getActivity(),"连接网络失败，请检查网络！",Toast.LENGTH_LONG).show();
+
                     break;
 
             }
@@ -826,12 +878,35 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 //        }
     }
 
-    public void Toast(String msg){
+    //查询新增会员个数
+    public void selectMember(String today,String endtime){
 
-        ToastUtil toastUtil = new ToastUtil(this.getActivity(), R.layout.toast_center_horizontal, msg);
-        toastUtil.show(1500);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("pckey", Tools.getKey(MyApplication.getName()));
+        params.put("account", "1");
+        params.put("today", today);
+        params.put("endtime", endtime);
+
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.user/UserCount", params, mHandler, 5, 404);
+
 
     }
+    //查询新增会员个数
+    public void selectMembers(String today,String endtime){
 
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("pckey", Tools.getKey(MyApplication.getName()));
+        params.put("account", "1");
+        params.put("today", today);
+        params.put("endtime", endtime);
+
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.user/UserCount", params, mHandler, 6, 404);
+
+
+    }
 
 }

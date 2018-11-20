@@ -120,7 +120,7 @@ public class DataStatisticsActivity extends BaseActivity implements OnChartGestu
 //        cal_1.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
         startDate = Tools.getPastDate(7);
 
-        showLoading();
+        showLoadingView("数据加载中...");
         //获取SharedPreferences对象，使用自定义类的方法来获取对象
         String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id,"");
         String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name,"");
@@ -252,7 +252,7 @@ public class DataStatisticsActivity extends BaseActivity implements OnChartGestu
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    hideLoading();
+                    dismissLoadingView();
                     Toast("获取数据失败！请联系客服");
 
                 }
@@ -270,7 +270,7 @@ public class DataStatisticsActivity extends BaseActivity implements OnChartGestu
 
                 init();
                 draw();
-                hideLoading();
+                dismissLoadingView();
 
             }
         }
@@ -289,31 +289,6 @@ public class DataStatisticsActivity extends BaseActivity implements OnChartGestu
         }
 
 
-    }
-
-    /**
-     * 显示加载的进度款
-     */
-    public void showLoading() {
-        if (mLoadingDialog == null) {
-            mLoadingDialog = new LoadingDialog(this,"正在加载数据...", false);
-        }
-        mLoadingDialog.show();
-    }
-
-    /**
-     * 隐藏加载的进度框
-     */
-    public void hideLoading() {
-        if (mLoadingDialog != null) {
-            this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLoadingDialog.hide();
-                }
-            });
-
-        }
     }
 
 
@@ -637,15 +612,6 @@ public class DataStatisticsActivity extends BaseActivity implements OnChartGestu
         return listNew;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(mLoadingDialog != null){
-
-            mLoadingDialog.dismiss();
-        }
-    }
-
 
     public void showCustomTimePicker() {
 
@@ -660,7 +626,7 @@ public class DataStatisticsActivity extends BaseActivity implements OnChartGestu
 
                     startDate = startTime;
                     endDate = endTime;
-                    showLoading();
+                    showLoadingView("数据加载中...");
 
                     discount_money=0;//优惠金额
                     members_total=0;//会员次数

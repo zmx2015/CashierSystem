@@ -122,25 +122,6 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
             }
         });
 
-//        final TextWatcher oneNoteWatcher = new ProcurementDetailsAdapter.SimpeTextWather() {
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//                if (TextUtils.isEmpty(s)) {
-//
-//                    sdb.setG_note(null);
-//
-//                } else {
-//
-//                    sdb.setG_note(s.toString());
-//
-//                }
-//
-//                ou.setUploadState();
-//            }
-//        };
-
-//        holder.note.addTextChangedListener(oneNoteWatcher);
         holder.note.setTag(i);
 
         holder.textView1.setText(sdb.getG_name());

@@ -431,32 +431,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
 
-    /**
-     * 监听回退键
-     */
-    @Override
-    public void onBackPressed() {
-        if (mLoadingDialog != null) {
-            if (mLoadingDialog.isShowing()) {
-                mLoadingDialog.cancel();
-            } else {
-                finish();
-            }
-        } else {
-            finish();
-        }
 
-    }
 
     /**
      * 页面销毁前回调的方法
      */
     protected void onDestroy() {
 
-        if (mLoadingDialog != null) {
-            mLoadingDialog.cancel();
-            mLoadingDialog = null;
-        }
         super.onDestroy();
     }
 

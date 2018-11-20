@@ -45,7 +45,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     protected View positionView;
     protected Activity mActivity;
-    private LinearLayout load_view;//加载提示布局
 
     private AutoScrollTextView net;
 
@@ -103,33 +102,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
 
     }
-    /**
-     * 设置加载提示框
-     */
-    protected void showLoadingView(){
 
-        if(load_view == null){
-
-            load_view = (LinearLayout)LayoutInflater.from(mActivity).inflate(R.layout.load_view, null);
-
-            ((FrameLayout)findViewById(R.id.frame_content)).addView(load_view);//主布局LinearLayout
-
-        }
-        load_view.setVisibility(View.VISIBLE);
-
-    }
-    /**
-     * 数据加载完成
-     */
-    protected void dismissLoading(){
-
-        if(load_view != null){
-
-            load_view.setVisibility(View.GONE);
-
-        }
-
-    }
 
     /**
      * 设置加载提示框
@@ -311,12 +284,10 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         unregisterReceiver(netBroadCastReciver);
         super.onDestroy();
     }
-
     public void Toast(String msg){
 
         ToastUtil toastUtil = new ToastUtil(this, R.layout.toast_center_horizontal, msg);
         toastUtil.show(1500);
 
     }
-
 }

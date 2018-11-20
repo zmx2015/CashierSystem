@@ -130,7 +130,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
                 popWindow(i);
 
-                return false;
+                return true;
             }
         });
 

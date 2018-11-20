@@ -399,17 +399,6 @@ public class GoodsDetailsActivity extends BaseActivity {
         }
     };
 
-    @Override
-    protected void onDestroy() {
-
-        if (mLoadingDialog != null) {
-
-            mLoadingDialog.dismiss();
-        }
-
-        super.onDestroy();
-    }
-
     //查询类别
     public void selectCP() {
 
