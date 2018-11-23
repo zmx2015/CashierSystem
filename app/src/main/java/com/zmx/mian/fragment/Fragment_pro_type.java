@@ -76,23 +76,6 @@ public class Fragment_pro_type extends ViewPagerFragment {
      */
     private boolean mHasLoadedOnce;
     private View view;
-    private static final String FRAGMENT_INDEX = "fragment_index";
-
-//    /**
-//     * 创建新实例
-//     *
-//     * @param index
-//     * @return
-//     */
-//    public static Fragment_pro_type newInstance(int index, String id,String t_name) {
-//        Bundle bundle = new Bundle();
-//        bundle.putInt(FRAGMENT_INDEX, index);
-//        bundle.putString("CID", id);
-//        bundle.putString("t_name", t_name);
-//        Fragment_pro_type fragment = new Fragment_pro_type();
-//        fragment.setArguments(bundle);
-//        return fragment;
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -152,7 +135,7 @@ public class Fragment_pro_type extends ViewPagerFragment {
                 case 1:
 
                     Log.e("返回的数据", "放回" + msg.obj.toString());
-
+                    gs.clear();
                     try {
 
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
@@ -172,7 +155,7 @@ public class Fragment_pro_type extends ViewPagerFragment {
                                         ty.getInt("group") + "",
                                         ty.getString("vip_price"),
                                         ty.getString("mall_state"),
-                                        ty.getString("store_state"));
+                                        ty.getString("store_state"),"");
                                 gs.add(g);
                             }
                             ndv.dismissLoading();

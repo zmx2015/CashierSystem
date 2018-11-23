@@ -55,7 +55,6 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
     private EditText g_name, g_price, g_vipprice;
     private Button submit;
 
-    private int state_cp = 0;//判断是否选择了类别
     public static final String action = "addGoods";
 
     private CheckBox store_sj, online_sj;
@@ -90,6 +89,9 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 sc_id = lists.get(i).getId()+"";
+                if(sc_id.equals("0")){
+                    sc_id="";
+                }
             }
 
             @Override
@@ -131,9 +133,9 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
 
                     Toast("会员价价不能为空或者非法输入！");
 
-                } else if (state_cp == 0) {
+                } else if (type_id.equals("0")) {
 
-                    Toast("请选择类别！");
+                    Toast("请选择门店分类！");
 
                 } else {
 
@@ -144,6 +146,7 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
                     params.put("account", "0");
                     params.put("name", g_name.getText().toString());
                     params.put("group", type_id);
+                    params.put("mall_group", sc_id);
                     params.put("gds_price", g_price.getText().toString());
                     params.put("vip_price", g_vipprice.getText().toString());
 
@@ -196,6 +199,12 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
                         //先判断有没有分类先
                         if (json.getString("code").equals("1")) {
 
+                            //先添加一个未选择
+                            CommodityPositionGD c = new CommodityPositionGD();
+                            c.setType("0");
+                            c.setName("未选择");
+                            c.setId(Long.parseLong("0"));
+                            cp.add(c);
                             //有分类先保存分类数据
                             JSONArray j_store = json.getJSONArray("list");
                             for (int i = 0; i < j_store.length(); i++) {
@@ -235,6 +244,12 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
 
                             //有分类先保存分类数据
                             JSONArray j_mall = mall.getJSONArray("list");
+
+                            MallTypeBean m = new MallTypeBean();//模拟一个未分类
+                            m.setState("0");
+                            m.setTname("未选择");
+                            m.setMid("0");
+                            lists.add(m);
 
                             for (int i = 0; i < j_mall.length(); i++) {
 
@@ -294,10 +309,9 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
                     try {
 
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
-                        if(jsonObject.getString("status").equals("1")){
+                        if(jsonObject.getString("code").equals("1")){
 
                             Toast(jsonObject.getString("content"));
-
                             mActivity.finish();
 
                         }else{

@@ -34,6 +34,7 @@ public class GoodsDao extends AbstractDao<Goods, Void> {
         public final static Property Vip_g_price = new Property(7, String.class, "vip_g_price", false, "VIP_G_PRICE");
         public final static Property Mall_state = new Property(8, String.class, "mall_state", false, "MALL_STATE");
         public final static Property Store_state = new Property(9, String.class, "store_state", false, "STORE_STATE");
+        public final static Property Mall_id = new Property(10, String.class, "mall_id", false, "MALL_ID");
     }
 
 
@@ -58,7 +59,8 @@ public class GoodsDao extends AbstractDao<Goods, Void> {
                 "\"ROW_COUNT\" TEXT," + // 6: rowCount
                 "\"VIP_G_PRICE\" TEXT," + // 7: vip_g_price
                 "\"MALL_STATE\" TEXT," + // 8: mall_state
-                "\"STORE_STATE\" TEXT);"); // 9: store_state
+                "\"STORE_STATE\" TEXT," + // 9: store_state
+                "\"MALL_ID\" TEXT);"); // 10: mall_id
     }
 
     /** Drops the underlying database table. */
@@ -120,6 +122,11 @@ public class GoodsDao extends AbstractDao<Goods, Void> {
         if (store_state != null) {
             stmt.bindString(10, store_state);
         }
+ 
+        String mall_id = entity.getMall_id();
+        if (mall_id != null) {
+            stmt.bindString(11, mall_id);
+        }
     }
 
     @Override
@@ -175,6 +182,11 @@ public class GoodsDao extends AbstractDao<Goods, Void> {
         if (store_state != null) {
             stmt.bindString(10, store_state);
         }
+ 
+        String mall_id = entity.getMall_id();
+        if (mall_id != null) {
+            stmt.bindString(11, mall_id);
+        }
     }
 
     @Override
@@ -194,7 +206,8 @@ public class GoodsDao extends AbstractDao<Goods, Void> {
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // rowCount
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // vip_g_price
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // mall_state
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // store_state
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // store_state
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // mall_id
         );
         return entity;
     }
@@ -211,6 +224,7 @@ public class GoodsDao extends AbstractDao<Goods, Void> {
         entity.setVip_g_price(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setMall_state(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setStore_state(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setMall_id(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
      }
     
     @Override

@@ -15,6 +15,7 @@ import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.ui.AboutActivity;
 import com.zmx.mian.ui.FeedbackActivity;
+import com.zmx.mian.ui.GlobalConfigurationActivity;
 import com.zmx.mian.ui.LoginActivity;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
@@ -27,7 +28,7 @@ import com.zmx.mian.util.Tools;
 
 public class MineFragment extends BaseFragment{
 
-    private TextView about_text,mine_name;
+    private TextView about_text,mine_name,global_config;
     private Button log_ut;
 
     @Nullable
@@ -56,8 +57,17 @@ public class MineFragment extends BaseFragment{
                 Intent intent = new Intent();
                 intent.setClass(mActivity, LoginActivity.class);
                 startActivity(intent);
-                mActivity.finish();
 
+            }
+        });
+
+        global_config = view.findViewById(R.id.global_config);
+        global_config.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(mActivity, GlobalConfigurationActivity.class);
+                startActivity(intent);
             }
         });
         return view;

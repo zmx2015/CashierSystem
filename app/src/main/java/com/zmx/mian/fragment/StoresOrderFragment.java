@@ -426,10 +426,19 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
                         handler.sendEmptyMessage(1);
 
                     } catch (Exception e) {
+
                         e.printStackTrace();
                         dismissLoadingView();
                         Toast("获取数据失败！请联系客服");
+
                     }
+
+                    break;
+
+                case 404:
+
+                    dismissLoadingView();
+                    Toast("连接服务器失败！请稍后再试！");
 
                     break;
 

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:coupon="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/dp_5">
+
+    <com.zmx.mian.ui.util.CouponBgView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="@color/tou"
+        android:gravity="center_vertical"
+        coupon:horizontal_style="circle"
+        coupon:vertical_style="circle">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:background="@mipmap/money" />
+
+        <TextView
+            android:id="@+id/money_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp_15"
+            android:layout_toRightOf="@+id/text"
+            android:gravity="center"
+            android:text="5"
+            android:textColor="@color/text_avgpre"
+            android:textSize="25sp" />
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/money_text"
+            android:gravity="center|left">
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="优惠卷"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/describe"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:layout_toRightOf="@+id/text1"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:text="(注册赠送)"
+                />
+
+            <TextView
+                android:id="@+id/conditions_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text1"
+                android:text="满10元可用"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+    </com.zmx.mian.ui.util.CouponBgView>
+
+
+</LinearLayout>

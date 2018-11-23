@@ -191,7 +191,13 @@
         <activity android:name=".ui.CPManagementActivity" />
         <activity android:name=".ui.AboutActivity" />
         <activity android:name=".ui.ConvenientCashierActivity" />
-        <activity android:name=".ui.ConvenientCashierDetailActivity"></activity>
+        <activity android:name=".ui.ConvenientCashierDetailActivity" />
+        <activity android:name=".ui.CardVolumeActivity" />
+        <activity android:name=".ui.AddCardVolumeActivity" />
+        <activity android:name=".ui.LuckyDrawActivity" />
+        <activity android:name=".ui.ExchangeCardActivity" />
+        <activity android:name=".ui.RegisteredMembersActivity" />
+        <activity android:name=".ui.GlobalConfigurationActivity"></activity>
     </application>
 
 </manifest>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/tou"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tou">
+        <!--沉浸式activity，这个view是用来占位的   -->
+        <View
+            android:id="@+id/position_view"
+            android:layout_width="5px"
+            android:layout_height="5px" />
+        >
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/position_view"
+        android:background="@color/tou">
+
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:src="@mipmap/ic_fanghui" />
+
+
+        <TextView
+            android:id="@+id/members_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:text="添加优惠卷"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:textColor="@color/red"
+        android:textSize="12sp"
+        android:text="关于卡券：一旦创建后无法修改，只能作废后重新创建."
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="卡卷面值"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/card_view1"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:gravity="center|right"
+            android:textColor="@color/grey_500"
+            android:textSize="16sp"
+            android:background="@null"
+            android:hint="0"
+            />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/drop_down_unselected"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:text="满X可用"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/card_view2"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:gravity="center|right"
+            android:background="@null"
+            android:textColor="@color/grey_500"
+            android:textSize="16sp"
+            android:hint="0"
+            />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="门店分类"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/grey_500"
+            android:textSize="16sp"
+            android:id="@+id/card_sp"
+            />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="有效天数"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/card_view3"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_alignParentRight="true"
+            android:gravity="center|right"
+            android:background="@null"
+            android:textColor="@color/grey_500"
+            android:textSize="16sp"
+            android:hint=""
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/white">
+
+        <EditText
+            android:id="@+id/card_view4"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textSize="12sp"
+            android:hint="优惠卷描述,例如：双十一大面额优惠卷"
+            android:background="@null"
+            />
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginRight="@dimen/dp_15"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:background="@drawable/buttonstyle"
+        android:text="添加"
+        />
+
+</LinearLayout>

@@ -91,7 +91,10 @@ public class GoodsDetailsActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                sc_id = lists.get(i).getId()+"";
+                    sc_id = lists.get(i).getId()+"";
+                    Log.e("商城id",""+sc_id);
+
+
             }
 
             @Override
@@ -140,6 +143,7 @@ public class GoodsDetailsActivity extends BaseActivity {
                     params.put("account", "0");
                     params.put("gid", g.getG_id());
                     params.put("group", type_id);
+                    params.put("mall_group", sc_id);
                     params.put("gds_price", g_price.getText().toString());
                     params.put("name", g_name.getText().toString());
                     params.put("vip_price", g_vipprice.getText().toString());
@@ -195,9 +199,11 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                                 JSONObject object = jsonArray.getJSONObject(i);
 
+                                String s = object.getString("mall_id") == null?"":object.getString("mall_id");//判断有些商品分类为null的问题
+
                                 g = new Goods(object.getString("gid"), object.getString("img"), object.getString("gds_price"),
                                         object.getString("name"), "", object.getString("group"), "",
-                                        object.getString("vip_price"), object.getString("mall_state"), object.getString("store_state"));
+                                        object.getString("vip_price"), object.getString("mall_state"), object.getString("store_state"),s);
 
                             }
 
@@ -207,7 +213,9 @@ public class GoodsDetailsActivity extends BaseActivity {
                                 spinner_item.add(cp.get(i).getName());
 
                             }
+
                             sc_itme = new ArrayList<>();
+
                             for (int i = 0; i < lists.size(); i++) {
 
                                 sc_itme.add(lists.get(i).getTname());
@@ -263,7 +271,7 @@ public class GoodsDetailsActivity extends BaseActivity {
                             //循环选中默认的分类
                             for (int i = 0; i < sc_itme.size(); i++) {
 
-                                if (g.getCp_group().equals(lists.get(i).getId()+"")) {
+                                if (g.getMall_id().equals(lists.get(i).getId()+"")) {
 
                                     sc_fenlei.setSelection(i, true);
                                     sc_id = lists.get(i).getId()+"";
@@ -276,6 +284,7 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast("获取数据失败！请联系客服");
                     }
 
 
@@ -284,6 +293,7 @@ public class GoodsDetailsActivity extends BaseActivity {
                 case 1:
 
 
+                    dismissLoadingView();//隐藏加载框
                     //修改后返回的状态
                     try {
 
@@ -298,12 +308,10 @@ public class GoodsDetailsActivity extends BaseActivity {
                             Toast(jsonObject.getString("content"));
                         }
 
-                        dismissLoadingView();//隐藏加载框
 
                     } catch (JSONException e) {
 
                         e.printStackTrace();
-                        dismissLoadingView();//隐藏加载框
                         Toast("获取数据失败！请联系客服");
 
                     }
@@ -343,8 +351,8 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast("未知错误！请联系客服!");
                     }
-
 
                     break;
 
@@ -359,6 +367,12 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                             //有分类先保存分类数据
                             JSONArray j_mall = mall.getJSONArray("list");
+
+                            MallTypeBean m = new MallTypeBean();//模拟一个未分类
+                            m.setState("0");
+                            m.setTname("未分类");
+                            m.setMid("0");
+                            lists.add(m);
 
                             for (int i = 0; i < j_mall.length(); i++) {
 
@@ -383,6 +397,7 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Toast("未知错误！请联系客服!");
                     }
 
                     break;

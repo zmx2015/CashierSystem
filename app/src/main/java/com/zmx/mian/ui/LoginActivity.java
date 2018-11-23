@@ -218,6 +218,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/login", params, handler, 1, 404);
 
+
+        //请求网络
+//        Map<String, String> paramss = new HashMap<String, String>();
+//        paramss.put("account","123456");
+////        paramss.put("mobileNo", "76ecc68a-36e3-3f5d-b2a5-a8e6a56c2f82");
+//        paramss.put("password","wrbzgz10");
+////        paramss.put("pageSize","20");
+////        paramss.put("type","10");
+////        paramss.put("page","1");
+//
+//        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://app.yogofruit.cn:8080/tob-gateway-web/store/user/login", paramss, handler, 4, 404);
+
+
     }
 
     private Handler handler = new Handler(){
@@ -310,6 +323,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
                     }
 
+                    break;
+
+                case 4:
+
+                    Log.e("请求返回的内容",""+msg.obj.toString());
                     break;
 
                 case 404:

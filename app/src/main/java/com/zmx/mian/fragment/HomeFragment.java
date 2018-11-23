@@ -48,6 +48,7 @@ import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.http.API;
 import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
+import com.zmx.mian.ui.CardVolumeActivity;
 import com.zmx.mian.ui.ConvenientCashierActivity;
 import com.zmx.mian.ui.DataStatisticsActivity;
 import com.zmx.mian.ui.GoodsItemRankingActivity;
@@ -60,6 +61,7 @@ import com.zmx.mian.ui.StockManagementListActivity;
 import com.zmx.mian.ui.StoreListActivity;
 import com.zmx.mian.ui.util.LoadingDialog;
 import com.zmx.mian.util.MySharedPreferences;
+import com.zmx.mian.util.ToastUtil;
 import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IHomeView;
 
@@ -118,7 +120,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
     private int yesterday_members_total = 0;//会员消费次数
 
     private TextView discount_money_text, members_total_text;
-    private RelativeLayout relative1,relative2,relative3,relative4,relative5,relative6,relative0;
+    private RelativeLayout relative1,relative2,relative3,relative4,relative5,relative6,relative7,relative0;
     private List<TimeQuantum> tq;
 
 
@@ -219,6 +221,16 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
             }
         });
 
+        //会员管理
+        relative7 = view.findViewById(R.id.relative7);
+        relative7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeFragment.this.getActivity(), CardVolumeActivity.class);
+                startActivity(intent);
+            }
+        });
+
         relative0 = view.findViewById(R.id.relative0);
         relative0.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -296,7 +308,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
                     order_num.setText(nums + "条");
                     order_total.setText(allTotal + "元");
-                    discount_money_text.setText(discount_money + "元");
+                    discount_money_text.setText(new Tools().priceResult(discount_money) + "元");
                     members_total_text.setText(members_total + "次");
                     unit_price.setText(Math.round(Float.parseFloat(allTotal) / Float.parseFloat(nums)) + "元");
                     init();
@@ -398,8 +410,9 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Log.e("解析错误",""+e.toString());
                         hideLoading();
-                        Toast.makeText(HomeFragment.this.getActivity(),"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
+                        Toast("获取数据失败！请联系客服");
                     }
 
                     break;
@@ -474,7 +487,8 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                     } catch (JSONException e) {
                         e.printStackTrace();
                         hideLoading();
-                        Toast.makeText(HomeFragment.this.getActivity(),"获取数据失败！请联系客服",Toast.LENGTH_LONG).show();
+                        Log.e("解析错误",""+e.toString());
+                        Toast("获取数据失败！请联系客服");
 
                     }
 
@@ -528,7 +542,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
                     hideLoading();
                     mLoadingDialog.dismiss();
-                    Toast.makeText(HomeFragment.this.getActivity(),"连接网络失败，请检查网络！",Toast.LENGTH_LONG).show();
+                    Toast("连接网络失败，请检查网络！");
 
                     break;
 
@@ -908,5 +922,10 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
 
     }
+    public void Toast(String msg){
 
+        ToastUtil toastUtil = new ToastUtil(this.getActivity(), R.layout.toast_center_horizontal, msg);
+        toastUtil.show(1500);
+
+    }
 }

@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * 开发人员：曾敏祥
  * 开发时间：2018-10-25 18:27
- * 类功能：采购详情
+ * 类功能：采购详情【作废，没有用到了】
  */
 
 public class ProcurementDetailsAdapter extends BaseAdapter {
@@ -216,17 +216,6 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
 
     }
 
-
-    public abstract class SimpeTextWather implements TextWatcher {
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-        }
-    }
 
 
     class ViewManHolder {

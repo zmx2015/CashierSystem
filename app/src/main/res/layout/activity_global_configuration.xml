@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/tou"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tou">
+        <!--沉浸式activity，这个view是用来占位的   -->
+        <View
+            android:id="@+id/position_view"
+            android:layout_width="5px"
+            android:layout_height="5px" />
+        >
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/position_view"
+        android:background="@color/tou">
+
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:src="@mipmap/ic_fanghui" />
+
+
+        <TextView
+            android:id="@+id/members_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:text="全局配置"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative1"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="签到随机分最大值"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_30"
+            android:gravity="right|center"
+            android:textSize="15sp"
+            android:text="10分"
+            />
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@mipmap/right"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative2"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="绑定手机赠送积分"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_30"
+            android:gravity="right|center"
+            android:textSize="15sp"
+            android:text="168分"
+            />
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@mipmap/right"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative3"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="设置每个月会员日"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/text3"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_30"
+            android:gravity="right|center"
+            android:textSize="15sp"
+            android:text="5、15、25"
+            />
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@mipmap/right"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative5"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="会员日消费折扣"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/text5"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_30"
+            android:gravity="right|center"
+            android:textSize="15sp"
+            android:text="88折"
+            />
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@mipmap/right"
+            />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/relative7"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="会员日消费积分"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/text7"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_30"
+            android:gravity="right|center"
+            android:textSize="15sp"
+            android:text="2倍"
+            />
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@mipmap/right"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative4"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="会员平常消费折扣"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/text4"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_30"
+            android:gravity="right|center"
+            android:textSize="15sp"
+            android:text="95折"
+            />
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@mipmap/right"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative6"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_5"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:textColor="@color/drop_down_unselected"
+            android:text="设置平时消费积分"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/text6"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_30"
+            android:gravity="right|center"
+            android:textSize="15sp"
+            android:text="1分"
+            />
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:background="@mipmap/right"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

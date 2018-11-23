@@ -39,7 +39,7 @@ android {
 
 greendao {
     //数据库的schema版本，也可以理解为数据库版本号
-    schemaVersion 2
+    schemaVersion 3
     //设置DaoMaster、DaoSession、Dao包名，也就是要放置这些类的包的全路径。
     daoPackage 'com.zmx.mian.dao'
     //设置DaoMaster、DaoSession、Dao目录
@@ -81,4 +81,8 @@ dependencies {
     compile 'cn.jiguang.sdk:jcore:1.2.5'  // 此处以JCore 1.2.5 版本为例。
 
     compile 'org.greenrobot:greendao:3.2.2' // 添加库
+
+//    compile 'com.github.dongjunkun:CouponView:1.0' // 优惠卷背景界面用到
+
+
 }

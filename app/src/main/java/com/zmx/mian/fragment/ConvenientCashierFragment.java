@@ -107,7 +107,7 @@ public class ConvenientCashierFragment extends ViewPagerFragment implements Conv
                 case 1:
 
                     Log.e("返回的数据", "放回" + msg.obj.toString());
-
+                    gs.clear();
                     try {
 
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
@@ -127,7 +127,7 @@ public class ConvenientCashierFragment extends ViewPagerFragment implements Conv
                                         ty.getInt("group") + "",
                                         ty.getString("vip_price"),
                                         ty.getString("mall_state"),
-                                        ty.getString("store_state"));
+                                        ty.getString("store_state"),"");
                                 gs.add(g);
                             }
                             ndv.dismissLoading();

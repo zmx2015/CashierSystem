@@ -99,6 +99,7 @@
 
 
     <TextView
+        android:id="@+id/global_config"
         style="@style/TxtTitle"
         android:layout_width="fill_parent"
         android:layout_height="50dp"

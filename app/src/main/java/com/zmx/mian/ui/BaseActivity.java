@@ -290,4 +290,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         toastUtil.show(1500);
 
     }
+
+
 }

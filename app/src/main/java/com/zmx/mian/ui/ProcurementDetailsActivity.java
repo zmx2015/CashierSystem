@@ -2,6 +2,7 @@ package com.zmx.mian.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
@@ -11,6 +12,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
@@ -28,6 +31,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,9 +42,11 @@ import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
 import com.google.gson.Gson;
 import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
+import com.zmx.mian.adapter.ProcurementDetailAdapter;
 import com.zmx.mian.adapter.ProcurementDetailsAdapter;
 import com.zmx.mian.adapter.SearchGoodsAdapter;
 import com.zmx.mian.adapter.StockManagementDetailsAdapter;
+import com.zmx.mian.adapter.StoreListAdapter;
 import com.zmx.mian.bean.Goods;
 import com.zmx.mian.bean.SMDBean;
 import com.zmx.mian.bean.StockManagementBean;
@@ -61,22 +67,30 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.DeflaterOutputStream;
 
 /**
  * 开发人员：曾敏祥
  * 开发时间：2018-10-25 18:18
  * 类功能：
  */
-public class ProcurementDetailsActivity extends BaseActivity implements ProcurementDetailsAdapter.OnClickUpload {
+public class ProcurementDetailsActivity extends BaseActivity implements ProcurementDetailAdapter.OnClickUpload {
 
-    private ListView listview;
+
+    //新增
+    private RecyclerView mRecyclerView;
+    //支持下拉刷新的ViewGroup
+    private PtrClassicFrameLayout mPtrFrame;
+    private RecyclerAdapterWithHF mAdapter;
+
+    //    private ListView listview;
     //List数据
     private List<StockManagementDetailsBean> lists;
     //RecyclerView自定义Adapter
-    private ProcurementDetailsAdapter adapter;
+    private ProcurementDetailAdapter adapter;
 
     private Button speed_model, up_model, add_model;
-    private TextView title_time;
+    private TextView title_time, pro_total;
 
     private String number, ru_time;
 
@@ -91,6 +105,8 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
     private String pid = "";
 
+    private String state_color = "";//计算总金额和选中金额用到
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_procurement_details;
@@ -100,6 +116,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
     protected void initViews() {
 
         setTitleColor(R.id.position_view);
+        BackButton(R.id.back_button);
 
         smb = (StockManagementBean) getIntent().getSerializableExtra("sb");
         number = smb.getNumber();
@@ -108,11 +125,11 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
         lists = new ArrayList<>();
 
-        BackButton(R.id.back_button);
         title_time = findViewById(R.id.title);
         title_time.setOnClickListener(this);
+        pro_total = findViewById(R.id.pro_total);
         title_time.setText(ru_time);
-        listview = findViewById(R.id.listview);
+//        listview = findViewById(R.id.listview);
         speed_model = findViewById(R.id.speed_model);
         speed_model.setOnClickListener(this);
         up_model = findViewById(R.id.up_model);
@@ -120,28 +137,78 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         add_model = findViewById(R.id.add_model);
         add_model.setOnClickListener(this);
 
-        adapter = new ProcurementDetailsAdapter(this, lists, smb);
+        adapter = new ProcurementDetailAdapter(this, lists);
         adapter.setOnClickUpload(this);
-        listview.setAdapter(adapter);
-
-        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                popWindow(i);
-
-                return true;
-            }
-        });
 
         //先判断点击进来的是否是新建采购单还是已经有数据的采购单，有就查询这个订单
         if (smb.getSm_state().equals("1")) {
 
             showLoadingView("加载中...");
             loadingData();
-            pid = smb.getId()+"";
+            pid = smb.getId() + "";
 
         }
+
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_list);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mAdapter = new RecyclerAdapterWithHF(adapter);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener(new RecyclerAdapterWithHF.OnItemClickListener() {
+            @Override
+            public void onItemClick(RecyclerAdapterWithHF adapter, RecyclerView.ViewHolder vh, int position) {
+
+                state_color = position+"";
+                Statistical_amount();
+                showPhoto(position);
+
+            }
+        });
+
+        mAdapter.setOnItemLongClickListener(new RecyclerAdapterWithHF.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(RecyclerAdapterWithHF adapter, RecyclerView.ViewHolder vh, int position) {
+
+                popWindow(position);
+
+            }
+        });
+
+
+        mPtrFrame = findViewById(R.id.rotate_header_list_view_frame);
+//下拉刷新支持时间
+        mPtrFrame.setLastUpdateTimeRelateObject(this);
+//下拉刷新一些设置 详情参考文档
+        mPtrFrame.setResistance(1.7f);
+        mPtrFrame.setRatioOfHeaderHeightToRefresh(1.2f);
+        mPtrFrame.setDurationToClose(200);
+        mPtrFrame.setDurationToCloseHeader(1000);
+// default is false
+        mPtrFrame.setPullToRefresh(false);
+// default is true
+        mPtrFrame.setKeepHeaderWhenRefresh(true);
+
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                frame.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPtrFrame.refreshComplete();
+                    }
+                }, 1800);
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                // 默认实现，根据实际情况做改动
+                return false;
+            }
+        });
+
+        Statistical_amount();
 
     }
 
@@ -257,11 +324,11 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                     try {
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
 
-                        if(jsonObject.getString("code").equals("1")){
+                        if (jsonObject.getString("code").equals("1")) {
                             gs.clear();
                             JSONArray jsonArray = jsonObject.getJSONArray("list");
 
-                            for (int i=0;i<jsonArray.length();i++){
+                            for (int i = 0; i < jsonArray.length(); i++) {
 
                                 JSONObject j = jsonArray.getJSONObject(i);
 
@@ -274,7 +341,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
                             }
                             goods_adapter.notifyDataSetChanged();
-                        }else{
+                        } else {
 //                            no_data.setVisibility(View.VISIBLE);
                         }
 
@@ -325,6 +392,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                 case 2:
 
                     dismissLoadingView();
+                    Statistical_amount();
                     adapter.notifyDataSetChanged();
 
                     break;
@@ -446,6 +514,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                 sb.setG_total("0");
                 sb.setUnita("1");
                 lists.add(sb);
+                showPhoto(lists.size() - 1);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 search_dialog.dismiss();
@@ -534,7 +603,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         LayoutInflater inflater = LayoutInflater.from(this);//获取一个填充器
         View view = inflater.inflate(R.layout.popup_content_layout, null);//填充我们自定义的布局
 
-
         Display display = getWindowManager().getDefaultDisplay();//得到当前屏幕的显示器对象
         Point size = new Point();//创建一个Point点对象用来接收屏幕尺寸信息
         display.getSize(size);//Point点对象接收当前设备屏幕尺寸信息
@@ -563,10 +631,10 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onClick(View view) {
 
-                adapter.update(pos, listview, R.color.button1);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("1");
                 lists.set(pos, sdb);
+                adapter.notifyItemChanged(pos);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();
@@ -579,11 +647,10 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onClick(View view) {
 
-                adapter.update(pos, listview, R.color.button2);
-
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("2");
                 lists.set(pos, sdb);
+                adapter.notifyItemChanged(pos);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();
@@ -596,10 +663,10 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onClick(View view) {
 
-                adapter.update(pos, listview, R.color.button3);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("3");
                 lists.set(pos, sdb);
+                adapter.notifyItemChanged(pos);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();
@@ -612,10 +679,10 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onClick(View view) {
 
-                adapter.update(pos, listview, R.color.button4);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("4");
                 lists.set(pos, sdb);
+                adapter.notifyItemChanged(pos);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();
@@ -628,10 +695,10 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onClick(View view) {
 
-                adapter.update(pos, listview, R.color.button5);
                 StockManagementDetailsBean sdb = lists.get(pos);
                 sdb.setG_color("5");
                 lists.set(pos, sdb);
+                adapter.notifyItemChanged(pos);
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();
@@ -647,6 +714,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
                 StockManagementDetailsBean sdb = lists.get(pos);//拿到当前的数据
                 lists.remove(sdb);
+                state_color = "0";//统计金额，删除最后一天报错的问题
                 handler.sendEmptyMessage(2);
                 Submit();//提交修改数据
                 popWindow.dismiss();
@@ -703,7 +771,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
 
     //搜索商品
-    public void searchGoods(String name){
+    public void searchGoods(String name) {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("admin", MyApplication.getName());
@@ -714,6 +782,735 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/search", params, handler, 0, 404);
 
+
+    }
+
+
+    private TextView textView1, textView2, textView3, textView4, textView5, textView, text_yuan, goods_name, pay_text;
+    private RelativeLayout rl_layout1, rl_layout2, rl_layout3, rl_layout4, rl_layout5;
+    private String s_variable = "";
+    private int L_STATE = 0;//点击哪个布局的状态，0为没有选择，1为点击件数，2为点击单价，3位点击重量，4为点击行费，5位点击押金
+    private Dialog modify_dialogs;//弹出框
+    private Dialog modify_dialog;//弹出框
+    private int I_STATE = 1;//斤和件，2为斤，1位件，默认为件
+
+    public void showPhoto(final int pos) {
+
+        final StockManagementDetailsBean sb = lists.get(pos);
+        View view;//选择性别的view
+
+        modify_dialogs = new Dialog(mActivity, R.style.ActionSheetDialogStyle);
+        //填充对话框的布局
+        view = LayoutInflater.from(mActivity).inflate(R.layout.layout2, null);
+        //将布局设置给Dialog
+        modify_dialogs.setContentView(view);
+        //获取当前Activity所在的窗体
+        Window dialogWindow = modify_dialogs.getWindow();
+
+        //设置Dialog从窗体底部弹出
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        //获得窗体的属性
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        //        lp.y = 20;//设置Dialog距离底部的距离
+
+        //// 以下这两句是为了保证按钮可以水平满屏
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        // 设置显示位置
+        modify_dialogs.onWindowAttributesChanged(lp);
+        //       将属性设置给窗体
+//        modify_dialogs.setCanceledOnTouchOutside(false);
+        modify_dialogs.show();//显示对话框
+
+        pay_text = view.findViewById(R.id.pay_text);
+        if (sb.getG_payment_mode().equals("1")) {
+            pay_text.setText("现金");
+        } else if (sb.getG_payment_mode().equals("2")) {
+            pay_text.setText("银行卡");
+        } else if (sb.getG_payment_mode().equals("3")) {
+            pay_text.setText("微信");
+        } else if (sb.getG_payment_mode().equals("4")) {
+            pay_text.setText("支付宝");
+        } else if (sb.getG_payment_mode().equals("5")) {
+            pay_text.setText("赊账");
+        } else if (sb.getG_payment_mode().equals("6")) {
+            pay_text.setText("其他");
+        }
+        pay_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                payDialog(pos);
+            }
+        });
+        goods_name = view.findViewById(R.id.goods_name);
+        goods_name.setText("采购：" + sb.getG_name());
+        textView1 = view.findViewById(R.id.textView1);
+        textView1.setText(sb.getG_nb());
+        textView2 = view.findViewById(R.id.textView2);
+        textView2.setText(sb.getG_price());
+        textView3 = view.findViewById(R.id.textView3);
+        textView3.setText(sb.getG_weight());
+        textView4 = view.findViewById(R.id.textView4);
+        textView4.setText(sb.getG_the_fare());
+        textView5 = view.findViewById(R.id.textView5);
+        textView5.setText(sb.getG_the_deposit());
+        textView = view.findViewById(R.id.textView);
+        textView.setText(sb.getG_total());
+        text_yuan = view.findViewById(R.id.text_yuan);
+        rl_layout1 = view.findViewById(R.id.rl_layout1);
+        rl_layout2 = view.findViewById(R.id.rl_layout2);
+        rl_layout3 = view.findViewById(R.id.rl_layout3);
+        rl_layout4 = view.findViewById(R.id.rl_layout4);
+        rl_layout5 = view.findViewById(R.id.rl_layout5);
+
+        rl_layout1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                L_STATE = 1;
+                s_variable = "";
+                rl_layout1.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+                rl_layout2.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout3.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout4.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout5.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+
+            }
+        });
+
+        rl_layout2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                L_STATE = 2;
+                s_variable = "";
+                rl_layout1.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout2.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+                rl_layout3.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout4.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout5.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+
+            }
+        });
+
+        rl_layout3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                L_STATE = 3;
+
+                s_variable = "";
+                rl_layout1.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout2.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout3.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+                rl_layout4.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout5.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+
+            }
+        });
+
+        rl_layout4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                L_STATE = 4;
+                s_variable = "";
+                rl_layout1.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout2.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout3.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout4.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+                rl_layout5.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+
+            }
+        });
+        rl_layout5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                L_STATE = 5;
+                s_variable = "";
+                rl_layout1.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout2.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout3.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout4.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout5.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+
+            }
+        });
+        TextView btn_price_1 = view.findViewById(R.id.btn_price_1);
+        btn_price_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("点击了", "点击了1");
+
+
+                s_variable = s_variable + 1;
+
+                ToCalculate();
+
+
+            }
+        });
+        TextView btn_price_2 = view.findViewById(R.id.btn_price_2);
+        btn_price_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("点击了", "点击了2");
+
+                s_variable = s_variable + 2;
+
+                ToCalculate();
+
+            }
+        });
+
+        TextView btn_price_3 = view.findViewById(R.id.btn_price_3);
+        btn_price_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 3;
+
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_4 = view.findViewById(R.id.btn_price_4);
+        btn_price_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 4;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_5 = view.findViewById(R.id.btn_price_5);
+        btn_price_5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 5;
+
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_6 = view.findViewById(R.id.btn_price_6);
+        btn_price_6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 6;
+
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_7 = view.findViewById(R.id.btn_price_7);
+        btn_price_7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 7;
+
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_8 = view.findViewById(R.id.btn_price_8);
+        btn_price_8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 8;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_9 = view.findViewById(R.id.btn_price_9);
+        btn_price_9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 9;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_0 = view.findViewById(R.id.btn_price_0);
+        btn_price_0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 0;
+
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_count_00 = view.findViewById(R.id.btn_count_00);
+        btn_count_00.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("点击了", "点击了");
+            }
+        });
+
+        //点
+        TextView btn_price_point = view.findViewById(R.id.btn_price_point);
+        btn_price_point.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("点击了", "点击了");
+
+                if (!s_variable.equals("")) {
+
+                    boolean status = s_variable.contains(".");
+
+                    //包含了
+                    if (status) {
+
+                        System.out.println("包含");
+
+                    } else {
+
+                        s_variable = s_variable + ".";
+                        ToCalculate();
+
+
+                    }
+                }
+
+
+            }
+        });
+
+        //删除
+        TextView btn_price_clear = view.findViewById(R.id.btn_price_clear);
+        btn_price_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Log.e("现在值s_variable", "：" + s_variable);
+
+                if (!s_variable.equals("") && !s_variable.equals("0")) {
+
+                    Log.e("现在值s_variable", "：事实上");
+                    s_variable = s_variable.substring(0, s_variable.length() - 1);
+                    if (!s_variable.equals("")) {
+
+                        ToCalculate();
+
+                    } else {
+
+                        s_variable = "";
+                        if (L_STATE == 1) {
+
+                            textView1.setText("0");
+
+                        } else if (L_STATE == 2) {
+
+                            textView2.setText("0");
+
+                        } else if (L_STATE == 3) {
+
+                            textView3.setText("0");
+
+                        } else if (L_STATE == 4) {
+
+                            textView4.setText("0");
+
+                        } else if (L_STATE == 5) {
+
+                            textView5.setText("0");
+
+                        }
+
+                        ToCalculate();
+                    }
+
+                } else {
+
+                    s_variable = "";
+                    Log.e("现在值s_variable", "：反反复复" + s_variable);
+                    if (L_STATE == 1) {
+
+                        textView1.setText("0");
+
+                    } else if (L_STATE == 2) {
+
+                        textView2.setText("0");
+
+                    } else if (L_STATE == 3) {
+
+                        textView3.setText("0");
+
+                    } else if (L_STATE == 4) {
+
+                        textView4.setText("0");
+
+                    } else if (L_STATE == 5) {
+
+                        textView5.setText("0");
+
+                    }
+
+                    ToCalculate();
+
+                }
+
+            }
+        });
+
+        //收款
+        TextView btn_price_shoukuan = view.findViewById(R.id.btn_price_shoukuan);
+        btn_price_shoukuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                sb.setG_weight(textView3.getText().toString());
+                sb.setG_nb(textView1.getText().toString());
+                sb.setG_price(textView2.getText().toString());
+                sb.setG_total(textView.getText().toString());
+                sb.setG_the_deposit(textView5.getText().toString());
+                sb.setG_the_fare(textView4.getText().toString());
+                sb.setUnita(I_STATE + "");
+
+                lists.set(pos, sb);
+                float f_total = 0;
+
+                for (StockManagementDetailsBean sb : lists) {
+
+                    f_total = Float.parseFloat(sb.getG_total()) + f_total;
+
+                }
+
+                smb.setTotal(f_total + "");//更改列表的总价
+                handler.sendEmptyMessage(2);
+                Submit();//提交修改数据
+
+                //初始化值
+                s_variable = "";
+                I_STATE = 1;
+                L_STATE = 0;
+
+                modify_dialogs.dismiss();
+
+            }
+
+        });
+
+
+        final Button button_jin = view.findViewById(R.id.button_jin);
+        final Button button_jian = view.findViewById(R.id.button_jian);
+
+        //判断是否是重量或者件数
+        if (sb.getUnita().equals("1") || sb.getUnita().equals(null)) {
+
+            button_jin.setBackgroundColor(mActivity.getResources().getColor(R.color.main_bg));
+            button_jian.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+            I_STATE = 1;
+
+        } else {
+
+            button_jin.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+            button_jian.setBackgroundColor(mActivity.getResources().getColor(R.color.main_bg));
+            I_STATE = 2;
+
+        }
+
+        button_jian.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                button_jin.setBackgroundColor(mActivity.getResources().getColor(R.color.main_bg));
+                button_jian.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+                I_STATE = 1;
+                float t1 = Float.parseFloat(TextUtils.isEmpty(textView1.getText().toString()) ? "0" : textView1.getText().toString());
+                float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
+                float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
+                float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
+                float total = t1 * t2 + t4 + t5;
+                textView.setText(total + "");
+                text_yuan.setText("元/件");
+            }
+        });
+        button_jin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                button_jin.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+                button_jian.setBackgroundColor(mActivity.getResources().getColor(R.color.main_bg));
+                I_STATE = 2;
+                float t3 = Float.parseFloat(TextUtils.isEmpty(textView3.getText().toString()) ? "0" : textView3.getText().toString());
+                float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
+                float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
+                float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
+                float total = t3 * t2 + t4 + t5;
+                textView.setText(total + "");
+                text_yuan.setText("元/斤");
+
+            }
+        });
+
+
+    }
+
+    public void ToCalculate() {
+
+        if (L_STATE == 1) {
+
+            textView1.setText(TextUtils.isEmpty(s_variable) ? "0" : s_variable);
+            if (I_STATE == 1) {
+
+                float t1 = Float.parseFloat(TextUtils.isEmpty(textView1.getText().toString()) ? "0" : textView1.getText().toString());
+                float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
+                float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
+                float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
+                float total = t1 * t2 + t4 + t5;
+                textView.setText(total + "");
+
+            }
+
+        } else if (L_STATE == 2) {
+
+            textView2.setText(TextUtils.isEmpty(s_variable) ? "0" : s_variable);
+            if (I_STATE == 1) {
+
+                float t1 = Float.parseFloat(TextUtils.isEmpty(textView1.getText().toString()) ? "0" : textView1.getText().toString());
+                float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
+                float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
+                float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
+                float total = t1 * t2 + t4 + t5;
+                textView.setText(total + "");
+
+            } else {
+
+                float t3 = Float.parseFloat(TextUtils.isEmpty(textView3.getText().toString()) ? "0" : textView3.getText().toString());
+                float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
+                float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
+                float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
+                float total = t3 * t2 + t4 + t5;
+                textView.setText(total + "");
+
+            }
+
+
+        } else if (L_STATE == 3) {
+
+            textView3.setText(TextUtils.isEmpty(s_variable) ? "0" : s_variable);
+            if (I_STATE == 2) {
+
+                float t3 = Float.parseFloat(TextUtils.isEmpty(textView3.getText().toString()) ? "0" : textView3.getText().toString());
+                float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
+                float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
+                float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
+                float total = t3 * t2 + t4 + t5;
+                textView.setText(total + "");
+
+            }
+
+
+        } else if (L_STATE == 4) {
+
+            textView4.setText(TextUtils.isEmpty(s_variable) ? "0" : s_variable);
+            if (I_STATE == 1) {
+
+                float t1 = Float.parseFloat(TextUtils.isEmpty(textView1.getText().toString()) ? "0" : textView1.getText().toString());
+                float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
+                float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
+                float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
+                float total = t1 * t2 + t4 + t5;
+                textView.setText(total + "");
+
+            } else {
+
+                float t3 = Float.parseFloat(TextUtils.isEmpty(textView3.getText().toString()) ? "0" : textView3.getText().toString());
+                float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
+                float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
+                float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
+                float total = t3 * t2 + t4 + t5;
+                textView.setText(total + "");
+
+            }
+
+
+        } else if (L_STATE == 5) {
+
+            textView5.setText(TextUtils.isEmpty(s_variable) ? "0" : s_variable);
+            if (I_STATE == 1) {
+
+                float t1 = Float.parseFloat(TextUtils.isEmpty(textView1.getText().toString()) ? "0" : textView1.getText().toString());
+                float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
+                float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
+                float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
+                float total = t1 * t2 + t4 + t5;
+                textView.setText(total + "");
+
+            } else {
+
+                float t3 = Float.parseFloat(TextUtils.isEmpty(textView3.getText().toString()) ? "0" : textView3.getText().toString());
+                float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
+                float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
+                float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
+                float total = t3 * t2 + t4 + t5;
+                textView.setText(total + "");
+
+            }
+
+
+        }
+
+
+    }
+
+    private int PAY_STATE = 1;//支付方式，默认是现金，1为现金，2为银行卡，3为微信，4为支付宝，5为赊账，6为其他
+    private Button pay_button1, pay_button2, pay_button3, pay_button4, pay_button5, pay_button6;
+
+    //弹出支付方式
+    public void payDialog(final int pos) {
+
+        final StockManagementDetailsBean sb = lists.get(pos);
+
+        View view;//选择性别的view
+
+        modify_dialog = new Dialog(mActivity, R.style.ActionSheetDialogStyle);
+        //填充对话框的布局
+        view = LayoutInflater.from(mActivity).inflate(R.layout.pay_dialog, null);
+        //将布局设置给Dialog
+        modify_dialog.setContentView(view);
+        //获取当前Activity所在的窗体
+        Window dialogWindow = modify_dialog.getWindow();
+
+        //设置Dialog从窗体底部弹出
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        //获得窗体的属性
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+//        lp.y = 20;//设置Dialog距离底部的距离
+
+//// 以下这两句是为了保证按钮可以水平满屏
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+// 设置显示位置
+        modify_dialog.onWindowAttributesChanged(lp);
+//       将属性设置给窗体
+        modify_dialog.setCanceledOnTouchOutside(true);
+        modify_dialog.show();//显示对话框
+
+        pay_button1 = view.findViewById(R.id.pay_button1);
+        pay_button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                sb.setG_payment_mode("1");
+                pay_text.setText("现金");
+                modify_dialog.dismiss();
+
+            }
+        });
+
+        pay_button2 = view.findViewById(R.id.pay_button2);
+        pay_button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sb.setG_payment_mode("2");
+                pay_text.setText("银行卡");
+                modify_dialog.dismiss();
+            }
+        });
+
+        pay_button3 = view.findViewById(R.id.pay_button3);
+        pay_button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sb.setG_payment_mode("3");
+                pay_text.setText("微信");
+                modify_dialog.dismiss();
+            }
+        });
+
+        pay_button4 = view.findViewById(R.id.pay_button4);
+        pay_button4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                sb.setG_payment_mode("4");
+                pay_text.setText("支付宝");
+                modify_dialog.dismiss();
+            }
+        });
+
+
+        pay_button5 = view.findViewById(R.id.pay_button5);
+        pay_button5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sb.setG_payment_mode("5");
+                pay_text.setText("赊账");
+                modify_dialog.dismiss();
+            }
+        });
+
+
+        pay_button6 = view.findViewById(R.id.pay_button6);
+        pay_button6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sb.setG_payment_mode("6");
+                pay_text.setText("其他");
+                modify_dialog.dismiss();
+            }
+        });
+
+
+    }
+
+
+    //统计采购总额
+    public void Statistical_amount() {
+
+        float total = 0;//选定金额
+        float total_all = 0;//全部金额
+
+        if (!state_color.equals("") || !TextUtils.isEmpty(state_color)) {
+
+            int state = Integer.parseInt(lists.get(Integer.parseInt(state_color)).getG_color());
+            for (int i = 0; i < lists.size(); i++) {
+
+                total_all = Float.parseFloat(lists.get(i).getG_total()) + total_all;
+                if (state == Integer.parseInt(lists.get(i).getG_color())) {
+
+                    total = Float.parseFloat(lists.get(i).getG_total()) + total;
+
+                }
+            }
+        } else {
+
+            for (int i = 0; i < lists.size(); i++) {
+
+                total_all = Float.parseFloat(lists.get(i).getG_total()) + total_all;
+            }
+
+        }
+
+        pro_total.setText(Html.fromHtml("采购总额：<font color='#ff0000'>" + total_all + "元</font>     点中颜色总额：<font color='#ff0000'>" + total + "元</font>"));
 
     }
 

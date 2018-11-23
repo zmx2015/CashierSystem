@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <!--沉浸式activity，这个view是用来占位的   -->
+        <View
+            android:id="@+id/position_view"
+            android:layout_width="match_parent"
+            android:layout_height="30px"
+            android:background="@color/tou" />
+
+        <RelativeLayout
+            android:id="@+id/sna_head"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/tou">
+
+            <ImageView
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:src="@mipmap/ic_fanghui" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@color/tou"
+                android:text="兑换设置"
+                android:textColor="@color/background"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <com.chanven.lib.cptr.PtrClassicFrameLayout xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/rotate_header_list_view_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#e1e1e1"
+            cube_ptr:ptr_duration_to_close="200"
+            cube_ptr:ptr_duration_to_close_header="1000"
+            cube_ptr:ptr_keep_header_when_refresh="true"
+            cube_ptr:ptr_pull_to_fresh="false"
+            cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+            cube_ptr:ptr_resistance="1.7">
+
+            <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rv_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff" />
+        </com.chanven.lib.cptr.PtrClassicFrameLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/no_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/ic_no_card"
+        android:visibility="gone" />
+
+</RelativeLayout>

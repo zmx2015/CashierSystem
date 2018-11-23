@@ -21,9 +21,11 @@ public class Goods implements Serializable {
     private String vip_g_price;
     private String mall_state;//门店上架下架1上架，0下架
     private String store_state;//商城上架和下架
+    private String mall_id;//商城分类id
+
 
     public Goods(String g_id, String g_img, String g_price, String g_name,
-                 String cp_name, String cp_group,String vip_g_price,String mall_state,String store_state) {
+                 String cp_name, String cp_group,String vip_g_price,String mall_state,String store_state,String mall_id) {
         super();
         this.g_id = g_id;
         this.g_img = g_img;
@@ -34,12 +36,12 @@ public class Goods implements Serializable {
         this.vip_g_price = vip_g_price;
         this.mall_state = mall_state;
         this.store_state = store_state;
+        this.mall_id = mall_id;
     }
 
-    @Generated(hash = 933231250)
-    public Goods(String g_id, String g_img, String g_price, String g_name, String cp_name,
-            String cp_group, String rowCount, String vip_g_price, String mall_state,
-            String store_state) {
+    @Generated(hash = 330306627)
+    public Goods(String g_id, String g_img, String g_price, String g_name, String cp_name, String cp_group,
+            String rowCount, String vip_g_price, String mall_state, String store_state, String mall_id) {
         this.g_id = g_id;
         this.g_img = g_img;
         this.g_price = g_price;
@@ -50,6 +52,7 @@ public class Goods implements Serializable {
         this.vip_g_price = vip_g_price;
         this.mall_state = mall_state;
         this.store_state = store_state;
+        this.mall_id = mall_id;
     }
 
     @Generated(hash = 1770709345)
@@ -134,5 +137,13 @@ public class Goods implements Serializable {
 
     public void setStore_state(String store_state) {
         this.store_state = store_state;
+    }
+
+    public String getMall_id() {
+        return this.mall_id;
+    }
+
+    public void setMall_id(String mall_id) {
+        this.mall_id = mall_id;
     }
 }
