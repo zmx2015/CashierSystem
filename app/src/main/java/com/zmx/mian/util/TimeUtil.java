@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -178,4 +180,91 @@ public class TimeUtil {
         String day = time.getActualMaximum(Calendar.DAY_OF_MONTH) + "";//本月份的天数
         return day;
     }
+
+    /**
+     * 通过指定的年份和月份获取当月有多少天.
+     *
+     * @param year  年.
+     * @param month 月.
+     * @return 天数.
+     */
+    public static int getMonthDays(int year, int month) {
+        switch (month) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                return 31;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                return 30;
+            case 2:
+                if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)){
+                    return 29;
+                }else{
+                    return 28;
+                }
+            default:
+                return -1;
+        }
+    }
+
+    /**
+     * 获取指定年月的 1 号位于周几.
+     * @param year  年.
+     * @param month 月.
+     * @return      周.
+     */
+    public static int getFirstDayWeek(int year, int month){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month - 1, 0);
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
+    /**
+     * 获取某个时间的天数
+     * @param time
+     * @return
+     */
+    public static String getDay(String time){
+
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyyMMdd").parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar now = Calendar.getInstance();
+        now.setTime(date);
+
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH) + 1;
+        int day = now.get(Calendar.DAY_OF_MONTH);
+
+//        System.out.println("year: " + year);
+//        System.out.println("month: " + month);
+//        System.out.println("day: " + day);
+
+        return day+"";
+    }
+
+    /**
+     * 时间格式转换为字符串
+     *
+     * @param date
+     * @return
+     */
+    public static String DateConversionDay(Date date) {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMM");
+        String dateString = formatter.format(date);
+
+        return dateString;
+    }
+
 }

@@ -174,7 +174,7 @@ public class GoodsDetailsActivity extends BaseActivity {
             }
         });
 
-        selectCP();
+       h.sendEmptyMessage(2);
 
     }
 
@@ -316,6 +316,10 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                     }
 
+                    break;
+
+                case 2:
+                    selectCP();
                     break;
 
                 case 3:

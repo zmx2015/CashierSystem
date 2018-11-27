@@ -358,4 +358,16 @@ public class OkHttp3ClientManager {
 
     }
 
+    /**
+     * 取消网络请求
+     */
+    public void cancelHttp(){
+
+        if(mOkHttpClient != null){
+
+            mOkHttpClient.dispatcher().cancelAll();
+
+        }
+
+    }
 }

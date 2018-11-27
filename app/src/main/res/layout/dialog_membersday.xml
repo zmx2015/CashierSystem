@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="选择会员日，可多选"
+        android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="@color/tou"
+        />
+
+    <com.zmx.mian.ui.util.CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@android:color/white"
+        app:cv_dayBackground="@mipmap/ic_mo_ren"
+        app:cv_selectDayBackground="@mipmap/ic_yixuan"
+        app:cv_selectTextColor="@android:color/white"
+        app:cv_textColor="#333333"
+        app:cv_textSize="14sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_weight="1"
+            android:background="@drawable/buttonstyle"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginRight="@dimen/dp_15"
+            android:text="取消"
+            />
+
+        <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+            android:layout_weight="1"
+        android:layout_marginTop="@dimen/dp_15"
+        android:background="@drawable/buttonstyle"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginBottom="@dimen/dp_15"
+        android:text="修改"
+        />
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

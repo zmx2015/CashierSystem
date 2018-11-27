@@ -29,7 +29,7 @@
                 android:layout_width="60px"
                 android:layout_height="60px"
                 android:layout_centerVertical="true"
-                android:background="@mipmap/i"
+                android:background="@mipmap/ic_shouji"
                 android:clickable="true"
                 android:padding="16px"
                 android:scaleType="fitXY" />

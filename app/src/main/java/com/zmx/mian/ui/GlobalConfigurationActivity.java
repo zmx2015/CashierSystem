@@ -1,28 +1,43 @@
 package com.zmx.mian.ui;
 
 import android.content.DialogInterface;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.ui.util.CalendarView;
+import com.zmx.mian.util.TimeUtil;
 import com.zmx.mian.util.Tools;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -84,6 +99,8 @@ public class GlobalConfigurationActivity extends BaseActivity {
         relative3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                dialog();
             }
         });
 
@@ -299,6 +316,157 @@ public class GlobalConfigurationActivity extends BaseActivity {
                     Toast("非法输入!");
                 }
 
+            }
+        });
+
+
+    }
+
+    public void dialog(){
+
+        LayoutInflater inflater = LayoutInflater.from(this);//获取一个填充器
+        View view = inflater.inflate(R.layout.dialog_membersday, null);//填充我们自定义的布局
+
+        Display display = getWindowManager().getDefaultDisplay();//得到当前屏幕的显示器对象
+        Point size = new Point();//创建一个Point点对象用来接收屏幕尺寸信息
+        display.getSize(size);//Point点对象接收当前设备屏幕尺寸信息
+        int width = size.x;//从Point点对象中获取屏幕的宽度(单位像素)
+        int height = size.y;//从Point点对象中获取屏幕的高度(单位像素)
+        //创建一个PopupWindow对象，第二个参数是设置宽度的，用刚刚获取到的屏幕宽度乘以2/3，取该屏幕的2/3宽度，从而在任何设备中都可以适配，高度则包裹内容即可，最后一个参数是设置得到焦点
+        final PopupWindow popWindow = new PopupWindow(view, 4 * width / 5, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        popWindow.setBackgroundDrawable(new BitmapDrawable());//设置PopupWindow的背景为一个空的Drawable对象，如果不设置这个，那么PopupWindow弹出后就无法退出了
+        popWindow.setOutsideTouchable(true);//设置是否点击PopupWindow外退出PopupWindow
+        WindowManager.LayoutParams params = getWindow().getAttributes();//创建当前界面的一个参数对象
+        params.alpha = 0.8f;//设置参数的透明度为0.8，透明度取值为0~1，1为完全不透明，0为完全透明，因为android中默认的屏幕颜色都是纯黑色的，所以如果设置为1，那么背景将都是黑色，设置为0，背景显示我们的当前界面
+        getWindow().setAttributes(params);//把该参数对象设置进当前界面中
+        popWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {//设置PopupWindow退出监听器
+            @Override
+            public void onDismiss() {//如果PopupWindow消失了，即退出了，那么触发该事件，然后把当前界面的透明度设置为不透明
+                WindowManager.LayoutParams params = getWindow().getAttributes();
+                params.alpha = 1.0f;//设置为不透明，即恢复原来的界面
+                getWindow().setAttributes(params);
+            }
+        });
+        //第一个参数为父View对象，即PopupWindow所在的父控件对象，第二个参数为它的重心，后面两个分别为x轴和y轴的偏移量
+        popWindow.showAtLocation(inflater.inflate(R.layout.activity_stock_management_details, null), Gravity.CENTER, 0, 0);
+
+        final CalendarView mCalendarView = view.findViewById(R.id.calendarView);
+
+        //设置显示已经设置的会员日
+        List<String> mDatas = new ArrayList<>();
+        if(!TextUtils.isEmpty(userdays)){
+
+            boolean status = userdays.contains(",");
+
+            //先判断是否有没有选择了多天
+            if(status){
+
+                String[] result1 = userdays.split(",");
+                for (int i = 0;i<result1.length;i++){
+
+                    //再判断是否是个位数
+                    if(result1[i].length()>1){
+
+                        mDatas.add(TimeUtil.DateConversionDay(new Date()) + result1[i]);
+
+                    }else {
+
+                        mDatas.add(TimeUtil.DateConversionDay(new Date()) +"0"+ result1[i]);
+
+                    }
+
+                }
+
+            }else{
+
+                //再判断是否是个位数
+                if(userdays.length()>1){
+
+                    mDatas.add(TimeUtil.DateConversionDay(new Date()) + userdays);
+
+                }else {
+
+                    mDatas.add(TimeUtil.DateConversionDay(new Date()) +"0"+ userdays);
+
+                }
+
+            }
+
+        }
+
+        for (int i = 0;i<mDatas.size();i++){
+
+            Log.e("数据",""+mDatas.get(i).toString());
+
+        }
+
+        // 设置可选日期
+        mCalendarView.setSelectDate(mDatas);
+        mCalendarView.setChangeDateStatus(true);
+        mCalendarView.setOnDataClickListener(new CalendarView.OnDataClickListener() {
+            @Override
+            public void onDataClick(@NonNull CalendarView view, int year, int month, int day) {
+
+                Log.e("test", "year: " + year);
+                Log.e("test", "month,: " + (month + 1));
+                Log.e("test", "day: " + day);
+
+            }
+        });
+
+        mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, boolean select, int year, int month, int day) {
+                if (select) {
+
+                    Toast.makeText(mActivity
+                            , "选中了" + day + "日为会员日", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
+        Button submit = view.findViewById(R.id.submit);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                showLoadingView("修改中...");
+                List<String> s = mCalendarView.getSelectDate();
+                StringBuffer buf = new StringBuffer();
+
+                if(s.size()>0){
+
+                    for (int j = 0;j<s.size();j++){
+
+                        buf.append(TimeUtil.getDay(s.get(j).toString()) + ",");
+
+                    }
+
+                    userdays = buf.toString();
+                    if(!TextUtils.isEmpty(userdays)){
+
+                        userdays = userdays.substring(0,userdays.length() - 1);
+
+                    }
+
+                }else{
+                    userdays = "";
+                }
+
+                DeleteCard("userdays",userdays,2);
+
+                popWindow.dismiss();
+
+            }
+        });
+
+        Button cancel = view.findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popWindow.dismiss();
             }
         });
 

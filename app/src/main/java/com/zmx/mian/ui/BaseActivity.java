@@ -21,12 +21,15 @@ import android.widget.TextView;
 
 import com.zmx.mian.R;
 import com.zmx.mian.bean.NetUtil;
+import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.ui.util.AutoScrollTextView;
 import com.zmx.mian.ui.util.LoadingDialog;
 import com.zmx.mian.util.NetBroadCastReciver;
 import com.zmx.mian.util.ToastUtil;
 
 import java.lang.reflect.Field;
+
+import okhttp3.OkHttpClient;
 
 /**
  * 作者：胖胖祥
@@ -280,6 +283,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             mLoadingDialog.dismiss();
 
         }
+        //取消所有网络请求
+        OkHttp3ClientManager.getInstance().cancelHttp();//取消所有请求
         //注销广播
         unregisterReceiver(netBroadCastReciver);
         super.onDestroy();

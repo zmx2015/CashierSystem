@@ -177,7 +177,7 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
             }
         });
 
-        selectCP();
+    handler.sendEmptyMessage(3);//查询分类
 
 
     }
@@ -327,7 +327,15 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
 
                     break;
 
+                case 3:
+                    selectCP();
+                    break;
+
                 case 404:
+
+                    dismissLoadingView();
+                    Toast("连接服务器失败！请联系客服！");
+
                     break;
 
             }
