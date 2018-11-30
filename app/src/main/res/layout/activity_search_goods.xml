@@ -64,7 +64,19 @@
                     android:textColorHint="@color/gray_text_color"
                     android:textSize="@dimen/text_mid_size" />
 
+
+
             </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/saomiao"
+                android:layout_alignParentRight="true"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="@dimen/dp_5"
+                android:background="@mipmap/ic_saoyisao"
+                />
+
 
         </LinearLayout>
 

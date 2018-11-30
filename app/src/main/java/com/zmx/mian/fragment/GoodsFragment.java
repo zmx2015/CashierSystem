@@ -124,6 +124,9 @@ public class GoodsFragment extends Fragment{
             public void onClick(View view) {
 
                 Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putString("state","1");
+                intent.putExtras(bundle);
                 intent.setClass(GoodsFragment.this.getContext(), SearchGoodsActivity.class);
                 startActivity(intent);
 
@@ -273,6 +276,7 @@ public class GoodsFragment extends Fragment{
         shop_pager = getActivity().findViewById(R.id.goods_pager);
         shop_pager.setAdapter(shopAdapter);
         shop_pager.setOnPageChangeListener(onPageChangeListener);
+
     }
 
     /**

@@ -81,6 +81,7 @@ public class ProcurementDetailsAdapter extends BaseAdapter {
             view = mLayoutInflater.inflate(R.layout.procurement_details_adapter, null);
             holder = new ViewManHolder(view);
             view.setTag(holder);
+
         } else {
 
             holder = (ViewManHolder) view.getTag();

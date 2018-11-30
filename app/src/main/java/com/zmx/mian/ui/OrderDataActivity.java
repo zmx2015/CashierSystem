@@ -2,6 +2,8 @@ package com.zmx.mian.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -11,11 +13,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,6 +104,8 @@ public class  OrderDataActivity extends BaseActivity implements View.OnClickList
     private String nums = "0";//订单数
     private ImageView no_data;
 
+    private int pos;//记录要删除的订单item；
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_order_data;
@@ -119,6 +130,14 @@ public class  OrderDataActivity extends BaseActivity implements View.OnClickList
         mRecyclerView.setLayoutManager(layoutManager);
         adapter = new OrderDataAdapter(this, mo);
         mAdapter = new RecyclerAdapterWithHF(adapter);
+        mAdapter.setOnItemClickListener(new RecyclerAdapterWithHF.OnItemClickListener() {
+            @Override
+            public void onItemClick(RecyclerAdapterWithHF adapter, RecyclerView.ViewHolder vh, int position) {
+
+                pos = position;
+                dialog(pos);
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
         mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.order_rotate_header_list_view_frame);
 //下拉刷新支持时间
@@ -287,6 +306,31 @@ public class  OrderDataActivity extends BaseActivity implements View.OnClickList
                     selectOrder();
                     break;
 
+                case 3:
+
+
+//                {"code":1,"content":"订单取消成功"}
+
+                    try {
+
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+
+                        if(jsonObject.getString("code").equals("1")){
+
+                            Toast(jsonObject.getString("content"));
+
+
+                        }else{
+
+                            Toast(jsonObject.getString("content"));
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
 
             }
 
@@ -413,8 +457,143 @@ public class  OrderDataActivity extends BaseActivity implements View.OnClickList
 
     }
 
+    private RelativeLayout rl_layout1,rl_layout2,rl_layout3,rl_layout4;
+    private TextView textView1,textView2,textView3;
+    private Button submit;
+    private EditText edit_why;
 
-}
+    private int STATE = 0;//选择原因的状态，默认0为没选中
+
+    public void dialog(int pos) {
+
+        final MainOrder m = mo.get(pos);
+        LayoutInflater inflater = LayoutInflater.from(this);//获取一个填充器
+        View view = inflater.inflate(R.layout.dialog_delete_order, null);//填充我们自定义的布局
+
+        Display display = getWindowManager().getDefaultDisplay();//得到当前屏幕的显示器对象
+        Point size = new Point();//创建一个Point点对象用来接收屏幕尺寸信息
+        display.getSize(size);//Point点对象接收当前设备屏幕尺寸信息
+        int width = size.x;//从Point点对象中获取屏幕的宽度(单位像素)
+        int height = size.y;//从Point点对象中获取屏幕的高度(单位像素)
+        //创建一个PopupWindow对象，第二个参数是设置宽度的，用刚刚获取到的屏幕宽度乘以2/3，取该屏幕的2/3宽度，从而在任何设备中都可以适配，高度则包裹内容即可，最后一个参数是设置得到焦点
+        final PopupWindow popWindow = new PopupWindow(view, 4 * width / 5, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        popWindow.setBackgroundDrawable(new BitmapDrawable());//设置PopupWindow的背景为一个空的Drawable对象，如果不设置这个，那么PopupWindow弹出后就无法退出了
+        popWindow.setOutsideTouchable(true);//设置是否点击PopupWindow外退出PopupWindow
+        WindowManager.LayoutParams params = getWindow().getAttributes();//创建当前界面的一个参数对象
+        params.alpha = 0.8f;//设置参数的透明度为0.8，透明度取值为0~1，1为完全不透明，0为完全透明，因为android中默认的屏幕颜色都是纯黑色的，所以如果设置为1，那么背景将都是黑色，设置为0，背景显示我们的当前界面
+        getWindow().setAttributes(params);//把该参数对象设置进当前界面中
+        popWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {//设置PopupWindow退出监听器
+            @Override
+            public void onDismiss() {//如果PopupWindow消失了，即退出了，那么触发该事件，然后把当前界面的透明度设置为不透明
+                WindowManager.LayoutParams params = getWindow().getAttributes();
+                params.alpha = 1.0f;//设置为不透明，即恢复原来的界面
+                getWindow().setAttributes(params);
+            }
+        });
+
+        //第一个参数为父View对象，即PopupWindow所在的父控件对象，第二个参数为它的重心，后面两个分别为x轴和y轴的偏移量
+        popWindow.showAtLocation(inflater.inflate(R.layout.activity_stock_management_details, null), Gravity.CENTER, 0, 0);
+
+        textView1 = view.findViewById(R.id.textView1);
+        textView2 = view.findViewById(R.id.textView2);
+        textView3 = view.findViewById(R.id.textView3);
+        edit_why = view.findViewById(R.id.edit_why);
+
+        rl_layout4 = view.findViewById(R.id.rl_layout4);
+        rl_layout1 = view.findViewById(R.id.rl_layout1);
+        rl_layout1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                rl_layout1.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+                rl_layout2.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout3.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                textView1.setTextColor(mActivity.getResources().getColor(R.color.tou));
+                textView2.setTextColor(mActivity.getResources().getColor(R.color.grey_500));
+                textView3.setTextColor(mActivity.getResources().getColor(R.color.grey_500));
+                rl_layout4.setVisibility(View.GONE);
+                STATE = 1;
+
+            }
+        });
+
+        rl_layout2 = view.findViewById(R.id.rl_layout2);
+        rl_layout2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                rl_layout1.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout2.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+                rl_layout3.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                textView1.setTextColor(mActivity.getResources().getColor(R.color.grey_500));
+                textView2.setTextColor(mActivity.getResources().getColor(R.color.tou));
+                textView3.setTextColor(mActivity.getResources().getColor(R.color.grey_500));
+                rl_layout4.setVisibility(View.GONE);
+                STATE = 2;
+            }
+        });
+
+        rl_layout3 = view.findViewById(R.id.rl_layout3);
+        rl_layout3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                rl_layout1.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout2.setBackgroundColor(mActivity.getResources().getColor(R.color.white));
+                rl_layout3.setBackgroundColor(mActivity.getResources().getColor(R.color.tou));
+                textView1.setTextColor(mActivity.getResources().getColor(R.color.grey_500));
+                textView2.setTextColor(mActivity.getResources().getColor(R.color.grey_500));
+                textView3.setTextColor(mActivity.getResources().getColor(R.color.tou));
+                rl_layout4.setVisibility(View.VISIBLE);
+                STATE = 3;
+            }
+        });
+
+        submit = view.findViewById(R.id.submit);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String s_why = "";
+                if(STATE == 0){
+
+                    Toast("请选择取消原因！");
+
+                }else {
+
+                    if (STATE == 1) {
+                        s_why = textView1.getText().toString();
+                    } else if (STATE == 2) {
+                        s_why = textView2.getText().toString();
+                    } else if (STATE == 3) {
+                        s_why = edit_why.getText().toString();
+                    }
+
+                    deleteOrder(m.getOrder(),m.getId()+"",s_why);
+                    popWindow.dismiss();
+
+                }
+            }
+        });
+
+    }
+
+    //删除订单
+    public void deleteOrder(String order,String order_id,String s_why) {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("pckey", new Tools().getKey(mActivity));
+        params.put("account", "0");
+        params.put("order", order);
+        params.put("id", order_id);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.ordertwo/cancelOrder", params, handler, 3, 404);
+
+    }
+
+
+    }
 
 
 

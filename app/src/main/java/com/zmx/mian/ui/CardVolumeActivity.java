@@ -429,7 +429,7 @@ public class CardVolumeActivity extends BaseActivity {
             }
         });
         //第一个参数为父View对象，即PopupWindow所在的父控件对象，第二个参数为它的重心，后面两个分别为x轴和y轴的偏移量
-        popWindow.showAtLocation(inflater.inflate(R.layout.activity_stock_management_details, null), Gravity.CENTER, 0, 0);
+        popWindow.showAtLocation(inflater.inflate(R.layout.activity_card_volume, null), Gravity.CENTER, 0, 0);
 
         //添加到抽奖中
         Button button1 = view.findViewById(R.id.button1);

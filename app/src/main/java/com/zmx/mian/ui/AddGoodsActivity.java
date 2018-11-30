@@ -1,8 +1,10 @@
 package com.zmx.mian.ui;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +14,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.Permission;
+import com.yanzhenjie.permission.Rationale;
+import com.yanzhenjie.permission.RationaleListener;
+import com.yzq.zxinglibrary.android.CaptureActivity;
+import com.yzq.zxinglibrary.bean.ZxingConfig;
+import com.yzq.zxinglibrary.common.Constant;
 import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.bean.CommodityPosition;
@@ -34,6 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +56,8 @@ import java.util.Map;
  */
 public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
 
+    private final static int REQ_CODES = 1028;
+    private final static int REQ_CODE = 1028;
     private Spinner g_fenlei,sc_fenlei;
     public ArrayAdapter<String> arr_adapter,sc_arr_adapter;
     private List<String> spinner_item,sc_itme;
@@ -52,8 +65,9 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
     private List<CommodityPositionGD> cp = new ArrayList<>(); //List数据
     private List<MallTypeBean> lists = new ArrayList<>();
 
-    private EditText g_name, g_price, g_vipprice;
-    private Button submit;
+    private EditText g_name, g_price, g_vipprice,bar_code;
+    private Button submit,random_button;
+    private ImageView saomiao;
 
     public static final String action = "addGoods";
 
@@ -67,6 +81,18 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
     @Override
     protected void initViews() {
 
+        AndPermission.with(this)
+                .permission(Permission.CAMERA)
+                .callback(REQ_CODES)
+                .rationale(new RationaleListener() {
+                    @Override
+                    public void showRequestPermissionRationale(int requestCode, Rationale rationale) {
+                        // 这里的对话框可以自定义，只要调用rationale.resume()就可以继续申请。
+                        AndPermission.rationaleDialog(mActivity, rationale).show();
+                    }
+                })
+                .start();
+
         // 沉浸式状态栏
         setTitleColor(R.id.position_view);
         BackButton(R.id.back_button);
@@ -74,6 +100,7 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
         g_name = findViewById(R.id.add_name);
         g_price = findViewById(R.id.add_price);
         g_vipprice = findViewById(R.id.add_vip_price);
+        bar_code = findViewById(R.id.bar_code);
 
         store_sj = findViewById(R.id.store_sj);
         store_sj.setChecked(true);
@@ -81,6 +108,23 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
         online_sj = findViewById(R.id.online_sj);
         online_sj.setChecked(true);
 
+        saomiao = findViewById(R.id.saomiao);
+        saomiao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPoto();
+            }
+        });
+
+        random_button = findViewById(R.id.random_button);
+        random_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                long i = Calendar.getInstance().getTimeInMillis();
+                bar_code.setText(i+MyApplication.getStore_id());
+            }
+        });
 
         g_fenlei = findViewById(R.id.g_fenlei);
         sc_fenlei = findViewById(R.id.sc_fenlei);
@@ -392,6 +436,44 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
         params.put("account", "0");
         params.put("type", "mall");
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, handler, 1, 404);
+
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_CODE) {
+
+
+            // 扫描二维码/条码回传
+            if (requestCode == REQ_CODE && resultCode == RESULT_OK) {
+                if (data != null) {
+
+                  String numbers = data.getStringExtra(Constant.CODED_CONTENT);
+                    bar_code.setText(numbers);
+               Toast(numbers);
+                }
+            }
+
+
+        }
+    }
+
+    public void startPoto() {
+
+        Intent intent = new Intent(this, CaptureActivity.class);
+
+        ZxingConfig config = new ZxingConfig();
+        config.setPlayBeep(true);//是否播放扫描声音 默认为true
+        config.setShake(true);//是否震动  默认为true
+        config.setDecodeBarCode(true);//是否扫描条形码 默认为true
+        config.setReactColor(R.color.colorAccent);//设置扫描框四个角的颜色 默认为淡蓝色
+        config.setFrameLineColor(R.color.colorAccent);//设置扫描框边框颜色 默认无色
+        config.setFullScreenScan(true);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
+        intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
+        startActivityForResult(intent, REQ_CODE);
 
     }
 

@@ -1,143 +1,605 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="@dimen/dp_10"
-    android:orientation="vertical"
     >
 
-    <TextView
-        android:id="@+id/goods_name"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="@color/grey_900"
-        android:text="西瓜"
-        />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0.5"
-        android:background="@color/tou"></View>
-
     <RelativeLayout
+        android:id="@+id/relayout2"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="@dimen/dp_50">
 
         <TextView
-            android:id="@+id/textView1"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="价格：" />
-
-        <EditText
-            android:id="@+id/goods_price"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="15.00"
-            android:inputType="number|numberDecimal"
-            android:textColor="@color/red"
-            android:gravity="center"
-            android:layout_toRightOf="@+id/textView1"
-            android:background="@null" />
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0.5"
-        android:background="@color/tou"></View>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="重量/个：" />
-
-
-        <EditText
-            android:id="@+id/goods_weight"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="15.00"
-            android:inputType="number|numberDecimal"
-            android:textColor="@color/red"
-            android:gravity="center"
-            android:layout_toRightOf="@+id/textView2"
-            android:background="@null" />
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0.5"
-        android:background="@color/tou"></View>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:gravity="center"
-            android:text="小计：" />
-
-        <TextView
-            android:id="@+id/price"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="15.00"
-            android:textColor="@color/red"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:layout_toRightOf="@+id/textView3"
-             />
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0.5"
-        android:background="@color/tou"></View>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/dp_10"
-        android:gravity="center"
-        >
-
-        <Button
-            android:id="@+id/cancel"
+            android:id="@+id/goods_name"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginRight="@dimen/dp_10"
-            android:background="@drawable/buttonstyle"
-            android:text="取消"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/tou"
+            android:layout_centerVertical="true"
+            android:text="购买商品：苹果"
             />
 
-        <Button
-            android:id="@+id/submit"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/buttonstyle"
-            android:text="确定" />
+    </RelativeLayout>
 
+    <LinearLayout
+        android:id="@+id/linear_layout1"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/relayout2"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_7">
+
+        <RelativeLayout
+            android:id="@+id/rl_layout1"
+            android:layout_width="70dp"
+            android:layout_height="75dp"
+            android:layout_marginRight="@dimen/dp_5"
+            android:background="@color/white"
+            android:padding="@dimen/dp_1"
+            android:layout_weight="1">
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/edit_bk">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="件数"
+                    android:textColor="@color/tou"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toLeftOf="@+id/text_jian"
+                    android:textSize="18sp"
+                    android:text="0"
+                    android:textColor="@color/black33"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:id="@+id/text_jian"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:textSize="14sp"
+                    android:textColor="@color/tou"
+                    android:text="件" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_layout2"
+            android:layout_width="70dp"
+            android:layout_height="75dp"
+            android:layout_marginRight="@dimen/dp_5"
+            android:background="@color/white"
+            android:padding="@dimen/dp_1"
+            android:layout_weight="1">
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/edit_bk">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="单价"
+                    android:textColor="@color/tou"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toLeftOf="@+id/text_yuan"
+                    android:textColor="@color/black33"
+                    android:textSize="18sp"
+                    android:text="0"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:id="@+id/text_yuan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:textSize="14sp"
+                    android:textColor="@color/tou"
+                    android:text="元/件" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="75dp"
+            android:layout_marginRight="@dimen/dp_5"
+            android:background="@color/white"
+            android:padding="@dimen/dp_1"
+            android:layout_weight="2">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/gray">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="总价"
+                    android:textColor="@color/tou"
+                    android:textSize="14sp" />
+
+
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toLeftOf="@+id/text_total"
+                    android:textSize="18sp"
+                    android:text="0"
+                    android:textColor="@color/black33"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:id="@+id/text_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:textSize="14sp"
+                    android:textColor="@color/tou"
+                    android:text="元" />
+            </RelativeLayout>
+        </RelativeLayout>
     </LinearLayout>
 
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/linear_layout2"
+        android:layout_below="@+id/linear_layout1"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_5">
+
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="75dp"
+            android:layout_marginRight="@dimen/dp_5"
+            android:background="@color/white"
+            android:padding="@dimen/dp_1"
+            android:layout_weight="1">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/dp_5"
+                android:background="@drawable/edit_bk">
+
+                <TextView
+                    android:id="@+id/dw_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="采购单位"
+                    android:textColor="@color/tou"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_below="@+id/dw_text"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:orientation="horizontal"
+                    >
+
+                    <Button
+                        android:id="@+id/button_jian"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/tou"
+                        android:text="件"
+                        />
+                    <Button
+                        android:id="@+id/button_jin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/main_bg"
+                        android:text="斤"
+                        />
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_layout3"
+            android:layout_width="70dp"
+            android:layout_height="75dp"
+            android:layout_marginRight="@dimen/dp_5"
+            android:background="@color/white"
+            android:padding="@dimen/dp_1"
+            android:layout_weight="1">
+
+            <RelativeLayout
+
+                android:id="@+id/relativeLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/edit_bk">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="重量"
+                    android:textColor="@color/tou"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toLeftOf="@+id/text_yuan1"
+                    android:textColor="@color/black33"
+                    android:textSize="18sp"
+                    android:text="0"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:id="@+id/text_yuan1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:textSize="14sp"
+                    android:textColor="@color/tou"
+                    android:text="斤" />
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relayout1"
+        android:layout_below="@+id/linear_layout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/tou"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:id="@+id/linearlayout"
+                >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="4"
+                    android:orientation="vertical"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" >
+
+                        <TextView
+                            android:id="@+id/btn_price_1"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:background="@drawable/buttonstyles"
+                            android:layout_weight="1"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:text="1"
+                            android:gravity="center"
+                            />
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou"/>
+                        <TextView
+                            android:id="@+id/btn_price_2"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:text="2"
+                            android:gravity="center"
+                            />
+
+
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou" />
+
+                        <TextView
+                            android:id="@+id/btn_price_3"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:text="3"
+                            android:gravity="center"
+                            />
+
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou" />
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/tou" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" >
+
+
+                        <TextView
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:gravity="center"
+                            android:id="@+id/btn_price_4"
+                            android:text="4" />
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou" />
+
+
+                        <TextView
+                            android:id="@+id/btn_price_5"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:gravity="center"
+                            android:text="5" />
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou"/>
+
+
+                        <TextView
+                            android:id="@+id/btn_price_6"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:text="6"
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:gravity="center"/>
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou" />
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/tou"/>
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" >
+
+
+                        <TextView
+                            android:id="@+id/btn_price_7"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:gravity="center"
+                            android:text="7" />
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou"/>
+
+
+                        <TextView
+                            android:id="@+id/btn_price_8"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:gravity="center"
+                            android:text="8" />
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou" />
+
+                        <TextView
+                            android:id="@+id/btn_price_9"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:gravity="center"
+                            android:text="9" />
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou"/>
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/tou"/>
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/btn_count_00"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:textSize="18dp"
+                            android:text=""
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:gravity="center"
+                            />
+
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou" />
+                        <TextView
+                            android:id="@+id/btn_price_0"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:gravity="center"
+                            android:text="0" />
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou"/>
+
+
+
+                        <TextView
+                            android:id="@+id/btn_price_point"
+                            android:layout_width="68.33dp"
+                            android:layout_height="52dp"
+                            android:background="@drawable/buttonstyles"
+                            android:textColor="@android:color/black"
+                            android:textSize="18dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="." />
+
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/tou"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="51.6dp"
+                            android:gravity="center"
+                            android:id="@+id/btn_price_del"
+                            >
+                            <TextView
+                                android:id="@+id/btn_price_clear"
+                                android:text="删除"
+                                android:background="@drawable/buttonstyles"
+                                android:layout_width="match_parent"
+                                android:gravity="center"
+                                android:layout_height="match_parent"
+                                />
+
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/tou"/>
+                        <TextView
+                            android:id="@+id/btn_price_shoukuan"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textSize="18dp"
+                            android:gravity="center"
+                            android:background="@drawable/buttonstyles"
+                            android:text="加入购物车" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

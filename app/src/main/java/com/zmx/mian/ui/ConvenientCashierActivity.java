@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,6 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
     private CustomScrollViewPager shop_pager;
     private int currentItem = 0;
     private ConvenientAdapter shopAdapter;
-    private ImageView type_icon;
     private Button again_load,button;
     private RelativeLayout search_btn;
 
@@ -75,9 +75,6 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
     private String mid;
 
     private ImageView no_data;//没有数据的时候显示
-
-
-    protected LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
     private int DIS=0;//防止重复点击出现加载框
 
@@ -89,6 +86,7 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
 
     @Override
     protected void initViews() {
+
 
         //初始化订单
         mainOrder = new MainOrder();
@@ -112,27 +110,16 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
             }
         });
 
-        type_icon = findViewById(R.id.sao);
-        type_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent();
-                intent.setClass(mActivity, AddGoodsActivity.class);
-                intent.putExtra("cp", (Serializable) cp);
-                startActivity(intent);
-
-            }
-        });
-
         search_btn = findViewById(R.id.search_btn);
         search_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent();
-                intent.setClass(mActivity, SearchGoodsActivity.class);
-                startActivity(intent);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("state","2");
+                startActivity(SearchGoodsActivity.class,bundle,2);
+
 
             }
         });
@@ -198,7 +185,7 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
                         MainOrder m = (MainOrder) extras.getSerializable("mo");
 
                         mainOrder.setTotal(m.getTotal());// 订单总金额
-                        mainOrder.setBackmey(m.getBackmey());;// 应找金额
+                        mainOrder.setBackmey(m.getBackmey());// 应找金额
                         mainOrder.setDiscount(m.getDiscount());// 订单优惠的金额
                         mainOrder.setReceipts(m.getReceipts());// 订单实收金额
                         mainOrder.setMo_classify(m.getMo_classify());
@@ -219,6 +206,30 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
                 }
 
                 break;
+
+            case 2:
+                Bundle extra = data.getExtras();
+                if (extra != null) {
+
+                    List<ViceOrder> vs = (List<ViceOrder>) extra.getSerializable("vos");
+                    for (ViceOrder v:vs){
+                        vos.add(v);
+                    }
+
+                    //重新计算订单的总价
+                    float total = 0;
+                    for (ViceOrder v : vos){
+                        total = total+Float.parseFloat(v.getSubtotal());
+                    }
+                    mainOrder.setTotal(priceResult(total)+"");
+                    text_number.setText(vos.size()+"");
+                    text_total.setText(total+"");
+                    mainOrder.setLists(vos);
+
+                }
+
+                break;
+
         }
 
 
@@ -484,6 +495,7 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
     @Override
     public void addAction(View view, int position) {
 
+        //添加到购物车的动画
         ShoppingCartAnimationView shoppingCartAnimationView = new ShoppingCartAnimationView(this);
         int positions[] = new int[2];
         view.getLocationInWindow(positions);
@@ -510,5 +522,7 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
         vos.clear();
 
     }
+
+
 
 }

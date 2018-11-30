@@ -82,7 +82,10 @@ dependencies {
 
     compile 'org.greenrobot:greendao:3.2.2' // 添加库
 
-//    compile 'com.github.dongjunkun:CouponView:1.0' // 优惠卷背景界面用到
+    /*添加二维码扫描依赖*/
+    implementation 'com.github.yuzhiqiang1993:zxing:2.2.1'
+
+    compile 'com.yanzhenjie:permission:1.1.0'//权限申请
 
 
 }

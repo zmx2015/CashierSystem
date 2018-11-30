@@ -77,9 +77,6 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
         setTitleColor(R.id.position_view);
         View v = findViewById(R.id.back_button);
 
-
-
-
         mo = (MainOrder) this.getIntent().getSerializableExtra("mo");
         vo = mo.getLists();
 
@@ -114,6 +111,7 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 //判断是否有商品
                 if(vo.size()>0){
 
@@ -121,13 +119,17 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
                     if(mo.getMo_classify().equals("3")){
 
                         if(!mo.getAccount().equals("1") || mo.getAccount().equals("")){
+
                             submitOrder();
+
                         }else{
+
                             Toast.makeText(mActivity,"没有选择会员，无法使用会员支付！",Toast.LENGTH_LONG).show();
                         }
 
                     }else{
 
+                        Log.e("进来了无会员支付","进来了无会员支付");
                         submitOrder();
                     }
 
@@ -214,6 +216,8 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
 
                 case 2:
 
+                    Log.e("提交成功","提交成功"+msg.obj.toString());
+
                     dismissLoadingView();
                     JSONObject bodys = null;
 
@@ -251,7 +255,13 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
 
 
                     break;
+                case 404:
 
+                    dismissLoadingView();
+
+                    Toast("连接服务器失败，请重新连接！");
+
+                    break;
             }
 
         }
@@ -266,7 +276,6 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
         params.put("pckey", new Tools().getKey(member));
         params.put("account", member);
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.lineapi/getUserInfo", params, handler, 0, 404);
-
 
     }
 
