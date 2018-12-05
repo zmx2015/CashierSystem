@@ -68,6 +68,7 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/store_message"
         style="@style/TxtTitle"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
@@ -83,6 +84,7 @@
         android:textSize="16sp" />
 
     <TextView
+        android:id="@+id/text_bbs"
         style="@style/TxtTitle"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
@@ -113,7 +115,9 @@
         android:paddingRight="16dp"
         android:text="全局配置"
         android:textSize="16sp" />
+
     <TextView
+        android:id="@+id/text_feedback"
         style="@style/TxtTitle"
         android:layout_width="fill_parent"
         android:layout_height="50dp"

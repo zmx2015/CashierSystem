@@ -218,19 +218,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/login", params, handler, 1, 404);
 
-
-        //请求网络
-//        Map<String, String> paramss = new HashMap<String, String>();
-//        paramss.put("account","123456");
-////        paramss.put("mobileNo", "76ecc68a-36e3-3f5d-b2a5-a8e6a56c2f82");
-//        paramss.put("password","wrbzgz10");
-////        paramss.put("pageSize","20");
-////        paramss.put("type","10");
-////        paramss.put("page","1");
-//
-//        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://app.yogofruit.cn:8080/tob-gateway-web/store/user/login", paramss, handler, 4, 404);
-
-
     }
 
     private Handler handler = new Handler(){
@@ -277,6 +264,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 }
 
                                 Toast("登录成功");
+                                MySharedPreferences.getInstance(mActivity).saveKeyObjValue("pw",getPassword());
                                 loadCheckBoxState();//记录下当前用户记住密码和自动登录的状态;
 
                                 //判断是否已经保存了门店信息了，有就直接跳到主页，没有就跳到门店列表

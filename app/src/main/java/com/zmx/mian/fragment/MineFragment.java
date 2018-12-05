@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
@@ -17,6 +18,7 @@ import com.zmx.mian.ui.AboutActivity;
 import com.zmx.mian.ui.FeedbackActivity;
 import com.zmx.mian.ui.GlobalConfigurationActivity;
 import com.zmx.mian.ui.LoginActivity;
+import com.zmx.mian.ui.StoreMessageActivity;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 
@@ -28,7 +30,7 @@ import com.zmx.mian.util.Tools;
 
 public class MineFragment extends BaseFragment{
 
-    private TextView about_text,mine_name,global_config;
+    private TextView about_text,mine_name,global_config,text_feedback,text_bbs,store_message;
     private Button log_ut;
 
     @Nullable
@@ -38,12 +40,46 @@ public class MineFragment extends BaseFragment{
 
         mine_name = view.findViewById(R.id.mine_name);
         mine_name.setText("账号："+MyApplication.getName());
+
+        store_message = view.findViewById(R.id.store_message);
+        store_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(StoreMessageActivity.class);
+
+            }
+        });
+
+        text_bbs = view.findViewById(R.id.text_bbs);
+        text_bbs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Toast.makeText(mActivity,"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+
         about_text = view.findViewById(R.id.about_text);
         about_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivity(FeedbackActivity.class);
                 startActivity(AboutActivity.class);
+            }
+        });
+
+
+        text_feedback = view.findViewById(R.id.text_feedback);
+        text_feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent();
+                intent.setClass(mActivity, FeedbackActivity.class);
+                startActivity(intent);
+
             }
         });
 

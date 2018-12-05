@@ -149,6 +149,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         today_member_text = view.findViewById(R.id.today_member_text);
         yesterday_member_text = view.findViewById(R.id.yesterday_member_text);
 
+
         //数据统计
         relative1 = view.findViewById(R.id.relative1);
         relative1.setOnClickListener(new View.OnClickListener() {

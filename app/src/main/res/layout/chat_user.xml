@@ -18,7 +18,7 @@
             android:layout_width="100px"
             android:layout_height="100px"
             android:layout_marginLeft="10px"
-            android:src="@mipmap/i"
+            android:src="@mipmap/logo"
             android:scaleType="centerCrop" />
 
         <RelativeLayout
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:padding="25px"
                 android:text="大家好我是证复读机啊开发了了放假啊锻炼腹肌了放假啊联赛积分发了手机发放假了就"
-                android:textSize="55px"
+                android:textSize="16sp"
                 android:gravity="center" />
         </RelativeLayout>
     </LinearLayout>

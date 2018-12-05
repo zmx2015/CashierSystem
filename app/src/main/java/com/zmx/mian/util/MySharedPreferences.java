@@ -134,6 +134,7 @@ public class MySharedPreferences {
     }
 
     public static String password = "password";
+    public static String pw = "pw";
     public static String autoLogin = "autoLogin";
     public static String name = "name";
     public static String remenberPassword = "remenberPassword";

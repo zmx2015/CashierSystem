@@ -2,11 +2,13 @@ package com.zmx.mian.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -91,6 +94,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
     private Button speed_model, up_model, add_model;
     private TextView title_time, pro_total;
+    private ImageView img_lockup;
 
     private String number, ru_time;
 
@@ -103,7 +107,8 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
     int mMonth = c.get(Calendar.MONTH);
     int mDay = c.get(Calendar.DAY_OF_MONTH);
 
-    private String pid = "";
+    private String pid = "";//订单id，新增的时候用到
+    private String lockup = "";//判断是否已经上锁了
 
     private String state_color = "";//计算总金额和选中金额用到
 
@@ -121,15 +126,26 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         smb = (StockManagementBean) getIntent().getSerializableExtra("sb");
         number = smb.getNumber();
         ru_time = smb.getRh_time();
+        lockup = smb.getLockup();
         S_UPLOAD = Integer.parseInt(smb.getSm_state());
 
         lists = new ArrayList<>();
 
+        img_lockup = findViewById(R.id.img_lockup);
+
+        if (lockup.equals("1")) {
+
+            img_lockup.setBackground(getResources().getDrawable(R.mipmap.suo_b));
+        } else {
+
+            img_lockup.setBackground(getResources().getDrawable(R.mipmap.suo_a));
+        }
+
+        img_lockup.setOnClickListener(this);
         title_time = findViewById(R.id.title);
         title_time.setOnClickListener(this);
         pro_total = findViewById(R.id.pro_total);
         title_time.setText(ru_time);
-//        listview = findViewById(R.id.listview);
         speed_model = findViewById(R.id.speed_model);
         speed_model.setOnClickListener(this);
         up_model = findViewById(R.id.up_model);
@@ -160,9 +176,16 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
             @Override
             public void onItemClick(RecyclerAdapterWithHF adapter, RecyclerView.ViewHolder vh, int position) {
 
-                state_color = position+"";
-                Statistical_amount();
-                showPhoto(position);
+
+                if (lockup.equals("0")) {
+
+                    state_color = position + "";
+                    Statistical_amount();
+                    showPhoto(position);
+                } else {
+
+                    Toast("该采购单已锁定，请解锁在编辑！");
+                }
 
             }
         });
@@ -170,8 +193,13 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         mAdapter.setOnItemLongClickListener(new RecyclerAdapterWithHF.OnItemLongClickListener() {
             @Override
             public void onItemLongClick(RecyclerAdapterWithHF adapter, RecyclerView.ViewHolder vh, int position) {
+                if (lockup.equals("0")) {
+                    popWindow(position);
+                } else {
 
-                popWindow(position);
+                    Toast("该采购单已锁定，请解锁在编辑！");
+                }
+
 
             }
         });
@@ -219,23 +247,58 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
         switch (v.getId()) {
 
+            case R.id.img_lockup:
+
+                dialogLockup();
+
+                break;
+
             case R.id.title:
-                new DatePickerDialog(mActivity, onDateSetListener, mYear, mMonth, mDay).show();
+
+                if (lockup.equals("0")) {
+
+                    new DatePickerDialog(mActivity, onDateSetListener, mYear, mMonth, mDay).show();
+                } else {
+
+                    Toast("该采购单已锁定，请解锁在编辑！");
+                }
+
                 break;
 
             case R.id.add_model:
-                chooseGoods();
+
+                if (lockup.equals("0")) {
+                    chooseGoods();
+                } else {
+
+                    Toast("该采购单已锁定，请解锁在编辑！");
+                }
                 break;
 
             case R.id.speed_model:
-                adapter.setState(1);
-                adapter.notifyDataSetChanged();
+
+                if (lockup.equals("0")) {
+
+                    adapter.setState(1);
+                    adapter.notifyDataSetChanged();
+
+                } else {
+
+                    Toast("该采购单已锁定，请解锁在编辑！");
+                }
                 break;
 
 
             case R.id.up_model:
-                adapter.setState(0);
-                adapter.notifyDataSetChanged();
+
+
+                if (lockup.equals("0")) {
+                    adapter.setState(0);
+                    adapter.notifyDataSetChanged();
+                } else {
+
+                    Toast("该采购单已锁定，请解锁在编辑！");
+                }
                 break;
 
         }
@@ -392,7 +455,13 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                 case 2:
 
                     dismissLoadingView();
-                    Statistical_amount();
+
+                    //判断是否是删到最后一条了
+                    if (lists.size() > 0) {
+
+                        Statistical_amount();
+
+                    }
                     adapter.notifyDataSetChanged();
 
                     break;
@@ -418,13 +487,48 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
 
 
                         } else {
-
+                            //提交成功
+                            Toast(jsonObject.getString("content"));
                         }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
+
+                    break;
+
+                case 4:
+
+                    dismissLoadingView();
+
+                    Log.e("修改", "" + msg.obj.toString());
+                    try {
+
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+                        String status = jsonObject.getString("code");
+                        if (status.equals("1")) {
+
+                            lockup = jsonObject.getString("lockup");
+                            Log.e("修改返回的", "" + lockup);
+                            if (lockup.equals("1")) {
+
+                                img_lockup.setBackground(getResources().getDrawable(R.mipmap.suo_b));
+                            } else {
+
+                                img_lockup.setBackground(getResources().getDrawable(R.mipmap.suo_a));
+                            }
+                            //提交成功
+                            Toast(jsonObject.getString("content"));
+
+                        } else {
+
+                            Toast(jsonObject.getString("content"));
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     break;
 
@@ -451,6 +555,22 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         params.put("pid", smb.getId() + "");
 
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/detail", params, handler, 1, 404);
+
+    }
+
+
+    //加载服务器的订单列表
+    public void updateLockup(String state) {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
+        params.put("mid", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, ""));
+        params.put("pckey", new Tools().getKey(mActivity));
+        params.put("account", "0");
+        params.put("pid", smb.getId() + "");
+        params.put("lockup", state);
+
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.purchase/locks", params, handler, 4, 404);
 
     }
 
@@ -1511,6 +1631,73 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         }
 
         pro_total.setText(Html.fromHtml("采购总额：<font color='#ff0000'>" + total_all + "元</font>     点中颜色总额：<font color='#ff0000'>" + total + "元</font>"));
+
+    }
+
+    public void dialogLockup() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+
+        LayoutInflater factory = LayoutInflater.from(this);//提示框
+        final View view = factory.inflate(R.layout.dialog_edit, null);//这里必须是final的
+        final EditText et = view.findViewById(R.id.editText);
+        builder.setTitle("请输入当前账号的密码");
+
+        final AlertDialog dialog = builder.create();
+        dialog.setView(view);
+
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if (!TextUtils.isEmpty(et.getText().toString())) {
+
+                    if (MySharedPreferences.getInstance(mActivity).getString("pw", "").equals(et.getText().toString())) {
+
+                        showLoadingView("加载中...");
+                        if (lockup.equals("0")) {
+
+                            updateLockup("1");
+
+                        } else {
+                            updateLockup("0");
+
+                        }
+
+                        dialog.dismiss();
+
+                    } else {
+
+                        Toast("密码错误！");
+
+                    }
+
+
+                } else {
+
+                    Toast("请输入密码！");
+
+                }
+
+            }
+        });
+
 
     }
 

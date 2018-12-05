@@ -23,18 +23,20 @@ public class StockManagementBean implements Serializable {
     private String sm_time;//创建时间
     private String rh_time;//进货时间
     private String total;//总价
+    private String lockup;//这个订单是否已经锁上了
     private String sm_state;//状态（判断是否已经上传服务器了）1为上传，0为未上传,2为重新编辑待上传
     @Transient
     private List<StockManagementDetailsBean> list;
 
-    @Generated(hash = 756909736)
+    @Generated(hash = 1234098100)
     public StockManagementBean(Long id, String number, String sm_time,
-            String rh_time, String total, String sm_state) {
+            String rh_time, String total, String lockup, String sm_state) {
         this.id = id;
         this.number = number;
         this.sm_time = sm_time;
         this.rh_time = rh_time;
         this.total = total;
+        this.lockup = lockup;
         this.sm_state = sm_state;
     }
     @Generated(hash = 49090520)
@@ -85,5 +87,11 @@ public class StockManagementBean implements Serializable {
 
     public void setList(List<StockManagementDetailsBean> list) {
         this.list = list;
+    }
+    public String getLockup() {
+        return this.lockup;
+    }
+    public void setLockup(String lockup) {
+        this.lockup = lockup;
     }
 }

@@ -29,7 +29,8 @@ public class StockManagementBeanDao extends AbstractDao<StockManagementBean, Lon
         public final static Property Sm_time = new Property(2, String.class, "sm_time", false, "SM_TIME");
         public final static Property Rh_time = new Property(3, String.class, "rh_time", false, "RH_TIME");
         public final static Property Total = new Property(4, String.class, "total", false, "TOTAL");
-        public final static Property Sm_state = new Property(5, String.class, "sm_state", false, "SM_STATE");
+        public final static Property Lockup = new Property(5, String.class, "lockup", false, "LOCKUP");
+        public final static Property Sm_state = new Property(6, String.class, "sm_state", false, "SM_STATE");
     }
 
 
@@ -50,7 +51,8 @@ public class StockManagementBeanDao extends AbstractDao<StockManagementBean, Lon
                 "\"SM_TIME\" TEXT," + // 2: sm_time
                 "\"RH_TIME\" TEXT," + // 3: rh_time
                 "\"TOTAL\" TEXT," + // 4: total
-                "\"SM_STATE\" TEXT);"); // 5: sm_state
+                "\"LOCKUP\" TEXT," + // 5: lockup
+                "\"SM_STATE\" TEXT);"); // 6: sm_state
     }
 
     /** Drops the underlying database table. */
@@ -88,9 +90,14 @@ public class StockManagementBeanDao extends AbstractDao<StockManagementBean, Lon
             stmt.bindString(5, total);
         }
  
+        String lockup = entity.getLockup();
+        if (lockup != null) {
+            stmt.bindString(6, lockup);
+        }
+ 
         String sm_state = entity.getSm_state();
         if (sm_state != null) {
-            stmt.bindString(6, sm_state);
+            stmt.bindString(7, sm_state);
         }
     }
 
@@ -123,9 +130,14 @@ public class StockManagementBeanDao extends AbstractDao<StockManagementBean, Lon
             stmt.bindString(5, total);
         }
  
+        String lockup = entity.getLockup();
+        if (lockup != null) {
+            stmt.bindString(6, lockup);
+        }
+ 
         String sm_state = entity.getSm_state();
         if (sm_state != null) {
-            stmt.bindString(6, sm_state);
+            stmt.bindString(7, sm_state);
         }
     }
 
@@ -142,7 +154,8 @@ public class StockManagementBeanDao extends AbstractDao<StockManagementBean, Lon
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // sm_time
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // rh_time
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // total
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // sm_state
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // lockup
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // sm_state
         );
         return entity;
     }
@@ -154,7 +167,8 @@ public class StockManagementBeanDao extends AbstractDao<StockManagementBean, Lon
         entity.setSm_time(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setRh_time(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setTotal(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setSm_state(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setLockup(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setSm_state(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     @Override

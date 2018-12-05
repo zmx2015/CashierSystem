@@ -239,6 +239,7 @@ public class Pro_type_adapter extends BaseAdapter {
         params.put("vip_price", g.getVip_g_price());
         params.put("store_state", store_state);
         params.put("mall_state", mall_state);
+        params.put("mall_group", g.getMall_id());
 
         OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/update", params, h, 1, 404);
 

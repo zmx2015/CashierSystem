@@ -62,6 +62,7 @@ public class MyReceiver extends BroadcastReceiver {
             Log.e("message",""+message);
             Log.e("extras",""+extras);
 
+
             FeedbackBean fb = new FeedbackBean();
             fb.setAdmin_name("admin");
             fb.setLogin_name(MySharedPreferences.getInstance(context).getString(MySharedPreferences.name,""));
@@ -74,9 +75,13 @@ public class MyReceiver extends BroadcastReceiver {
 
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
 
-//            receivingNotification(context,bundle);
+            String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
+            String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+            String title = bundle.getString(JPushInterface.EXTRA_TITLE);
             Log.e(TAG, "接受到推送下来的通知");
-
+            Log.e("message",""+message);
+            Log.e("title",""+title);
+            Log.e("EXTRA_EXTRA",""+extras);
 
         }else {
             Log.e(TAG, "Unhandled intent - " + intent.getAction());

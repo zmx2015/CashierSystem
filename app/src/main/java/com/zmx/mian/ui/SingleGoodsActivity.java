@@ -17,10 +17,13 @@ import com.chanven.lib.cptr.PtrDefaultHandler;
 import com.chanven.lib.cptr.PtrFrameLayout;
 import com.chanven.lib.cptr.loadmore.OnLoadMoreListener;
 import com.chanven.lib.cptr.recyclerview.RecyclerAdapterWithHF;
+import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.adapter.OrderDataAdapter;
 import com.zmx.mian.bean.MainOrder;
 import com.zmx.mian.bean.Paging;
+import com.zmx.mian.bean.ViceOrder;
+import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.util.DoubleTimeSelectDialog;
 import com.zmx.mian.ui.util.LoadingDialog;
@@ -28,16 +31,27 @@ import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IOrderDataView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 /**
  * 开发人员：曾敏祥
  * 开发时间：2018-09-12 14:22
  * 类功能：查询某个商品的订单历史
  */
-public class SingleGoodsActivity extends BaseActivity implements IOrderDataView {
+public class SingleGoodsActivity extends BaseActivity{
 
 
     private RecyclerView mRecyclerView;
@@ -49,24 +63,8 @@ public class SingleGoodsActivity extends BaseActivity implements IOrderDataView 
     private OrderDataAdapter adapter;
     //添加Header和Footer的封装类
     private RecyclerAdapterWithHF mAdapter;
-
-    private OrderPresenter op;
     private TextView choose_time;
 
-    private int load_tag = 0;//上拉或者下拉标示
-
-    private DoubleTimeSelectDialog mDoubleTimeSelectDialog;
-    /**
-     * 默认的周开始时间，格式如：yyyy-MM-dd
-     **/
-    public String defaultWeekBegin;
-    /**
-     * 默认的周结束时间，格式如：yyyy-MM-dd
-     */
-    public String defaultWeekEnd;
-
-
-    private LoadingDialog mLoadingDialog; //显示正在加载的对话框
 
     //查询的开始结束时间
     public String startDate;
@@ -94,7 +92,6 @@ public class SingleGoodsActivity extends BaseActivity implements IOrderDataView 
         choose_time = findViewById(R.id.choose_time);
         choose_time.setText(getIntent().getStringExtra("g_name")+"("+startDate+"至"+endDate+")");
 
-        op = new OrderPresenter(this);
         mRecyclerView = findViewById(R.id.moder_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -127,12 +124,7 @@ public class SingleGoodsActivity extends BaseActivity implements IOrderDataView 
             public void onRefreshBegin(PtrFrameLayout frame) {
                 mo.clear();
 
-                load_tag = 0;
-
-                String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
-                String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, "");
-
-                op.SelectSingleGoods(gid, mid, name, startDate, endDate);
+                selectData();
 
             }
         });
@@ -157,18 +149,69 @@ public class SingleGoodsActivity extends BaseActivity implements IOrderDataView 
 
                 case 1:
 
-                    initAdapter();
+                    try {
+
+                        JSONObject bodys = new JSONObject(msg.obj.toString());
+
+                        // 处理接口返回的json数据
+                        JSONArray array = bodys.getJSONArray("list");
+                        for (int i = 0; i < array.length(); i++) {
+
+                            MainOrder mw = new MainOrder();
+                            JSONObject json = array.getJSONObject(i);
+
+                            mw.setPageNum(1);
+                            mw.setAllTotal(1);
+                            mw.setCouns(1);
+                            mw.setId(json.getInt("id"));
+                            mw.setUid(json.getInt("uid"));
+                            mw.setOrder(json.getString("order"));
+                            mw.setTotal(json.getString("total"));
+                            mw.setBackmey(json.getString("backmey"));
+                            mw.setSynchro(json.getString("synchro"));
+                            mw.setBuytime(json.getString("buytime"));
+                            mw.setIntegral(json.getInt("integral"));
+                            mw.setPayment(json.getInt("payment"));
+                            mw.setDiscount(json.getString("discount"));
+                            mw.setReceipts(json.getString("receipts"));
+                            mw.setState(json.getInt("state"));
+                            mw.setMo_classify(json.getString("classify"));
+                            List<ViceOrder> vws = new ArrayList<>();
+
+                            JSONArray ja = json.getJSONArray("detailed");
+                            for (int j = 0; j < ja.length(); j++) {
+
+                                ViceOrder vw = new ViceOrder();
+                                JSONObject jj = ja.getJSONObject(j);
+
+                                vw.setOrder_id(jj.getInt("order_id"));
+                                vw.setGoods_id(jj.getInt("goods_id"));
+                                vw.setWeight(jj.getString("weight"));
+                                vw.setPrice(jj.getString("price"));
+                                vw.setSubtotal(jj.getString("subtotal"));
+                                vw.setType(jj.getInt("type"));
+                                vw.setName(jj.getString("name"));
+
+                                vws.add(vw);
+                            }
+
+                            mw.setLists(vws);
+
+                            mo.add(mw);
+
+                        }
+
+                        initAdapter();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e("未知错误",""+e.toString());
+                        Toast("未知错误，请联系客服！");
+                    }
+
 
                     break;
 
-                case 2:
-
-                    String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
-                    String name = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, "");
-
-                    op.SelectSingleGoods(gid, mid, name, startDate, endDate);
-
-                    break;
 
             }
 
@@ -186,22 +229,19 @@ public class SingleGoodsActivity extends BaseActivity implements IOrderDataView 
 
     }
 
-    @Override
-    public void getOrderList(List<MainOrder> lists) {
+    public void selectData() {
 
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("pckey", Tools.getKey(MyApplication.getName()));
+        params.put("account", "1");
+        params.put("admin", MyApplication.getName());
+        params.put("mid", MyApplication.getStore_id());
+        params.put("today", startDate);
+        params.put("endtime", endDate);
+        params.put("gid", gid);
 
-        for (MainOrder m : lists) {
+        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/odsList", params, handler, 1, 404);
 
-            mo.add(m);
-
-        }
-
-        handler.sendEmptyMessage(1);
-
-    }
-
-    @Override
-    public void ErrerMessage() {
 
     }
 

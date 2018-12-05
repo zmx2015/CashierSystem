@@ -155,7 +155,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
                 // 通过Intent传递对象给Service
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("sb", (Serializable) lists.get(position));
+                bundle.putSerializable("sb", lists.get(position));
                 intent.putExtras(bundle);
                 startActivity(ProcurementDetailsActivity.class, bundle);
 
@@ -226,6 +226,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
 
                     try {
 
+                        Log.e("返回的数据",""+msg.obj.toString());
                         lists.clear();
                         JSONArray jsonArray = new JSONArray(msg.obj.toString());
 
@@ -236,6 +237,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
                             sb.setNumber(object.getString("p_order"));
                             sb.setRh_time(Tools.refFormatNowDate(object.getString("purtime"), 0));
                             sb.setSm_time(Tools.refFormatNowDate(object.getString("addtime"), 0));
+                            sb.setLockup(object.getString("lockup"));
                             sb.setSm_state("1");
                             sb.setId(Long.parseLong(object.getString("id")));
                             sb.setTotal(object.getString("total"));

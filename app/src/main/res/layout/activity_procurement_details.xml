@@ -48,6 +48,16 @@
             android:textColor="@color/white"
             />
 
+        <ImageView
+            android:id="@+id/img_lockup"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_alignParentRight="true"
+            android:background="@mipmap/suo_a"
+            />
+
 
     </RelativeLayout>
 

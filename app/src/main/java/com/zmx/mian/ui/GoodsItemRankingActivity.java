@@ -75,7 +75,6 @@ public class GoodsItemRankingActivity extends BaseActivity implements View.OnCli
      */
     public String defaultWeekEnd;
 
-
     //查询的开始结束时间
     public String startDate = Tools.DateConversion(new Date());
     public String endDate = Tools.DateConversion(new Date());
@@ -99,7 +98,7 @@ public class GoodsItemRankingActivity extends BaseActivity implements View.OnCli
         tile_time.setText("(" + startDate + ")");
         no_data = findViewById(R.id.no_data);
         BackButton(R.id.back_button);
-        mRecyclerView = (RecyclerView) findViewById(R.id.goods_item_list);
+        mRecyclerView = findViewById(R.id.goods_item_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);

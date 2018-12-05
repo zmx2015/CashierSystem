@@ -62,6 +62,8 @@
         android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:padding="@dimen/dp_5"
+        android:background="@color/order_bag"
         android:layout_alignParentBottom="true"
         >
 
@@ -87,6 +89,7 @@
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:background="@drawable/buttonstyle"
             android:layout_centerVertical="true"
             android:text="发送"
             />

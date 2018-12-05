@@ -270,6 +270,7 @@ public class  OrderDataActivity extends BaseActivity implements View.OnClickList
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Log.e("未知错误",""+e.toString());
                         Toast("未知错误，请联系客服！");
                     }
 

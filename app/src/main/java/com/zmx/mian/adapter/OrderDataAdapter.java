@@ -136,6 +136,7 @@ public class OrderDataAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHol
      * @return
      */
     public static String refFormatNowDate(String time) {
+
         time = time + "000";
         Date nowTime = new Date(Long.parseLong(time));
         SimpleDateFormat sdFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");

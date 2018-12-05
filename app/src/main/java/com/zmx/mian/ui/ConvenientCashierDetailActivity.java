@@ -129,7 +129,6 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
 
                     }else{
 
-                        Log.e("进来了无会员支付","进来了无会员支付");
                         submitOrder();
                     }
 
@@ -454,7 +453,6 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
 
 
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

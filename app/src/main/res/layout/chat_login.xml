@@ -15,7 +15,7 @@
             android:layout_height="100px"
             android:layout_marginRight="10px"
             android:layout_alignParentRight="true"
-            android:src="@mipmap/abc"
+            android:src="@mipmap/ic_morentu"
             android:scaleType="centerCrop" />
 
         <RelativeLayout
@@ -36,7 +36,7 @@
                 android:layout_marginBottom="20px"
                 android:paddingLeft="20px"
                 android:paddingRight="40px"
-                android:textSize="55px"
+                android:textSize="16sp"
                 android:gravity="center" />
 
         </RelativeLayout>

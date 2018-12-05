@@ -25,11 +25,12 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
@@ -203,7 +204,8 @@
         <activity android:name=".ui.LuckyDrawActivity" />
         <activity android:name=".ui.ExchangeCardActivity" />
         <activity android:name=".ui.RegisteredMembersActivity" />
-        <activity android:name=".ui.GlobalConfigurationActivity"></activity>
+        <activity android:name=".ui.GlobalConfigurationActivity" />
+        <activity android:name=".ui.StoreMessageActivity"></activity>
     </application>
 
 </manifest>
