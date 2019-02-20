@@ -205,7 +205,8 @@
         <activity android:name=".ui.ExchangeCardActivity" />
         <activity android:name=".ui.RegisteredMembersActivity" />
         <activity android:name=".ui.GlobalConfigurationActivity" />
-        <activity android:name=".ui.StoreMessageActivity"></activity>
+        <activity android:name=".ui.StoreMessageActivity" />
+        <activity android:name=".ui.ProcurementAnalysisActivity"></activity>
     </application>
 
 </manifest>

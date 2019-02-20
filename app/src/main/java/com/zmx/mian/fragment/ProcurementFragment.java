@@ -34,6 +34,7 @@ import com.zmx.mian.adapter.StockManagementAdapter;
 import com.zmx.mian.bean.StockManagementBean;
 import com.zmx.mian.bean_dao.StockManagementDao;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.ui.AddGoodsActivity;
 import com.zmx.mian.ui.FeedbackActivity;
 import com.zmx.mian.ui.ProcurementDetailsActivity;
@@ -266,7 +267,9 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
                     break;
 
                 case 2:
+
                     loadingData();//加载网络订单
+
                     break;
 
                 case 404:
@@ -306,8 +309,8 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
 
             mPtrFrame.loadMoreComplete(true);
 
-
         }
+
     }
 
 
@@ -332,19 +335,23 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
             mDoubleTimeSelectDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
+
+
                 }
             });
         }
+
         if (!mDoubleTimeSelectDialog.isShowing()) {
             mDoubleTimeSelectDialog.recoverButtonState();
             mDoubleTimeSelectDialog.show();
         }
+
     }
 
 
 
 
-    //    //弹出框
+    //弹出框
     public void showDialog() {
 
         View view = LayoutInflater.from(mActivity).inflate(R.layout.stock_list_dialog, null);
@@ -450,7 +457,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
         params.put("today", startDate);
         params.put("endtime", endDate);
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/index", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_PURCHASE, params, handler, 1, 404);
 
 
     }
@@ -464,6 +471,7 @@ public class ProcurementFragment extends BaseFragment implements View.OnClickLis
         String s_time = Tools.DateConversions(new Date());
         StockManagementBean smb = new StockManagementBean();
         smb.setSm_state("0");
+        smb.setLockup("0");
         smb.setTotal("0.00");
         smb.setSm_time(s_time);
         smb.setRh_time(date);

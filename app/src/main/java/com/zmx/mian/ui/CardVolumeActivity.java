@@ -40,6 +40,7 @@ import com.zmx.mian.bean.CardVolumeBean;
 import com.zmx.mian.bean.StockManagementDetailsBean;
 import com.zmx.mian.fragment.HomeFragment;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 
@@ -50,6 +51,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit2.http.Url;
 
 /**
  * 开发人员：曾敏祥
@@ -336,7 +339,7 @@ public class CardVolumeActivity extends BaseActivity {
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("status", "1");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Coupon/couponsList", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.COUPONS_LIST, params, handler, 1, 404);
 
     }
 
@@ -349,7 +352,7 @@ public class CardVolumeActivity extends BaseActivity {
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("cid", cid);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Coupon/couponsDel", params, handler, 2, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.DELETE_CARD, params, handler, 2, 404);
 
     }
 
@@ -365,7 +368,7 @@ public class CardVolumeActivity extends BaseActivity {
         params.put("integral", integral);
         params.put("name", "");
         params.put("allow", type);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Coupon/ajaxAddCoupons", params, handler, 3, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.ADD_C_D_CARD, params, handler, 3, 404);
 
     }
 
@@ -377,7 +380,7 @@ public class CardVolumeActivity extends BaseActivity {
         params.put("mid", MyApplication.getStore_id());
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Coupon/give", params, handler, 4, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.GET_GIVE, params, handler, 4, 404);
 
     }
     //修改配置
@@ -390,7 +393,7 @@ public class CardVolumeActivity extends BaseActivity {
         params.put("account", "0");
         params.put("name", name);
         params.put("val", val);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.config/setconfig", params, handler, 3, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.UPDATE_CONFIG, params, handler, 3, 404);
 
     }
 

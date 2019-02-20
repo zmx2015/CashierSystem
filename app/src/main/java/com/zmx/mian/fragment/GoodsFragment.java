@@ -36,6 +36,7 @@ import com.zmx.mian.bean_dao.MallTypeDao;
 import com.zmx.mian.bean_dao.goodsDao;
 import com.zmx.mian.dao.MallTypeBeanDao;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.AddGoodsActivity;
 import com.zmx.mian.ui.CPManagementActivity;
@@ -73,7 +74,6 @@ public class GoodsFragment extends Fragment{
     private int currentItem = 0;
     private ShopAdapter shopAdapter;
     private ImageView type_icon;
-    private Button again_load;
     private RelativeLayout search_btn, cp_management;
 
     private List<CommodityPositionGD> cp;
@@ -93,17 +93,6 @@ public class GoodsFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_goods, container, false);
 
         no_data = view.findViewById(R.id.no_data);
-        again_load = view.findViewById(R.id.again_load);
-        again_load.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("mid", mid);
-                OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/goods", params, h, 2, 404);
-
-            }
-        });
 
         type_icon = view.findViewById(R.id.type_icon);
         type_icon.setOnClickListener(new View.OnClickListener() {
@@ -140,7 +129,6 @@ public class GoodsFragment extends Fragment{
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        again_load.setVisibility(View.GONE);
         showLoadingView("加载中.....");
         cp = new ArrayList<>();
 
@@ -163,7 +151,7 @@ public class GoodsFragment extends Fragment{
         params.put("pckey", new Tools().getKey(this.getActivity()));
         params.put("account", "0");
         params.put("type", "store");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, h, 2, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.TYPE_LIST, params, h, 2, 404);
 
     }
 
@@ -178,7 +166,6 @@ public class GoodsFragment extends Fragment{
                 case 1:
 
                     dismissLoadingView();
-                    again_load.setVisibility(View.GONE);
 
                     if (shopAdapter != null) {
 
@@ -214,7 +201,6 @@ public class GoodsFragment extends Fragment{
 
                     dismissLoadingView();
                     Toast.makeText(GoodsFragment.this.getActivity(), "连接网络失败，请检查网络！", Toast.LENGTH_LONG).show();
-                    again_load.setVisibility(View.VISIBLE);
 
                     break;
 

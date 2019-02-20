@@ -29,6 +29,7 @@ import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.bean.ViceOrder_A;
 import com.zmx.mian.bean.members.MembersList;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.ui.util.MyButton;
 import com.zmx.mian.ui.util.MyDialog;
 import com.zmx.mian.util.MySharedPreferences;
@@ -274,7 +275,7 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
         params.put("mid", MyApplication.getStore_id());
         params.put("pckey", new Tools().getKey(member));
         params.put("account", member);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.lineapi/getUserInfo", params, handler, 0, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_MEMBER, params, handler, 0, 404);
 
     }
 
@@ -408,6 +409,7 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
 
     }
 
+    //提交订单
     public void submitOrder(){
 
         showLoadingView("加载中...");
@@ -449,7 +451,7 @@ public class ConvenientCashierDetailActivity extends BaseActivity {
         mapData.put("buytime", phpTime.substring(0, phpTime.length() - 3));
         mapData.put("classify", mo.getMo_classify());
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderAdd", mapData, handler, 2, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.ADD_ORDER, mapData, handler, 2, 404);
 
 
     }

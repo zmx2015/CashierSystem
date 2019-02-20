@@ -22,14 +22,16 @@ public class CommodityPositionGD implements Serializable{
     public String type;//没有用到了
     public String state;//是否显示
     public String mid;
-    @Generated(hash = 910371906)
+    public String admin;
+    @Generated(hash = 1124937417)
     public CommodityPositionGD(Long id, String name, String type, String state,
-            String mid) {
+            String mid, String admin) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.state = state;
         this.mid = mid;
+        this.admin = admin;
     }
     @Generated(hash = 1464399358)
     public CommodityPositionGD() {
@@ -63,6 +65,12 @@ public class CommodityPositionGD implements Serializable{
     }
     public void setMid(String mid) {
         this.mid = mid;
+    }
+    public String getAdmin() {
+        return this.admin;
+    }
+    public void setAdmin(String admin) {
+        this.admin = admin;
     }
 
 }

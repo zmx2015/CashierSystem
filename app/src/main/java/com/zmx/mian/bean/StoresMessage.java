@@ -15,6 +15,7 @@ public class StoresMessage implements Serializable {
     private String aname;
     private int id;
     private int type;
+    private String describe;
 
     public int getAdmin_id() {
         return admin_id;
@@ -54,5 +55,13 @@ public class StoresMessage implements Serializable {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
     }
 }

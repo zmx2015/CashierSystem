@@ -1,8 +1,11 @@
 package com.zmx.mian.ui;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +18,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.yzq.zxinglibrary.android.CaptureActivity;
+import com.yzq.zxinglibrary.bean.ZxingConfig;
+import com.yzq.zxinglibrary.common.Constant;
 import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.bean.CommodityPosition;
@@ -25,6 +31,7 @@ import com.zmx.mian.bean_dao.CPDao;
 import com.zmx.mian.fragment.Fragment_pro_type;
 import com.zmx.mian.fragment.HomeFragment;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.ui.util.GlideCircleTransform;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
@@ -34,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,11 +54,14 @@ import java.util.Map;
 
 public class GoodsDetailsActivity extends BaseActivity {
 
-    private Goods g;
 
-    private ImageView goods_img;
-    private EditText g_name, g_price, g_vipprice;
-    private Button submit;
+    private final static int REQ_CODES = 1028;
+    private final static int REQ_CODE = 1028;
+
+    private Goods g;
+    private ImageView goods_img,saomiao;
+    private EditText g_name, g_price, g_vipprice,bar_code;
+    private Button submit,random_button;
     private Spinner g_fenlei,sc_fenlei;
     public ArrayAdapter<String> arr_adapter,sc_arr_adapter;
     private List<String> spinner_item,sc_itme;
@@ -80,6 +91,7 @@ public class GoodsDetailsActivity extends BaseActivity {
 
         g_name = findViewById(R.id.g_name);
         g_price = findViewById(R.id.g_price);
+        bar_code = findViewById(R.id.bar_code);
         g_vipprice = findViewById(R.id.g_vipprice);
         goods_img = findViewById(R.id.goods_img);
         store_sj = findViewById(R.id.store_sj);
@@ -116,6 +128,23 @@ public class GoodsDetailsActivity extends BaseActivity {
 
             }
         });
+        saomiao = findViewById(R.id.saomiao);
+        saomiao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startPoto();
+            }
+        });
+        random_button = findViewById(R.id.random_button);
+        random_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                long i = Calendar.getInstance().getTimeInMillis();
+                bar_code.setText(i+MyApplication.getStore_id());
+
+            }
+        });
 
         submit = findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +175,7 @@ public class GoodsDetailsActivity extends BaseActivity {
                     params.put("mall_group", sc_id);
                     params.put("gds_price", g_price.getText().toString());
                     params.put("name", g_name.getText().toString());
+                    params.put("barcode", bar_code.getText().toString());
                     params.put("vip_price", g_vipprice.getText().toString());
                     if (store_sj.isChecked()) {
 
@@ -153,7 +183,7 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                     } else {
 
-                        params.put("store_state", "0");
+                        params.put("store_state", "2");
 
                     }
 
@@ -163,11 +193,11 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                     } else {
 
-                        params.put("mall_state", "0");
+                        params.put("mall_state", "2");
 
                     }
 
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/update", params, h, 1, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.UPDATE_GOODS, params, h, 1, 404);
 
                 }
 
@@ -203,7 +233,7 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                                 g = new Goods(object.getString("gid"), object.getString("img"), object.getString("gds_price"),
                                         object.getString("name"), "", object.getString("group"), "",
-                                        object.getString("vip_price"), object.getString("mall_state"), object.getString("store_state"),s);
+                                        object.getString("vip_price"), object.getString("mall_state"), object.getString("store_state"),s,object.getString("barcode"));
 
                             }
 
@@ -224,8 +254,9 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                             g_name.setText(g.getG_name());
                             g_price.setText(g.getG_price());
+                            bar_code.setText(g.getBar_code());
                             g_vipprice.setText(g.getVip_g_price());
-                            Glide.with(mActivity).load("http://www.yiyuangy.com/uploads/goods/" + g.getG_img()).transform(new GlideCircleTransform(mActivity)).error(R.mipmap.logo).into(goods_img);
+                            Glide.with(mActivity).load(UrlConfig.IMG_URL + g.getG_img()).transform(new GlideCircleTransform(mActivity)).error(R.mipmap.logo).into(goods_img);
                             if (g.getStore_state().equals("1")) {
 
                                 store_sj.setChecked(true);
@@ -418,6 +449,43 @@ public class GoodsDetailsActivity extends BaseActivity {
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_CODE) {
+
+
+            // 扫描二维码/条码回传
+            if (requestCode == REQ_CODE && resultCode == RESULT_OK) {
+                if (data != null) {
+
+                    String numbers = data.getStringExtra(Constant.CODED_CONTENT);
+                    bar_code.setText(numbers);
+                    Toast(numbers);
+                }
+            }
+
+
+        }
+    }
+
+    public void startPoto() {
+
+        Intent intent = new Intent(this, CaptureActivity.class);
+
+        ZxingConfig config = new ZxingConfig();
+        config.setPlayBeep(true);//是否播放扫描声音 默认为true
+        config.setShake(true);//是否震动  默认为true
+        config.setDecodeBarCode(true);//是否扫描条形码 默认为true
+        config.setReactColor(R.color.colorAccent);//设置扫描框四个角的颜色 默认为淡蓝色
+        config.setFrameLineColor(R.color.colorAccent);//设置扫描框边框颜色 默认无色
+        config.setFullScreenScan(true);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
+        intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
+        startActivityForResult(intent, REQ_CODE);
+
+    }
+
     //查询类别
     public void selectCP() {
 
@@ -428,7 +496,7 @@ public class GoodsDetailsActivity extends BaseActivity {
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("type", "store");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, h, 3, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.TYPE_LIST, params, h, 3, 404);
 
     }
 
@@ -442,7 +510,7 @@ public class GoodsDetailsActivity extends BaseActivity {
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("type", "mall");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, h, 4, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.TYPE_LIST, params, h, 4, 404);
 
     }
 
@@ -455,8 +523,10 @@ public class GoodsDetailsActivity extends BaseActivity {
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("gid", gid);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/goods", params, h, 0, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_GOODS, params, h, 0, 404);
 
     }
+
+
 
 }

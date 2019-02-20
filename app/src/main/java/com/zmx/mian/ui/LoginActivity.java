@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.*;
 
@@ -14,6 +15,7 @@ import com.google.gson.Gson;
 import com.zmx.mian.R;
 import com.zmx.mian.bean.StoresMessage;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.util.Base64Utils;
 import com.zmx.mian.util.MySharedPreferences;
 
@@ -216,7 +218,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         params.put("username", getAccount());
         params.put("password", md5(getPassword()));
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/login", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.LOGIN, params, handler, 1, 404);
 
     }
 
@@ -270,11 +272,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 //判断是否已经保存了门店信息了，有就直接跳到主页，没有就跳到门店列表
                                 //获取SharedPreferences对象，使用自定义类的方法来获取对象
                                 String mid = MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, "");
-                                Log.e("门店id", "mid" + mid);
+
                                 if (mid.equals("-1") || mid == "") {
 
                                     MySharedPreferences.getInstance(mActivity).setDataList("store", lists);
-
                                     // 通过Intent传递对象给Service
                                     Intent intent = new Intent();
                                     Bundle bundle = new Bundle();
@@ -285,6 +286,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                     finish();//关闭页面
 
                                 } else {
+
+                                    //更新
+                                    MySharedPreferences.getInstance(mActivity).setDataList("store", lists);
+                                    for(int i =0; i<lists.size();i++){
+
+                                        if(mid.equals(lists.get(i).getId()+"")){
+
+                                            MySharedPreferences.getInstance(mActivity).saveKeyObjValue(MySharedPreferences.store_name,lists.get(i).getAname());
+                                            MySharedPreferences.getInstance(mActivity).saveKeyObjValue(MySharedPreferences.store_describe,lists.get(i).getDescribe());
+
+                                        }
+
+                                    }
 
                                     startActivity(MainActivity.class);
                                     finish();//关闭页面
@@ -518,6 +532,40 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             }
         }
     };
+
+    // 定义一个变量，来标识是否退出
+    private static boolean isExit = false;
+
+    Handler mHandlers = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                    Toast.LENGTH_SHORT).show();
+            // 利用handler延迟发送更改状态信息
+            mHandlers.sendEmptyMessageDelayed(0, 2000);
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
 
 }
 

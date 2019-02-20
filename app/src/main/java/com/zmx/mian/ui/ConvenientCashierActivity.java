@@ -30,6 +30,7 @@ import com.zmx.mian.bean.MainOrder;
 import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.fragment.GoodsFragment;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.ui.util.CustomScrollViewPager;
 import com.zmx.mian.ui.util.LoadingDialog;
 import com.zmx.mian.ui.util.ShoppingCartAnimationView;
@@ -66,7 +67,7 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
     private CustomScrollViewPager shop_pager;
     private int currentItem = 0;
     private ConvenientAdapter shopAdapter;
-    private Button again_load,button;
+    private Button button;
     private RelativeLayout search_btn;
 
     private MainOrder mainOrder;
@@ -98,17 +99,6 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
         text_number = findViewById(R.id.text_number);
         text_total = findViewById(R.id.text_total);
         no_data = findViewById(R.id.no_data);
-        again_load = findViewById(R.id.again_load);
-        again_load.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("mid", mid);
-                OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.line/goods", params, h, 2, 404);
-
-            }
-        });
 
         search_btn = findViewById(R.id.search_btn);
         search_btn.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +136,6 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
         });
 
 
-        again_load.setVisibility(View.GONE);
         showLoadingView("加载中.....");
         cp = new ArrayList<>();
 
@@ -157,7 +146,7 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("type", "store");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, h, 2, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.TYPE_LIST, params, h, 2, 404);
 
 
     }
@@ -246,7 +235,6 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
                 case 1:
 
                     dismissLoadingView();
-                    again_load.setVisibility(View.GONE);
 
                     if (shopAdapter != null) {
 
@@ -301,7 +289,6 @@ public class ConvenientCashierActivity extends BaseActivity implements Convenien
                     dismissLoadingView();
 
                     Toast("连接网络失败，请检查网络！");
-                    again_load.setVisibility(View.VISIBLE);
 
                     break;
 

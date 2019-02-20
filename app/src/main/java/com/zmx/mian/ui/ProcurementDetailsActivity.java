@@ -58,6 +58,7 @@ import com.zmx.mian.bean_dao.StockManagementDao;
 import com.zmx.mian.bean_dao.StockManagementDetailsDao;
 import com.zmx.mian.bean_dao.goodsDao;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 
@@ -370,7 +371,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         }
 
         params.put("total", total + "");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/insert", params, handler, 3, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.INSERT_PURCHASE, params, handler, 3, 404);
 
     }
 
@@ -554,12 +555,12 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         params.put("account", "0");
         params.put("pid", smb.getId() + "");
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/detail", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_PURCHASE_DETAIL, params, handler, 1, 404);
 
     }
 
 
-    //加载服务器的订单列表
+    //给当前采购单加锁
     public void updateLockup(String state) {
 
         Map<String, String> params = new HashMap<String, String>();
@@ -570,7 +571,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         params.put("pid", smb.getId() + "");
         params.put("lockup", state);
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.purchase/locks", params, handler, 4, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_PURCHASE_LOCKS, params, handler, 4, 404);
 
     }
 
@@ -900,7 +901,7 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
         params.put("account", "0");
         params.put("name", name);
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/search", params, handler, 0, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SEARCH_GOODS, params, handler, 0, 404);
 
 
     }

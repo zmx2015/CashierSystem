@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
+import com.zmx.mian.bean_dao.MyOpenHelper;
 import com.zmx.mian.dao.DaoMaster;
 import com.zmx.mian.dao.DaoSession;
 import com.zmx.mian.ui.MainActivity;
@@ -53,8 +54,9 @@ public class MyApplication extends Application{
      * 配置数据库
      */
     private void setupDatabase() {
+
         //创建数据库shop.db"
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "cashier.db", null);
+        MyOpenHelper helper = new MyOpenHelper(myApplication);
         //获取可写数据库
         SQLiteDatabase db = helper.getWritableDatabase();
         //获取数据库对象
@@ -75,12 +77,13 @@ public class MyApplication extends Application{
     }
 
     public static String getName() {
+
         return MySharedPreferences.getInstance(myApplication).getString(MySharedPreferences.name,"");
 
     }
 
     public static String getNetworkRequestMode() {
-        return "get";
+        return NetworkRequestMode;
     }
 
 }

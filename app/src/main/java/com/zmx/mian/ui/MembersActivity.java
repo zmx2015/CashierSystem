@@ -28,6 +28,7 @@ import com.zmx.mian.bean.GoodsItemRankingBean;
 import com.zmx.mian.bean.Paging;
 import com.zmx.mian.bean.members.MembersList;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
@@ -301,9 +302,7 @@ public class MembersActivity extends BaseActivity {
 
                                 handler.sendEmptyMessage(1);
 
-
                             }
-
 
                         } catch (JSONException e) {
 
@@ -417,7 +416,7 @@ public class MembersActivity extends BaseActivity {
         params.put("num",  p.getPageSize() + "");
         params.put("field",  field);
         params.put("sort",  sort);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.user/userlist", params, handler, 0, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_MEMBER_LIST, params, handler, 0, 404);
 
     }
 

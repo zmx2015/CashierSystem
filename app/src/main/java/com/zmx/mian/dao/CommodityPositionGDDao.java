@@ -29,6 +29,7 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
         public final static Property Type = new Property(2, String.class, "type", false, "TYPE");
         public final static Property State = new Property(3, String.class, "state", false, "STATE");
         public final static Property Mid = new Property(4, String.class, "mid", false, "MID");
+        public final static Property Admin = new Property(5, String.class, "admin", false, "ADMIN");
     }
 
 
@@ -48,7 +49,8 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
                 "\"NAME\" TEXT," + // 1: name
                 "\"TYPE\" TEXT," + // 2: type
                 "\"STATE\" TEXT," + // 3: state
-                "\"MID\" TEXT);"); // 4: mid
+                "\"MID\" TEXT," + // 4: mid
+                "\"ADMIN\" TEXT);"); // 5: admin
     }
 
     /** Drops the underlying database table. */
@@ -85,6 +87,11 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
         if (mid != null) {
             stmt.bindString(5, mid);
         }
+ 
+        String admin = entity.getAdmin();
+        if (admin != null) {
+            stmt.bindString(6, admin);
+        }
     }
 
     @Override
@@ -115,6 +122,11 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
         if (mid != null) {
             stmt.bindString(5, mid);
         }
+ 
+        String admin = entity.getAdmin();
+        if (admin != null) {
+            stmt.bindString(6, admin);
+        }
     }
 
     @Override
@@ -129,7 +141,8 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // type
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // state
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // mid
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // mid
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // admin
         );
         return entity;
     }
@@ -141,6 +154,7 @@ public class CommodityPositionGDDao extends AbstractDao<CommodityPositionGD, Lon
         entity.setType(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setState(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setMid(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setAdmin(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
      }
     
     @Override

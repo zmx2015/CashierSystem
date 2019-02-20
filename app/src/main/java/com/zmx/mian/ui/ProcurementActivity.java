@@ -439,7 +439,7 @@ public class ProcurementActivity extends BaseActivity {
         params.put("today", startDate);
         params.put("endtime", endDate);
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/index", params, handler, 1, 404);
+//        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/index", params, handler, 1, 404);
 
 
     }

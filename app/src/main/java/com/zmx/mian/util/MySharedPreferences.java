@@ -140,6 +140,7 @@ public class MySharedPreferences {
     public static String remenberPassword = "remenberPassword";
     public static String first = "first";
     public static String store_id = "store_id";
+    public static String store_describe = "store_describe";
     public static String store_name = "store_name";
     public static String fb_message = "fb_message";
     public static String JPush_state = "JPush_state";

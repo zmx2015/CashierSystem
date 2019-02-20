@@ -47,6 +47,7 @@ import com.zmx.mian.bean.TimeQuantum;
 import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.http.API;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.CardVolumeActivity;
 import com.zmx.mian.ui.ConvenientCashierActivity;
@@ -56,6 +57,7 @@ import com.zmx.mian.ui.MainActivity;
 import com.zmx.mian.ui.MembersActivity;
 import com.zmx.mian.ui.OrderDataActivity;
 import com.zmx.mian.ui.ProcurementActivity;
+import com.zmx.mian.ui.ProcurementAnalysisActivity;
 import com.zmx.mian.ui.SingleGoodsActivity;
 import com.zmx.mian.ui.StockManagementListActivity;
 import com.zmx.mian.ui.StoreListActivity;
@@ -149,7 +151,6 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         today_member_text = view.findViewById(R.id.today_member_text);
         yesterday_member_text = view.findViewById(R.id.yesterday_member_text);
 
-
         //数据统计
         relative1 = view.findViewById(R.id.relative1);
         relative1.setOnClickListener(new View.OnClickListener() {
@@ -195,8 +196,8 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
-
+                Intent intent = new Intent(HomeFragment.this.getActivity(), ProcurementAnalysisActivity.class);
+                startActivity(intent);
 
             }
 
@@ -289,7 +290,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         params.put("mid", MyApplication.getStore_id());
         params.put("type", "all");
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 3, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_ORDER_LIST, params, mHandler, 3, 404);
 
         selectMember(Tools.DateConversion(new Date()),Tools.DateConversion(new Date()));
         selectMembers(Tools.getYesterday(),Tools.getYesterday());
@@ -309,7 +310,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
                     order_num.setText(nums + "条");
                     order_total.setText(allTotal + "元");
-                    discount_money_text.setText(new Tools().priceResult(discount_money) + "元");
+                    discount_money_text.setText(Tools.priceResult(discount_money) + "元");
                     members_total_text.setText(members_total + "次");
                     unit_price.setText(Math.round(Float.parseFloat(allTotal) / Float.parseFloat(nums)) + "元");
                     init();
@@ -336,7 +337,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
 
                     yesterday_total.setText("昨日金额：" + yesterday_allTotal + "元");
                     yesterday_num.setText("昨日订单：" + yesterday_nums + "单");
-                    yesterday_discount_money_text.setText("昨日优惠：" + yesterday_discount_money + "元");
+                    yesterday_discount_money_text.setText("昨日优惠：" + Tools.priceResult(yesterday_discount_money) + "元");
                     yesterday_members_total_text.setText("昨日会员：" + yesterday_members_total + "次");
                     yesterday_unit_price_text.setText("昨日单价" + Math.round(Float.parseFloat(yesterday_allTotal) / Float.parseFloat(yesterday_nums)) + "元");
                     break;
@@ -396,7 +397,6 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
                                 vw.setSubtotal(jj.getString("subtotal"));
                                 vw.setType(jj.getInt("type"));
                                 vw.setName(jj.getString("name"));
-
                                 vws.add(vw);
                             }
 
@@ -630,7 +630,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         params.put("mid", MyApplication.getStore_id());
         params.put("type", "all");
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 4, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_ORDER_LIST, params, mHandler, 4, 404);
 
     }
 
@@ -904,7 +904,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         params.put("today", today);
         params.put("endtime", endtime);
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.user/UserCount", params, mHandler, 5, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_ADD_MEMBER, params, mHandler, 5, 404);
 
 
     }
@@ -919,7 +919,7 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         params.put("today", today);
         params.put("endtime", endtime);
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.user/UserCount", params, mHandler, 6, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_ADD_MEMBER, params, mHandler, 6, 404);
 
 
     }

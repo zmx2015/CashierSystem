@@ -30,6 +30,7 @@ import com.zmx.mian.bean_dao.CPDao;
 import com.zmx.mian.bean_dao.MallTypeDao;
 import com.zmx.mian.fragment.BaseFragment;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.ui.util.MyDialog;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
@@ -256,7 +257,7 @@ public class CPOnlineFragment extends BaseFragment {
                         mtp.setState("2");
 
                     }
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/classMall", params, handler, 1, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.UPDATE_MALL, params, handler, 1, 404);
                     mMyDialog.dismiss();
                 }
             }
@@ -288,7 +289,7 @@ public class CPOnlineFragment extends BaseFragment {
         params.put("pckey", new Tools().getKey(this.getActivity()));
         params.put("account", "0");
         params.put("type", "mall");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, handler, 0, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.TYPE_LIST, params, handler, 0, 404);
 
 
     }

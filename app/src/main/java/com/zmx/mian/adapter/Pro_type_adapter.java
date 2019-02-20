@@ -21,6 +21,7 @@ import com.zmx.mian.bean.CommodityPosition;
 import com.zmx.mian.bean.Goods;
 import com.zmx.mian.bean.Type;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.ui.util.GlideCircleTransform;
 import com.zmx.mian.ui.util.MyButton;
 import com.zmx.mian.util.Tools;
@@ -98,7 +99,7 @@ public class Pro_type_adapter extends BaseAdapter {
         myView.name.setText(c.getG_name());
         myView.price_text.setText(Html.fromHtml("零售价：<font color='#FF0000'>" + c.getG_price() + "</font>"));
         myView.vip_price_text.setText(Html.fromHtml("会员价：<font color='#FF0000'>" + c.getVip_g_price() + "</font>"));
-        Glide.with(context).load("http://www.yiyuangy.com/uploads/goods/" + c.getG_img()).transform(new GlideCircleTransform(context)).error(R.mipmap.logo).into(myView.icon);
+        Glide.with(context).load(UrlConfig.IMG_URL + c.getG_img()).transform(new GlideCircleTransform(context)).error(R.mipmap.logo).into(myView.icon);
 
         myView.button1.setTag(c);
 
@@ -142,7 +143,7 @@ public class Pro_type_adapter extends BaseAdapter {
 
                 if (store_state.equals("1")) {
 
-                    store = "0";
+                    store = "2";
 
                 } else {
 
@@ -195,8 +196,7 @@ public class Pro_type_adapter extends BaseAdapter {
                 String mall;
                 if (mall_state.equals("1")) {
 
-                    mall = "0";
-
+                    mall = "2";
 
                 } else {
 
@@ -222,15 +222,12 @@ public class Pro_type_adapter extends BaseAdapter {
 
     public void submit(Goods g, String store_state, String mall_state) {
 
-        Log.e("状态：", "" + store_state);
-
         Map<String, String> params = new HashMap<String, String>();
         params.put("admin", MyApplication.getName());
         params.put("mid", MyApplication.getStore_id());
         params.put("pckey", new Tools().getKey(context));
         params.put("account", "0");
         params.put("gid", g.getG_id());
-
         String type_id = g.getCp_group();
         type_id = type_id.substring(type_id.indexOf("-") + 1);
         params.put("group", type_id);
@@ -241,7 +238,7 @@ public class Pro_type_adapter extends BaseAdapter {
         params.put("mall_state", mall_state);
         params.put("mall_group", g.getMall_id());
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/update", params, h, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.UPDATE_GOODS, params, h, 1, 404);
 
     }
 

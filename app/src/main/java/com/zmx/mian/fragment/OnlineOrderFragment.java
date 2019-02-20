@@ -27,6 +27,7 @@ import com.zmx.mian.bean.MainOrder;
 import com.zmx.mian.bean.Paging;
 import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.util.ToastUtil;
 import com.zmx.mian.util.Tools;
 
@@ -308,7 +309,7 @@ public class OnlineOrderFragment extends BaseFragment implements View.OnClickLis
         params.put("state", state+"");
         params.put("payment", "1,2,3,4");
         params.put("classify", "1,2");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.ordertwo/mallorder", params, handler, 0, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_ORDER_TWO_LIST, params, handler, 0, 404);
 
     }
 

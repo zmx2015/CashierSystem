@@ -1,5 +1,6 @@
 package com.zmx.mian.ui;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,22 +19,32 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.util.Util;
+import com.google.gson.Gson;
 import com.zmx.mian.R;
+import com.zmx.mian.adapter.TopUpAdapter;
 import com.zmx.mian.adapter.ZhiHuFragmentAdapter;
+import com.zmx.mian.bean.Goods;
+import com.zmx.mian.bean.TopUpBean;
+import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.bean.members.Members;
 import com.zmx.mian.bean.members.MembersList;
 import com.zmx.mian.bean.members.MembersOrder;
@@ -42,6 +53,7 @@ import com.zmx.mian.fragment.memberfragment.MemberOrderFragment;
 import com.zmx.mian.fragment.memberfragment.MemberPrizeFragment;
 import com.zmx.mian.fragment.memberfragment.MembersSignFragment;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.util.FragmentViewPager;
 import com.zmx.mian.ui.util.GlideCircleTransform;
@@ -51,6 +63,7 @@ import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 import com.zmx.mian.view.IMembersMessageView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,6 +77,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MemberMessageActivity extends BaseActivity implements IMembersMessageView {
 
@@ -83,11 +98,11 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
 
     private MembersList ml;
 
-    private TextView account_text, consumption_text, phone_number_text, consumption_text_1,text_label;
-    private Button binding;//绑定手机号
+    private TextView account_text, consumption_text, phone_number_text, consumption_text_1, text_label, text_balance;
+    private Button binding, button_top_up;//绑定手机号
 
     private OrderPresenter op;
-    private String account,shoujihao="",label = "";
+    private String account, shoujihao = "", label = "";
     private Members m;
 
     private float mSelfHeight = 0;  //用以判断是否得到正确的宽高值
@@ -117,9 +132,12 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
         consumption_text = findViewById(R.id.consumption_text);
         phone_number_text = findViewById(R.id.phone_number_text);
         consumption_text_1 = findViewById(R.id.consumption_text_1);
+        text_balance = findViewById(R.id.text_balance);
 
         binding = findViewById(R.id.binding);
         binding.setOnClickListener(this);
+        button_top_up = findViewById(R.id.button_top_up);
+        button_top_up.setOnClickListener(this);
 
         mToolbar = findViewById(R.id.toolbar);
         mAppBar = findViewById(R.id.app_bar);
@@ -239,12 +257,13 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                     mScrollView.setVisibility(View.VISIBLE);
 
                     if (Util.isOnMainThread()) {
+
                         Glide.with(MemberMessageActivity.this).load(ml.getWechatImg()).transform(new GlideCircleTransform(MemberMessageActivity.this)).error(R.drawable.icon_login_account).into(mHeadImage);
                         Glide.with(MemberMessageActivity.this).load(ml.getWechatImg()).bitmapTransform(new BlurTransformation(MemberMessageActivity.this, 23)).error(R.drawable.icon_login_account).into(member_background);
 
                     }
 
-
+                    text_balance.setText("余额：" + ml.getMoney());
                     account_text.setText("账号：" + ml.getAccount());
 
                     if (ml.getWechatName() == null) {
@@ -279,7 +298,7 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
 
                     }
 
-                    String l = TextUtils.isEmpty(ml.getDescribe()) ? "备注：店长很懒，没有对该用户备注":"备注："+ml.getDescribe();
+                    String l = TextUtils.isEmpty(ml.getDescribe()) ? "备注：店长很懒，没有对该用户备注" : "备注：" + ml.getDescribe();
                     text_label.setText(l);
                     consumption_text.setText("消费金额：" + (float) (Math.round(total * 100)) / 100 + "元 | 已优惠：" + (Math.round(discount * 100)) / 100 + "元");
                     //绑定的手机号码
@@ -338,7 +357,7 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
                         String content = jsonObject.getString("content");
                         String code = jsonObject.getString("code");
-                        if(code.equals("1")){
+                        if (code.equals("1")) {
 
                             phone_number_text.setText("手机号：" + shoujihao);
                             binding.setText("更换号码");
@@ -360,32 +379,86 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
 
                 case 4:
 
-                try {
+                    try {
 
-                    dismissLoadingView();
-                    JSONObject object = new JSONObject(msg.obj.toString());
-                    String code = object.getString("code");
-                    if(code.equals("1")){
-                        text_label.setText("备注："+label);
-                        Toast(object.getString("content"));
-                    }else{
+                        dismissLoadingView();
+                        JSONObject object = new JSONObject(msg.obj.toString());
+                        String code = object.getString("code");
+                        if (code.equals("1")) {
+                            text_label.setText("备注：" + label);
+                            Toast(object.getString("content"));
+                        } else {
 
-                        Toast(object.getString("content"));
+                            Toast(object.getString("content"));
 
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
 
+                    break;
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                case 5:
 
-                break;
+                    dismissLoadingView();
+                    try {
+
+                        JSONObject jsonObject = new JSONObject(msg.obj.toString());
+                        List<TopUpBean> tops = new ArrayList<>();
+                        if(jsonObject.getString("code").equals("1")){
+
+                            JSONArray jsonArray = jsonObject.getJSONArray("list");
+
+                            for (int i = 0;i<jsonArray.length();i++){
+
+                                JSONObject json = jsonArray.getJSONObject(i);
+                                Gson g = new Gson();
+                                TopUpBean tb = g.fromJson(json.toString(),TopUpBean.class);
+                                tops.add(tb);
+
+                            }
+                            showTopUp(tops);
+
+                        }
+
+
+                    } catch (JSONException e) {
+
+                        Toast("未知错误，请联系客服！");
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 6:
+
+                    dismissLoadingView();
+                    try {
+                        JSONObject object = new JSONObject(msg.obj.toString());
+                        String code = object.getString("code");
+
+                        if (code.equals("1")) {
+
+                            Toast(object.getString("content"));
+
+                        } else {
+
+                            Toast(object.getString("content"));
+
+                        }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
 
                 case 404:
 
                     Toast("网络连接失败！请检查网络");
-                   dismissLoadingView();//隐藏加载框
-
+                    dismissLoadingView();//隐藏加载框
                     break;
 
             }
@@ -443,7 +516,15 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
 
                 break;
 
+            //充值
+            case R.id.button_top_up:
+
+                getFaceLise();
+
+                break;
+
         }
+
 
     }
 
@@ -489,7 +570,7 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                     params.put("account", ml.getAccount());
                     params.put("phone", et.getText().toString());
                     shoujihao = et.getText().toString();
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.user/bindPhone", params, handler, 2, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.UPDATE_MEMBER_PHONE, params, handler, 2, 404);
                     dialog.dismiss();
                 } else {
 
@@ -547,7 +628,7 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
                     params.put("account", ml.getAccount());
                     params.put("describe", et.getText().toString());
                     label = et.getText().toString();
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.user/userUp", params, handler, 4, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.UPDATE_MEMBER_BEI, params, handler, 4, 404);
                     dialog.dismiss();
 
                 } else {
@@ -558,6 +639,339 @@ public class MemberMessageActivity extends BaseActivity implements IMembersMessa
             }
         });
 
+
+    }
+
+
+    //充值面值列表
+    public void getFaceLise(){
+
+        showLoadingView("查询中...");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
+        params.put("mid", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, ""));
+        params.put("pckey", new Tools().getKey(mActivity));
+        params.put("account", ml.getAccount());
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_MEMBER_FACE_LIST, params, handler, 5, 404);
+
+    }
+
+    //执行充值
+    public void TopUp(String aid){
+
+        showLoadingView("充值中...");
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("admin", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.name, ""));
+        params.put("mid", MySharedPreferences.getInstance(mActivity).getString(MySharedPreferences.store_id, ""));
+        params.put("pckey", new Tools().getKey(mActivity));
+        params.put("account", ml.getAccount());
+        params.put("uid", ml.getUid()+"");
+        params.put("money", aid);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.ADD_MONEY, params, handler, 6, 404);
+
+    }
+
+    private ListView listView;
+    private TopUpAdapter tuAdapter;
+    private Dialog modify_dialogs;//弹出框
+    public void showTopUp(final List<TopUpBean> tops){
+
+        View view;//选择性别的view
+        modify_dialogs = new Dialog(mActivity, R.style.ActionSheetDialogStyle);
+        //填充对话框的布局
+        view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_topup, null);
+        //将布局设置给Dialog
+        modify_dialogs.setContentView(view);
+        //获取当前Activity所在的窗体
+        Window dialogWindow = modify_dialogs.getWindow();
+
+        //设置Dialog从窗体底部弹出
+        dialogWindow.setGravity(Gravity.CENTER);
+        //获得窗体的属性
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        //        lp.y = 20;//设置Dialog距离底部的距离
+
+        //// 以下这两句是为了保证按钮可以水平满屏
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        // 设置显示位置
+        modify_dialogs.onWindowAttributesChanged(lp);
+        //       将属性设置给窗体
+        // modify_dialogs.setCanceledOnTouchOutside(false);
+        modify_dialogs.show();//显示对话框
+
+        listView = view.findViewById(R.id.listView);
+        tuAdapter = new TopUpAdapter(mActivity,tops);
+        listView.setAdapter(tuAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.e("点击的面值",""+tops.get(i).getId());
+                TopUp(tops.get(i).getId());
+                modify_dialogs.dismiss();
+            }
+        });
+
+    }
+
+    //废弃，没有了
+    private String s_variable = "";
+    private TextView balance;
+    //废弃，没有了
+    public void showPhoto() {
+
+        View view;//选择性别的view
+        s_variable = "";
+        modify_dialogs = new Dialog(mActivity, R.style.ActionSheetDialogStyle);
+        //填充对话框的布局
+        view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_top_up, null);
+        //将布局设置给Dialog
+        modify_dialogs.setContentView(view);
+        //获取当前Activity所在的窗体
+        Window dialogWindow = modify_dialogs.getWindow();
+
+        //设置Dialog从窗体底部弹出
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        //获得窗体的属性
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        //        lp.y = 20;//设置Dialog距离底部的距离
+
+        //// 以下这两句是为了保证按钮可以水平满屏
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        // 设置显示位置
+        modify_dialogs.onWindowAttributesChanged(lp);
+        //       将属性设置给窗体
+       // modify_dialogs.setCanceledOnTouchOutside(false);
+        modify_dialogs.show();//显示对话框
+
+        balance = view.findViewById(R.id.balance);
+
+        TextView btn_price_1 = view.findViewById(R.id.btn_price_1);
+        btn_price_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("点击了", "点击了1");
+                s_variable = s_variable + 1;
+                ToCalculate();
+
+            }
+        });
+        TextView btn_price_2 = view.findViewById(R.id.btn_price_2);
+        btn_price_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("点击了", "点击了2");
+
+                s_variable = s_variable + 2;
+                ToCalculate();
+            }
+        });
+
+        TextView btn_price_3 = view.findViewById(R.id.btn_price_3);
+        btn_price_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 3;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_4 = view.findViewById(R.id.btn_price_4);
+        btn_price_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 4;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_5 = view.findViewById(R.id.btn_price_5);
+        btn_price_5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 5;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_6 = view.findViewById(R.id.btn_price_6);
+        btn_price_6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 6;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_7 = view.findViewById(R.id.btn_price_7);
+        btn_price_7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 7;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_8 = view.findViewById(R.id.btn_price_8);
+        btn_price_8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 8;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_9 = view.findViewById(R.id.btn_price_9);
+        btn_price_9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 9;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_price_0 = view.findViewById(R.id.btn_price_0);
+        btn_price_0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                s_variable = s_variable + 0;
+                ToCalculate();
+
+
+            }
+        });
+
+        TextView btn_count_00 = view.findViewById(R.id.btn_count_00);
+        btn_count_00.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+
+        //点
+        TextView btn_price_point = view.findViewById(R.id.btn_price_point);
+        btn_price_point.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (!s_variable.equals("")) {
+
+                    boolean status = s_variable.contains(".");
+                    //包含了
+                    if (!status) {
+
+                        s_variable = s_variable + ".";
+                        ToCalculate();
+
+                    }
+                }
+
+
+            }
+        });
+
+        //删除
+        TextView btn_price_clear = view.findViewById(R.id.btn_price_clear);
+        btn_price_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if (!s_variable.equals("")) {
+
+                    s_variable = s_variable.substring(0, s_variable.length() - 1);
+                    ToCalculate();
+
+                } else {
+
+                    s_variable = "";
+
+                }
+
+            }
+        });
+
+        //收款
+        TextView btn_price_shoukuan = view.findViewById(R.id.btn_price_shoukuan);
+        btn_price_shoukuan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+               try{
+
+                   Double.valueOf(s_variable);
+
+
+               }catch (NumberFormatException e){
+
+               }
+
+
+            }
+
+        });
+
+
+    }
+    //废弃，没有了
+    public void ToCalculate() {
+
+        //先判断输入了有没有小数点，再判断有小数点就只能输入2位小数
+        if (!s_variable.equals("")) {
+
+            boolean status = s_variable.contains(".");
+
+            //包含了
+            if (status) {
+
+                //获取小数点的位置
+                int bitPos = s_variable.indexOf(".");
+                //字符串总长度减去小数点位置，再减去1，就是小数位数
+                int numOfBits = s_variable.length() - bitPos - 1;
+
+                if (numOfBits > 2) {
+
+                    s_variable = s_variable.substring(0, s_variable.length() - 1);
+                    balance.setText(s_variable);
+
+                }else{
+                    balance.setText(s_variable);
+                }
+
+            } else {
+
+                balance.setText(s_variable);
+
+            }
+
+        }else{
+
+            balance.setText(s_variable);
+
+        }
 
     }
 

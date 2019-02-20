@@ -3,6 +3,7 @@ package com.zmx.mian.adapter;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +56,14 @@ public class CPStoresAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         CPStoresAdapter.NormalViewHolder viewholder = (CPStoresAdapter.NormalViewHolder) holder;
-        viewholder.mTextView.setText(lists.get(position).getName());
+
+        if(lists.get(position).getState().equals("1")){
+
+            viewholder.mTextView.setText(Html.fromHtml(lists.get(position).getName()+"<font color='#BDBDBD'>（显示）</font>"));
+        }else{
+            viewholder.mTextView.setText(Html.fromHtml(lists.get(position).getName()+"<font color='#BDBDBD'>（隐藏）</font>"));
+        }
+
     }
     //获取数据的数量
     @Override

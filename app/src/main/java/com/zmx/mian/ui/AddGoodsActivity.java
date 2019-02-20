@@ -33,6 +33,7 @@ import com.zmx.mian.bean.MallTypeBean;
 import com.zmx.mian.bean_dao.CPDao;
 import com.zmx.mian.fragment.Fragment_pro_type;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.model.OrderServer;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.util.MySharedPreferences;
@@ -183,14 +184,13 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
 
                 } else {
 
-                    Map<String, String> params = new HashMap<String, String>();
+                    Map<String, String> params = new HashMap<>();
                     params.put("admin", MyApplication.getName());
                     params.put("mid", MyApplication.getStore_id());
                     params.put("pckey", new Tools().getKey(mActivity));
                     params.put("account", "0");
                     params.put("name", g_name.getText().toString());
                     params.put("group", type_id);
-                    params.put("mall_group", sc_id);
                     params.put("gds_price", g_price.getText().toString());
                     params.put("vip_price", g_vipprice.getText().toString());
 
@@ -200,7 +200,7 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
 
                     } else {
 
-                        params.put("store_state", "0");
+                        params.put("store_state", "2");
 
                     }
 
@@ -210,11 +210,15 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
 
                     } else {
 
-                        params.put("mall_state", "0");
+                        params.put("mall_state", "2");
 
                     }
 
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/insert", params, handler, 2, 404);
+                    params.put("barcode", bar_code.getText().toString());
+                    params.put("img", "default.jpg");
+                    params.put("mall_group", sc_id);
+
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.INSERT_GOODS, params, handler, 2, 404);
 
                 }
 
@@ -350,6 +354,7 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
 
                 case 2:
 
+                    Log.e("数据",""+msg.obj.toString());
                     try {
 
                         JSONObject jsonObject = new JSONObject(msg.obj.toString());
@@ -422,7 +427,7 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("type", "store");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, handler, 0, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.TYPE_LIST, params, handler, 0, 404);
 
     }
 
@@ -435,7 +440,7 @@ public class AddGoodsActivity extends BaseActivity implements IAddGoodsView {
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("type", "mall");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/typeList", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.TYPE_LIST, params, handler, 1, 404);
 
     }
 

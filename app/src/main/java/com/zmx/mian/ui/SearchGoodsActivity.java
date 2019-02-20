@@ -44,6 +44,7 @@ import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.bean_dao.goodsDao;
 import com.zmx.mian.fragment.Fragment_pro_type;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.ui.util.MyDialog;
 import com.zmx.mian.util.Tools;
 
@@ -254,7 +255,7 @@ public class SearchGoodsActivity extends BaseActivity {
         params.put("account", "0");
         params.put("name", name);
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/search", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SEARCH_GOODS, params, handler, 1, 404);
 
 
     }

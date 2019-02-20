@@ -93,6 +93,7 @@ public class MineFragment extends BaseFragment{
                 Intent intent = new Intent();
                 intent.setClass(mActivity, LoginActivity.class);
                 startActivity(intent);
+                mActivity.finish();
 
             }
         });

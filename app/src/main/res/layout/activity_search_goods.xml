@@ -30,8 +30,6 @@
             android:layout_height="52dp"
             android:background="@color/tou"
             android:baselineAligned="false"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:orientation="horizontal"
             android:paddingBottom="8dp"
             android:paddingLeft="10dp"
@@ -65,7 +63,6 @@
                     android:textSize="@dimen/text_mid_size" />
 
 
-
             </RelativeLayout>
 
             <ImageView
@@ -76,7 +73,6 @@
                 android:layout_marginTop="@dimen/dp_5"
                 android:background="@mipmap/ic_saoyisao"
                 />
-
 
         </LinearLayout>
 

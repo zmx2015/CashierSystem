@@ -24,6 +24,7 @@ import com.zmx.mian.bean_dao.CPDao;
 import com.zmx.mian.fragment.cp.CPOnlineFragment;
 import com.zmx.mian.fragment.cp.CPStoresFragment;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.ui.util.MyDialog;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
@@ -236,7 +237,7 @@ public class CPManagementActivity extends BaseActivity {
 
                     }
 
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/classPc", params, handler, 1, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.UPDATE_CP, params, handler, 1, 404);
                     mMyDialog.dismiss();
 
                 } else if (state == 2) {
@@ -262,7 +263,7 @@ public class CPManagementActivity extends BaseActivity {
 
                     }
 
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.class/classMall", params, handler, 2, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.UPDATE_MALL, params, handler, 2, 404);
                     mMyDialog.dismiss();
 
                 } else {

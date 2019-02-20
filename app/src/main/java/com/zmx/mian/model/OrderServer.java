@@ -26,7 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class OrderServer implements IOrderServer{
 
-    private String URL = "http://www.yiyuangy.com/admin/";
+    private String URL = "http://api.yiyuangy.com/admin/";
 
     public void OrderMessage(String account, String today, String endtime, String thisPage, String num,String admin,String mid,IDataRequestListener listener){
         getOrderMessage(account,today,endtime,thisPage,num,admin,mid,listener);

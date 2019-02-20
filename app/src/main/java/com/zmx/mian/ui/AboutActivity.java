@@ -4,7 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -21,6 +24,8 @@ import java.util.List;
  */
 public class AboutActivity extends BaseActivity {
 
+    private WebView webView;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_about;
@@ -33,9 +38,14 @@ public class AboutActivity extends BaseActivity {
         setTitleColor(R.id.position_view);
         BackButton(R.id.back_button);
 
+        webView = findViewById(R.id.webView);
+        //WebView加载web资源
+        webView.loadUrl("http://www.yiyuangy.com/about.html");
+//启用支持javascript
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+
     }
-
-
 
 
 }

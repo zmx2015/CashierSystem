@@ -45,6 +45,7 @@ import com.zmx.mian.bean.TimeQuantum;
 import com.zmx.mian.bean.TodayTotalMoney;
 import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.util.DoubleTimeSelectDialog;
 import com.zmx.mian.ui.util.LoadingDialog;
@@ -664,7 +665,7 @@ public class DataStatisticsActivity extends BaseActivity implements OnChartGestu
         params.put("mid", MyApplication.getStore_id());
         params.put("type", "all");
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, mHandler, 0, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_ORDER_LIST, params, mHandler, 0, 404);
 
 
     }

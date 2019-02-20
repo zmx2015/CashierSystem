@@ -17,6 +17,7 @@ import com.zmx.mian.adapter.FeedbackAdapter;
 import com.zmx.mian.bean.FeedbackBean;
 import com.zmx.mian.bean_dao.FeedbackDao;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.util.MySharedPreferences;
 import com.zmx.mian.util.Tools;
 
@@ -203,7 +204,7 @@ public class FeedbackActivity extends BaseActivity {
         params.put("account", "0");
         params.put("content", content);
         params.put("source", "1");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.notice/insert", params,handler, 2, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.INSERT_FEEDBACK, params,handler, 2, 404);
 
 
     }

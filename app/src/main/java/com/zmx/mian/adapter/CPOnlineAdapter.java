@@ -2,6 +2,7 @@ package com.zmx.mian.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,14 @@ public class CPOnlineAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         CPOnlineAdapter.NormalViewHolder viewholder = (CPOnlineAdapter.NormalViewHolder) holder;
-        viewholder.mTextView.setText(lists.get(position).getTname());
+
+        if(lists.get(position).getState().equals("1")){
+
+            viewholder.mTextView.setText(Html.fromHtml(lists.get(position).getTname()+"<font color='#BDBDBD'>（显示）</font>"));
+        }else{
+            viewholder.mTextView.setText(Html.fromHtml(lists.get(position).getTname()+"<font color='#BDBDBD'>（隐藏）</font>"));
+        }
+
     }
     //获取数据的数量
     @Override

@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.ui.util.CalendarView;
 import com.zmx.mian.util.TimeUtil;
 import com.zmx.mian.util.Tools;
@@ -225,7 +226,7 @@ public class GlobalConfigurationActivity extends BaseActivity {
         params.put("mid", MyApplication.getStore_id());
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.config/getconfig", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.GET_CONFIG, params, handler, 1, 404);
 
     }
 
@@ -239,7 +240,7 @@ public class GlobalConfigurationActivity extends BaseActivity {
         params.put("account", "0");
         params.put("name", name);
         params.put("val", val);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.config/setconfig", params, handler, h, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.UPDATE_CONFIG, params, handler, h, 404);
 
     }
 

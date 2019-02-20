@@ -28,6 +28,7 @@ import com.zmx.mian.R;
 import com.zmx.mian.adapter.CardVolumeAdapter;
 import com.zmx.mian.bean.CardVolumeBean;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.util.Tools;
 
 import org.json.JSONArray;
@@ -287,7 +288,7 @@ public class LuckyDrawActivity extends BaseActivity {
         params.put("mid", MyApplication.getStore_id());
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Coupon/draw", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_DRAW, params, handler, 1, 404);
 
     }
 
@@ -300,7 +301,7 @@ public class LuckyDrawActivity extends BaseActivity {
         params.put("pckey", new Tools().getKey(mActivity));
         params.put("account", "0");
         params.put("pid", pid);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Coupon/ajaxDelCoupons", params, handler, 2, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.DELETE_EXCHANGE, params, handler, 2, 404);
 
     }
 
@@ -314,7 +315,7 @@ public class LuckyDrawActivity extends BaseActivity {
         params.put("account", "0");
         params.put("name", name);
         params.put("val", val);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.config/setconfig", params, handler, h, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.UPDATE_CONFIG, params, handler, h, 404);
 
     }
 

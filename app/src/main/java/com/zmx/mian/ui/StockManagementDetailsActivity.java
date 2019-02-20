@@ -302,7 +302,7 @@ public class StockManagementDetailsActivity extends BaseActivity implements Stoc
 
                     params.put("total",  total+"");
                     params.put("pid",  "1");
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/insert", params, handler, 1, 404);
+//                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/insert", params, handler, 1, 404);
 
 
                 }else{
@@ -605,7 +605,7 @@ public class StockManagementDetailsActivity extends BaseActivity implements Stoc
         params.put("account", "0");
         params.put("pid", smb.getId()+"");
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/detail", params, handler, 2, 404);
+//        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Purchase/detail", params, handler, 2, 404);
 
 
     }

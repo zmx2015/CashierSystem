@@ -24,6 +24,7 @@ import com.zmx.mian.bean.MainOrder;
 import com.zmx.mian.bean.Paging;
 import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.util.DoubleTimeSelectDialog;
 import com.zmx.mian.ui.util.LoadingDialog;
@@ -240,7 +241,7 @@ public class SingleGoodsActivity extends BaseActivity{
         params.put("endtime", endDate);
         params.put("gid", gid);
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/odsList", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_ONE_ORDER, params, handler, 1, 404);
 
 
     }

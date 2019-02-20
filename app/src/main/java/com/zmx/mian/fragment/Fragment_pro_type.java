@@ -35,6 +35,7 @@ import com.zmx.mian.bean.Goods;
 import com.zmx.mian.bean.Type;
 import com.zmx.mian.bean_dao.goodsDao;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.GoodsDetailsActivity;
 import com.zmx.mian.ui.OrderDataActivity;
@@ -134,7 +135,6 @@ public class Fragment_pro_type extends ViewPagerFragment {
 
                 case 1:
 
-                    Log.e("返回的数据", "放回" + msg.obj.toString());
                     gs.clear();
                     try {
 
@@ -155,7 +155,7 @@ public class Fragment_pro_type extends ViewPagerFragment {
                                         ty.getInt("group") + "",
                                         ty.getString("vip_price"),
                                         ty.getString("mall_state"),
-                                        ty.getString("store_state"),"");
+                                        ty.getString("store_state"),"",ty.getString("barcode"));
                                 gs.add(g);
                             }
                             ndv.dismissLoading();
@@ -208,7 +208,7 @@ public class Fragment_pro_type extends ViewPagerFragment {
         params.put("pckey", new Tools().getKey(this.getActivity()));
         params.put("account", "0");
 
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.goods/goodsList", params, h, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.GET_ALL_GOODS, params, h, 1, 404);
 
 
     }

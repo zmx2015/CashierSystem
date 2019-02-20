@@ -285,7 +285,7 @@ public class Tools {
 
 
     //保存两位小数
-    public String priceResult(double price) {
+    public static String priceResult(double price) {
         DecimalFormat format = new DecimalFormat("0.00");
         return format.format(new BigDecimal(price));
 

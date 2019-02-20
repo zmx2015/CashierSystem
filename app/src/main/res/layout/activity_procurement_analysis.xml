@@ -28,7 +28,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_centerInParent="true"
                 android:textSize="18sp"
-                android:text="采购列表"
+                android:text="单品清单"
                 android:textColor="@color/white" />
 
             <TextView
@@ -56,9 +56,24 @@
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="排序" />
+
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:text="商品" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="采购时间" />
+                android:text="累积采购" />
 
 
             <TextView
@@ -66,14 +81,20 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="总支出/元" />
+                android:text="总售出" />
 
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="状态" />
+                android:text="总重量" />
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="利润" />
 
         </LinearLayout>
 
@@ -97,9 +118,7 @@
                 android:background="#ffffff" />
         </com.chanven.lib.cptr.PtrClassicFrameLayout>
 
-
     </RelativeLayout>
-
 
     <ImageView
         android:id="@+id/no_data"
@@ -109,13 +128,4 @@
         android:src="@mipmap/ic_caigoudan"
         android:visibility="gone" />
 
-
-    <ImageButton
-        android:id="@+id/add_button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="20dp"
-        android:background="@drawable/fab"
-        android:src="@mipmap/add" />
 </android.support.design.widget.CoordinatorLayout>

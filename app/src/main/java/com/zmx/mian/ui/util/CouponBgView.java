@@ -17,7 +17,7 @@ import com.zmx.mian.R;
  * 开发时间：2018-11-22 13:59
  * 类功能：优惠卷背景
  */
-public class CouponBgView  extends LinearLayout {
+public class CouponBgView extends LinearLayout {
 
     private Paint mPaint;
 
@@ -67,13 +67,17 @@ public class CouponBgView  extends LinearLayout {
     }
 
     public CouponBgView(Context context, AttributeSet attrs) {
+
         super(context, attrs);
         init(context, attrs);
+
     }
 
     public CouponBgView(Context context, AttributeSet attrs, int defStyleAttr) {
+
         super(context, attrs, defStyleAttr);
         init(context, attrs);
+
     }
 
     private void init(Context context, AttributeSet attrs) {

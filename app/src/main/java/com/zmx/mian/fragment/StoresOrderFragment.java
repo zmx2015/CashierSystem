@@ -26,6 +26,7 @@ import com.zmx.mian.bean.MainOrder;
 import com.zmx.mian.bean.Paging;
 import com.zmx.mian.bean.ViceOrder;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.presenter.OrderPresenter;
 import com.zmx.mian.ui.OrderDataActivity;
 import com.zmx.mian.util.MySharedPreferences;
@@ -149,7 +150,7 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
                 params.put("admin", MyApplication.getName());
                 params.put("mid", MyApplication.getStore_id());
                 params.put("type", sort);
-                OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, handler, 3, 404);
+                OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_ORDER_LIST, params, handler, 3, 404);
 
             }
         });
@@ -179,7 +180,7 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
                     params.put("mid", MyApplication.getStore_id());
                     params.put("type", sort);
 
-                    OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, handler, 3, 404);
+                    OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_ORDER_LIST, params, handler, 3, 404);
                 }
 
 
@@ -487,7 +488,7 @@ public class StoresOrderFragment extends  BaseFragment implements View.OnClickLi
         params.put("admin", MyApplication.getName());
         params.put("mid", MyApplication.getStore_id());
         params.put("type", sort);
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.order/orderList", params, handler, 3, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.SELECT_ORDER_LIST, params, handler, 3, 404);
 
     }
 

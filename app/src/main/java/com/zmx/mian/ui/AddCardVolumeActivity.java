@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import com.zmx.mian.MyApplication;
 import com.zmx.mian.R;
 import com.zmx.mian.http.OkHttp3ClientManager;
+import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.util.Tools;
 
 import org.json.JSONException;
@@ -156,7 +157,7 @@ public class AddCardVolumeActivity extends BaseActivity {
         params.put("types", type);
         params.put("days", card_view3.getText().toString());
         params.put("content", card_view4.getText().toString());
-        OkHttp3ClientManager.getInstance().NetworkRequestMode("http://www.yiyuangy.com/admin/api.Coupon/couponsAdd", params, handler, 1, 404);
+        OkHttp3ClientManager.getInstance().NetworkRequestMode(UrlConfig.ADD_CARD, params, handler, 1, 404);
 
     }
 
