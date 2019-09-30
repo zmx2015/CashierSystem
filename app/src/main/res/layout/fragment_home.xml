@@ -540,13 +540,15 @@
                             android:layout_below="@+id/image0"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="更多功能"
+                            android:text="预算售价"
                             android:id="@+id/textView0" />
 
                     </RelativeLayout>
                 </LinearLayout>
 
             </LinearLayout>
+
+
 
         </LinearLayout>
 

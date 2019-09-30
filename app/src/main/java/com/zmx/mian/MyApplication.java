@@ -63,6 +63,7 @@ public class MyApplication extends Application{
         DaoMaster daoMaster = new DaoMaster(db);
         //获取Dao对象管理者
         daoSession = daoMaster.newSession();
+        
     }
 
     public static DaoSession getDaoInstant() {

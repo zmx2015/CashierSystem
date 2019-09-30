@@ -1371,6 +1371,8 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                 float total = t1 * t2 + t4 + t5;
                 textView.setText(total + "");
                 text_yuan.setText("元/件");
+
+                Log.e("计算的值：","  t1"+t1+"   t2"+t2+"  t4"+t4+"  t5"+t5);
             }
         });
         button_jin.setOnClickListener(new View.OnClickListener() {
@@ -1384,13 +1386,14 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                 float t2 = Float.parseFloat(TextUtils.isEmpty(textView2.getText().toString()) ? "0" : textView2.getText().toString());
                 float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
                 float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
-                float total = t3 * t2 + t4 + t5;
-                textView.setText(total + "");
-                text_yuan.setText("元/斤");
 
+                Log.e("计算的值：","  t3"+t3+"   t2"+t2+"  t4"+t4+"  t5"+t5);
+                float total = (t3 * t2) + t4 + t5;
+                Log.e("计算的值：",""+total);
+                textView.setText(Tools.priceResult(total) + "");
+                text_yuan.setText("元/斤");
             }
         });
-
 
     }
 
@@ -1445,7 +1448,6 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                 float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
                 float total = t3 * t2 + t4 + t5;
                 textView.setText(total + "");
-
             }
 
 
@@ -1492,7 +1494,9 @@ public class ProcurementDetailsActivity extends BaseActivity implements Procurem
                 float t4 = Float.parseFloat(TextUtils.isEmpty(textView4.getText().toString()) ? "0" : textView4.getText().toString());
                 float t5 = Float.parseFloat(TextUtils.isEmpty(textView5.getText().toString()) ? "0" : textView5.getText().toString());
                 float total = t3 * t2 + t4 + t5;
-                textView.setText(total + "");
+                textView.setText(Tools.priceResult(total) + "");
+
+                Log.e("计算的值：","  t3"+t3+"   t2"+t2+"  t4"+t4+"  t5"+t5);
 
             }
 

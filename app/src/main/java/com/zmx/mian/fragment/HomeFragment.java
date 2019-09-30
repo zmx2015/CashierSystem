@@ -49,6 +49,7 @@ import com.zmx.mian.http.API;
 import com.zmx.mian.http.OkHttp3ClientManager;
 import com.zmx.mian.http.UrlConfig;
 import com.zmx.mian.presenter.OrderPresenter;
+import com.zmx.mian.ui.BudgetPriceActivity;
 import com.zmx.mian.ui.CardVolumeActivity;
 import com.zmx.mian.ui.ConvenientCashierActivity;
 import com.zmx.mian.ui.DataStatisticsActivity;
@@ -237,8 +238,11 @@ public class HomeFragment extends Fragment implements OnChartGestureListener, On
         relative0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(HomeFragment.this.getActivity(),"正在马不停蹄的开发中",Toast.LENGTH_LONG).show();
-            }
+
+                Intent intent = new Intent(HomeFragment.this.getActivity(), BudgetPriceActivity.class);
+                startActivity(intent);
+
+                        }
         });
 
         switch_store = view.findViewById(R.id.switch_store);
